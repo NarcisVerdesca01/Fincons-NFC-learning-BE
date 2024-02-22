@@ -10,4 +10,6 @@ public class FinconsNfcLearningBeApplication {
 		SpringApplication.run(FinconsNfcLearningBeApplication.class, args);
 	}
 
+
+
 }

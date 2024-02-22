@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,10 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
+
     private JwtTokenProvider jwtTokenProvider;
+
+
     private UserDetailsService userDetailsService;
 
 
@@ -28,12 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-
     /*
-    this filter is responsible for extracting and validating a JWT token from a request,
-    and if the token is valid, it authenticates the corresponding user and sets the
-    authentication object in the security context.
-     */
+        this filter is responsible for extracting and validating a JWT token from a request,
+        and if the token is valid, it authenticates the corresponding user and sets the
+        authentication object in the security context.
+         */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

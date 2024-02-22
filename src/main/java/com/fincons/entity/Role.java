@@ -20,10 +20,9 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -31,7 +30,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -49,6 +48,7 @@ public class Role {
     }
 
      */
+
 
 
 }
