@@ -108,9 +108,31 @@ public class AuthService implements IAuthService {
         return "Tutor registered successfully";
     }
 
+    @Override
+    public String registerAdmin(UserDto userDto) throws UserDataException {
+        String emailDto = userDto.getEmail().toLowerCase().replace(" ", "");
+        if (userRepository.existsByEmail(emailDto) || emailDto.isEmpty() || !EmailValidator.isValidEmail(emailDto)) {
+            throw new UserDataException(UserDataException.emailInvalidOrExist());
+        }
+        if (!PasswordValidator.isValidPassword(userDto.getPassword())) {
+            throw new UserDataException(UserDataException.passwordDoesNotRespectRegexException());
+        }
+        User userToSave = userAndRoleMapper.dtoToUser(userDto);
+        userToSave.setFirstName(userDto.getFirstName());
+        userToSave.setLastName(userDto.getLastName());
+        userToSave.setEmail(userDto.getEmail().toLowerCase().replace(" ", ""));
+        userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
+        Role role = roleToAssign("ROLE_ADMIN");
 
+        userToSave.setRoles(Set.of(role));
 
+        User userSaved = userRepository.save(userToSave);
+        if (!userRepository.existsByEmail(userSaved.getEmail())) {
+            throw new UserDataException("Something goes wrong!");
+        }
+        return "Admin registered successfully";
+    }
 
 
     @Override

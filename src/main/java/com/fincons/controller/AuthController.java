@@ -51,16 +51,30 @@ public class AuthController {
 
     }
 
+    @PostMapping("${register.admin.uri}") //register tutor
+    public ResponseEntity<String> registerAdmin(
+            @RequestBody UserDto userDto
+    ) throws UserDataException {
+
+        try{
+            String response = IAuthService.registerAdmin(userDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch(UserDataException userDataException){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
+        }
+
+    }
 
 
-    @PostMapping("/login")
+
+    @PostMapping("${login.uri}")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
 
             String token = IAuthService.login(loginDto);
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(token);
-
             return  ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
+
     }
 
 

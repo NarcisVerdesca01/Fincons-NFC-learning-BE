@@ -12,4 +12,6 @@ public interface IAuthService {
     String login(LoginDto loginDto);
 
     String registerTutor(UserDto userDto) throws UserDataException;
+
+    String registerAdmin(UserDto userDto) throws UserDataException;
 }

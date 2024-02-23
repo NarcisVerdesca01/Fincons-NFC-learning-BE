@@ -3,6 +3,7 @@ package com.fincons.security;
 import com.fincons.jwt.JwtAuthenticationFilter;
 import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,14 +35,11 @@ public class SecurityConfiguration {
         return configuration.getAuthenticationManager();
     }
 
-
-
     @Autowired
     private JwtUnauthorizedAuthenticationEntryPoint authenticationExeptionEntryPoint;
 
     @Autowired
     private   JwtAuthenticationFilter jwtAuthFilter;
-
 
     @Bean
     public WebMvcConfigurer corsConfigurer(){
@@ -52,6 +50,29 @@ public class SecurityConfiguration {
             }
         };
     }
+
+    @Value("${application.context}")
+    private String applicationContext;
+
+    @Value("${base.uri.version}")
+    private String baseUriVersion;
+
+    @Value("${base.authorization.uri}")
+    private String baseAuthorizationUri;
+
+    @Value("${register.student.uri}")
+    private String registerStudentUri;
+
+    @Value("${register.tutor.uri}")
+    private String registerTutorUri;
+
+    @Value("${register.admin.uri}")
+    private String registerAdminUri;
+
+    @Value("${login.uri}")
+    private String loginUri;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -61,7 +82,10 @@ public class SecurityConfiguration {
 
         //requests
         http.authorizeHttpRequests(auth  ->
-                auth.requestMatchers("/nfc-learning/v1/auth/**").permitAll()
+                auth.requestMatchers(applicationContext + loginUri).permitAll()
+                        .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
+                        .requestMatchers(applicationContext + registerStudentUri).permitAll()
+                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // Da rimuovere in produzione
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
 
