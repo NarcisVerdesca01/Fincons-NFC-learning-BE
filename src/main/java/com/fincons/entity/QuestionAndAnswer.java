@@ -4,6 +4,7 @@ package com.fincons.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,12 +36,13 @@ public class QuestionAndAnswer {
     @Column(name = "id")
     private long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_question", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_question")
     private Question question;
 
-    @OneToMany(mappedBy="questionAnswers")
-    private List<Answer> answerList;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_answer")
+    private Answer answer;
 
     @ManyToOne
     @JoinColumn(name = "id_quiz", nullable = false)
