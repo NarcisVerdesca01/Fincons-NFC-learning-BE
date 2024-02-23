@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -72,6 +73,13 @@ public class SecurityConfiguration {
     @Value("${login.uri}")
     private String loginUri;
 
+    @Value("${course.base.uri}")
+    private String courseBaseUri;
+
+    @Value("${course.get-all-courses}")
+    private String getAllCoursesUri;
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -86,6 +94,16 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
                         .requestMatchers(applicationContext + registerAdminUri).permitAll()  // Da rimuovere in produzione
+
+                        // Filtri CRUD per l'amministratore:
+                        .requestMatchers(applicationContext + courseBaseUri).hasRole("ADMIN")
+                        .requestMatchers(applicationContext + getAllCoursesUri).hasRole("TUTOR")
+
+
+                        //Filtri CRUD per il tutor:
+                //a. Controllo per l'operazione di lettura (Read)
+                //b. Controllo per l'operazione di aggiornamento (Update)
+
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
 

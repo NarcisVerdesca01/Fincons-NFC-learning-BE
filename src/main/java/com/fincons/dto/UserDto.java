@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fincons.entity.Course;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -31,6 +32,8 @@ public class UserDto {
 
     @JsonIgnoreProperties("users")
     private Set<RoleDto> roles;
+
+    private List<Course> courses;
 
 
 }
