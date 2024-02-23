@@ -26,8 +26,11 @@ public class Content {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "file")
-    private String file;
+    @Column(name = "typeContent")
+    private String typeContent;
+
+    @Column(name = "content")
+    private String content;
 
 
 }
