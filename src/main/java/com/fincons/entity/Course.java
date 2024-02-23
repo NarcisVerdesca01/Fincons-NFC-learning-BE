@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -42,6 +43,8 @@ public class Course {
     @Column(name = "requirementsAccess")
     private String requirementsAccess;
 
+
+    //1. CORSO - LEZIONE N:M
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "courses_lessons",
             joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),

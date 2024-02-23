@@ -34,7 +34,11 @@ public class Quiz {
     @Column(name = "title")
     private String title;
 
+    //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @OneToMany(mappedBy="quiz")
-    private List<QuestionAndAnswer> questionAndAnswerList;
+    private List<Question> questions;
 
+    //3. LEZIONE - QUIZ 1:1
+    @OneToOne(mappedBy = "quiz")
+    private Lesson lesson;
 }

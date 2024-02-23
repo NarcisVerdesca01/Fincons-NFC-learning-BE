@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -35,15 +36,20 @@ public class Lesson {
     @Column(name = "title",nullable = false)
     private String title;
 
+    //1. CORSO - LEZIONE N:M
     @ManyToMany(mappedBy = "lessons")
     private List<Course> courses;
 
-    @OneToOne
+    //3. LEZIONE - QUIZ 1:1
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_quiz", referencedColumnName = "id")
     private Quiz quiz;
 
+    //2. LEZIONE - CONTENUTO 1:1
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_content", referencedColumnName = "id")
     private Content content;
+
+
 
 }

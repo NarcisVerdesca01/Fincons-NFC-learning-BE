@@ -59,10 +59,13 @@ public class User {
     )
     private Set<Role> roles;
 
+    /*
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_courses",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
     )
     private List<Course> courses;
+
+     */
 }

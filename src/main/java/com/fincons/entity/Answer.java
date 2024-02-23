@@ -35,15 +35,14 @@ public class Answer {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "text")
+    @Column(name = "textAnswer")
     private String text;
 
     @Column(name = "correct")
     private boolean correct;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<QuestionAndAnswer> questions;
-
+    //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
+    @ManyToOne
+    private Question question;
 
 }

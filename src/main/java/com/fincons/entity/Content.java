@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +33,8 @@ public class Content {
     @Column(name = "content")
     private String content;
 
+    //2. LEZIONE - CONTENUTO 1:1
+    @OneToOne(mappedBy = "content")
+    private Lesson lesson;
 
 }
