@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,7 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,26 +26,27 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "lessons")
-public class Lesson {
+@Table(name = "question_answers")
+public class QuestionAndAnswer {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "title",nullable = false)
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_question", referencedColumnName = "id")
+    private Question question;
 
-    @ManyToMany(mappedBy = "lessons")
-    private List<Course> courses;
+    @OneToMany(mappedBy="questionAnswers")
+    private List<Answer> answerList;
 
-    @OneToOne
-    @JoinColumn(name = "id_quiz", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "id_quiz", nullable = false)
     private Quiz quiz;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_content", referencedColumnName = "id")
-    private Content content;
+
+
 
 }

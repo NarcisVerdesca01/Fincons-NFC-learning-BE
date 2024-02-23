@@ -48,4 +48,7 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")
     )
     private List<Lesson> lessons;
+
+
+
 }
