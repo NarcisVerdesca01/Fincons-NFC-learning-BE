@@ -37,15 +37,9 @@ public class Course {
     @Column(name = "name",nullable = false)
     private String name;
 
-    //DA VEDERE
-    @Column(name = "technicalProfile")
-    private String technicalProfile;
 
     @Column(name = "description",nullable = false)
     private String description;
-
-    @Column(name = "requirementsAccess")
-    private String requirementsAccess;
 
 
     //1. CORSO - LEZIONE N:M
@@ -55,6 +49,13 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")
     )
     private List<Lesson> lessons;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "courses_abilities", //Requisiti del corso
+            joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_abilities", referencedColumnName = "id")
+    )
+    private List<Ability> abilities;
 
 
 

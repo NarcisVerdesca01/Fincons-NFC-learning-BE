@@ -60,6 +60,13 @@ public class User {
     private Set<Role> roles;
 
 
+    @ManyToMany(fetch = FetchType.EAGER,  cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
+    @JoinTable(name = "users_abilities", //Profilo tecnico
+            joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ability_id", referencedColumnName = "id")
+    )
+    private List<Ability> abilities;
+
     /*
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_courses",
