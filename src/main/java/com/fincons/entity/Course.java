@@ -37,6 +37,10 @@ public class Course {
     @Column(name = "name",nullable = false)
     private String name;
 
+    //DA VEDERE
+    @Column(name = "technicalProfile")
+    private String technicalProfile;
+
     @Column(name = "description",nullable = false)
     private String description;
 
@@ -51,6 +55,8 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")
     )
     private List<Lesson> lessons;
+
+
 
 
 

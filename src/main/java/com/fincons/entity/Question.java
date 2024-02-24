@@ -1,6 +1,5 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,10 +35,12 @@ public class Question {
     @Column(name = "text")
     private String textQuestion;
 
-    //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
+    @Column(name = "correctAnswer")
+    private String correctAnswer;
+
+    //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più rispostesbagliate
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Answer> answers;
+    private List<WrongAnswer> wrongAnswer;
 
     //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @ManyToOne

@@ -59,6 +59,7 @@ public class User {
     )
     private Set<Role> roles;
 
+
     /*
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_courses",
@@ -66,6 +67,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
     )
     private List<Course> courses;
-
      */
+
+    // DA SPIEGARE AI COLLEGHI
+
+    //PROFILO TECNICO
+
+    //ADMIN   -->> profiloT:   se ruolo è admin --> get all courses and lesson
+    //TUTOR   --->>profiloT:    se ruolo tutor & requisiti : informaticaa --->> getall courses in base a requisiti
+    //Studente --->> profiloT
 }
