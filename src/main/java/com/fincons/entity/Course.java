@@ -45,7 +45,7 @@ public class Course {
 
 
     //1. CORSO - LEZIONE N:M
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })// Capire dato che il tutor associa lezione a corso quando elimino
     @JoinTable(name = "courses_lessons",
             joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")

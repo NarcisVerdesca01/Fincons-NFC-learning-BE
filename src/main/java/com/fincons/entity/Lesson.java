@@ -37,7 +37,7 @@ public class Lesson {
     private String title;
 
     //1. CORSO - LEZIONE N:M
-    @ManyToMany(mappedBy = "lessons")
+    @ManyToMany(mappedBy = "lessons", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Course> courses;
 
     //3. LEZIONE - QUIZ 1:1
