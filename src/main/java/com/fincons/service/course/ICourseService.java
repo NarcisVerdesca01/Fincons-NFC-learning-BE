@@ -12,4 +12,10 @@ public interface ICourseService {
     List<Course> findAllCourses();
 
     Course createCourse(CourseDto courseDto) throws CourseException;
+
+    Course findCourseById(long id);
+
+    void deleteCourse(long id);
+
+    List<Course> findDedicatedCourses(String email);
 }
