@@ -30,8 +30,8 @@ public class Ability {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "nameOfAbility")
-    private String nameOfAbility;
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany(mappedBy="abilities")
     private List<User> users;
