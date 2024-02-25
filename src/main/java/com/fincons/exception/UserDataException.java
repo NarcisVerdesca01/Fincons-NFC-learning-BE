@@ -35,4 +35,13 @@ public class UserDataException extends Exception{
     public static  String emailInvalidOrExist(){
         return "Invalid or existing email";
     }
+
+    public static String userMustHaveAbilities(){
+        return "The ability field cannot be empty";
+    }
+
+    public static String somethingGoesWrong() {
+        return "Something goes wrong!";
+    }
+
 }

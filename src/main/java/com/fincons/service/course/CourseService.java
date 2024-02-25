@@ -1,4 +1,4 @@
-package com.fincons.service.courseService;
+package com.fincons.service.course;
 
 import com.fincons.dto.AbilityDto;
 import com.fincons.dto.CourseDto;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService implements ICourseService {
@@ -46,30 +45,41 @@ public class CourseService implements ICourseService {
         if(StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || courseDto.getAbilities()==null){
             throw new CourseException("Name, description or requirements not present");
         }
+        if(courseRepository.existsByName(courseDto.getName())){
+            throw new CourseException("The name of course already exist");
+        }
 
         Course course = new Course();
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
 
-        // Per ogni abilità nel DTO del corso
-        for(AbilityDto abilityDto : courseDto.getAbilities()){
+        List<Ability> abilitiesForNewCourse = new ArrayList<>();
+
+        // Associa le abilità all'utente
+        course.setAbilities(assignAbilities(courseDto, abilitiesForNewCourse));
+        return courseRepository.save(course);
+    }
+
+    private List<Ability> assignAbilities(CourseDto courseDto, List<Ability> abilitiesForNewCourse) {
+        // Per ogni abilità nel DTO dell'utente
+        for (AbilityDto abilityDto : courseDto.getAbilities()) {
 
             // Controlla se l'abilità esiste già nel repository
-            Ability existingAbility = abilityRepository.findByName(abilityDto.getNameOfAbility());
+            Ability existingAbility = abilityRepository.findByName(abilityDto.getName());
 
-            if(existingAbility != null){
-                // Se l'abilità esiste già, associa quella esistente al corso
-                course.getAbilities().add(existingAbility);
-            }else{
-                // Se l'abilità non esiste, crea una nuova abilità nel repository e associa al corso
+            if (existingAbility != null) {
+                // Se l'abilità esiste già, associa quella esistente all'utente
+                abilitiesForNewCourse.add(existingAbility);
+
+            } else {
+                // Se l'abilità non esiste, crea una nuova abilità nel repository e associa all'utente
                 Ability newAbility = new Ability();
-                newAbility.setNameOfAbility(abilityDto.getNameOfAbility());
+                newAbility.setName(abilityDto.getName());
                 abilityRepository.save(newAbility);
-                course.getAbilities().add(newAbility);
-
+                abilitiesForNewCourse.add(newAbility);
             }
         }
-        return courseRepository.save(course);
+        return abilitiesForNewCourse;
     }
 
     @Override
@@ -107,7 +117,6 @@ public class CourseService implements ICourseService {
         }
 
         User userToSeeAbilities = userRepository.findByEmail(email);
-
         List<Ability> userAbilities = userToSeeAbilities.getAbilities();
 
         // Cerca i corsi che richiedono almeno una delle abilità dell'utente
@@ -119,6 +128,8 @@ public class CourseService implements ICourseService {
             }
         }
         return list;
+
+
 
 
     }

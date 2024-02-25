@@ -1,10 +1,9 @@
-package com.fincons.service.courseService;
+package com.fincons.service.course;
 
 import com.fincons.dto.CourseDto;
 import com.fincons.entity.Course;
 import com.fincons.exception.CourseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 public interface ICourseService {
