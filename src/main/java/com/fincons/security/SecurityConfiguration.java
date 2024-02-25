@@ -1,11 +1,13 @@
 package com.fincons.security;
 
+import com.fincons.audit.ApplicationAuditAware;
 import com.fincons.jwt.JwtAuthenticationFilter;
 import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -82,7 +84,10 @@ public class SecurityConfiguration {
     @Value("${course.getDedicatedCourses}")
     private String getDedicatedCourses;
 
-
+@Bean
+public AuditorAware<Long> auditorAware(){
+    return new ApplicationAuditAware();
+}
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
