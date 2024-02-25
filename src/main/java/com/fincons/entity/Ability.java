@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,4 +40,10 @@ public class Ability {
     @ManyToMany(mappedBy="abilities")
     private List<Course> courses;
 
+    @PreRemove
+    public void removeCoursesAssociations() {
+        for (Course course: this.courses) {
+            course.getAbilities().remove(this);
+        }
+    }
 }
