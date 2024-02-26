@@ -57,6 +57,8 @@ public class Lesson {
     @JoinColumn(name = "id_content", referencedColumnName = "id")
     private Content content;
 
+
+
     @CreatedDate
     @Column(
             nullable = false,
@@ -74,11 +76,10 @@ public class Lesson {
             nullable = false,
             updatable = false
     )
-    private long createdBy;
+    private String createdBy;
 
     @LastModifiedBy
     @Column(insertable = false)
-    private long lastModifiedBy;
-
+    private String lastModifiedBy;
 
 }

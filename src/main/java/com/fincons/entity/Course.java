@@ -64,7 +64,6 @@ public class Course {
     )
     private List<Ability> abilities;
 
-
     @CreatedDate
     @Column(
             nullable = false,
@@ -82,11 +81,13 @@ public class Course {
             nullable = false,
             updatable = false
     )
-    private long createdBy;
+    private String createdBy;
 
     @LastModifiedBy
     @Column(insertable = false)
-    private long lastModifiedBy;
+    private String lastModifiedBy;
+
+
 
 
 
