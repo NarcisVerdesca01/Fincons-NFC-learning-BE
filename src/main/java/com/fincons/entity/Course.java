@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,13 +58,12 @@ public class Course {
     )
     private List<Lesson> lessons;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "courses_abilities", //Requisiti del corso
-            joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_abilities", referencedColumnName = "id")
-    )
-    private List<Ability> abilities;
+    @OneToMany( mappedBy = "course")
+    private List<AbilityCourse> abilities;
 
+
+
+    //AUDITING
     @CreatedDate
     @Column(
             nullable = false,

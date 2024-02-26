@@ -1,12 +1,15 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,16 +37,14 @@ public class Ability {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(mappedBy="abilities")
-    private List<User> users;
+    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbilityUser> courses;
 
-    @ManyToMany(mappedBy="abilities")
-    private List<Course> courses;
+    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbilityUser> users;
 
-    @PreRemove
-    public void removeCoursesAssociations() {
-        for (Course course: this.courses) {
-            course.getAbilities().remove(this);
-        }
-    }
+
+
 }

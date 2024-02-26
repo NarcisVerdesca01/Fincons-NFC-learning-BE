@@ -16,5 +16,6 @@ public interface ICourseService {
 
     void deleteCourse(long id);
 
-    List<Course> findDedicatedCourses(String email);
+
+    //Course updateCourse(long id, CourseDto courseDto) throws CourseException;
 }

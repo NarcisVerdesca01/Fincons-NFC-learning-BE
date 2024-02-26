@@ -99,6 +99,7 @@ public class CourseController {
     // abilità. 2.creare un corso con abilità  user e corso devono avere le stesse abilità e non per testare
     // che se matcha restituisce i corsi dell'user se non matcha non li restituisce e se è admin li restituisce tutti
 
+    /*
     @GetMapping ("${course.getDedicatedCourses}/{email}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@PathVariable String email){
 
@@ -110,6 +111,7 @@ public class CourseController {
                 .data(coursesDtoList)
                 .build());
     }
+*/
 
     /*
      @PutMapping("${course.update}/{id}")
@@ -119,13 +121,16 @@ public class CourseController {
             return ResponseEntity.ok().body(ApiResponse.<CourseDto>builder()
                     .data(updatedCourseDto)
                     .build());
-        } catch (ResourceNotFoundException resourceNotFoundException) {
+        } catch (ResourceNotFoundException | CourseException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
-    }
+     }
+
      */
+
+
 
 
 
