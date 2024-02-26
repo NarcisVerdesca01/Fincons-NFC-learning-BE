@@ -28,4 +28,6 @@ public class QuestionDto {
     @JsonIgnoreProperties("questions")
     private QuizDto quiz;
 
+    private int score;
+
 }

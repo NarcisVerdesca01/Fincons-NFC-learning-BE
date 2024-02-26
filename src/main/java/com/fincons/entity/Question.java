@@ -46,4 +46,8 @@ public class Question {
     @ManyToOne
     private Quiz quiz;
 
+    @Column(name = "score")
+    private int score;
+
+
 }
