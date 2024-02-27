@@ -3,6 +3,7 @@ package com.fincons.controller;
 import com.fincons.dto.CourseDto;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.exception.UserDataException;
 import com.fincons.mapper.CourseMapper;
 import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -73,7 +75,6 @@ public class CourseController {
         }
     }
 
-    //TODO TESTING THIS ON POSTMAN
     @DeleteMapping("${course.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteCourse(@PathVariable long id) {
         try {
@@ -88,20 +89,8 @@ public class CourseController {
         }
     }
 
-    // TODO SERVIZIO CHE RESTITUISCE I corsi in
-
-    // base all'utente.  Parametri necessari:  id_user loggato.
-    // tramite id accedo al ruolo:
-    // - se ruolo è admin allora vedi tutti i corsi
-    // - se ruolo è studente o tutor accedi alle ability e vedi quelle che matchano con i corsi
-
-    //TODO per testarlo serve 1. creare un user di tipo o studente o tutor o admin con
-    // abilità. 2.creare un corso con abilità  user e corso devono avere le stesse abilità e non per testare
-    // che se matcha restituisce i corsi dell'user se non matcha non li restituisce e se è admin li restituisce tutti
-
-    /*
-    @GetMapping ("${course.getDedicatedCourses}/{email}")
-    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@PathVariable String email){
+    @GetMapping ("${course.getDedicatedCourses}")
+    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@RequestParam String email) throws UserDataException {
 
         List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(email)
                 .stream()
@@ -111,7 +100,7 @@ public class CourseController {
                 .data(coursesDtoList)
                 .build());
     }
-*/
+
 
     /*
      @PutMapping("${course.update}/{id}")

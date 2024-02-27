@@ -25,7 +25,6 @@ public class AbilityUserService implements IAbilityUserService{
 
     @Override
     public AbilityUser addAbilityUser(AbilityUserDto abilityUserDto) {
-        AbilityUser abilityUserSaved = abilityUserRepository.save(abilityUserMapper.mapDtoToAbilityUser(abilityUserDto)) ;
-        return abilityUserSaved;
+        return abilityUserRepository.save(abilityUserMapper.mapDtoToAbilityUser(abilityUserDto));
     }
 }

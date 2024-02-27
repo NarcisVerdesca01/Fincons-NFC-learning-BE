@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 
 @Getter
-@Data
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDto {

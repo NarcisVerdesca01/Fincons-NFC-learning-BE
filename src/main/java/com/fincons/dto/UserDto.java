@@ -7,12 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 @Getter
-@Data
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
@@ -29,7 +31,7 @@ public class UserDto {
 
     private LocalDate birthDate;
 
-    @JsonIgnore
+    @JsonIgnoreProperties("users")
     private Set<RoleDto> roles;
 
     @JsonIgnore

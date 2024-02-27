@@ -1,5 +1,6 @@
 package com.fincons.mapper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fincons.dto.RoleDto;
 import com.fincons.dto.UserDto;
 import com.fincons.entity.Role;
@@ -13,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserAndRoleMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
