@@ -14,7 +14,7 @@ import lombok.Setter;
 public class AbilityCourseDto {
 
     private long id;
-    private Course course;
-    private Ability ability;
+    private CourseDto courseDto;
+    private AbilityDto abilityDto;
 
 }
