@@ -2,14 +2,16 @@ package com.fincons.controller;
 
 
 import com.fincons.dto.AbilityDto;
-import com.fincons.dto.CourseDto;
+import com.fincons.exception.AbilityException;
 import com.fincons.mapper.AbilityMapper;
 import com.fincons.service.ability.IAbilityService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +37,25 @@ public class AbilityController {
                 .data(abilitiesDtoList)
                 .build());
     }
+
+    @GetMapping("${ability.get-by-name}/{name}")
+    public ResponseEntity<ApiResponse<AbilityDto>> getAbilityByName(@PathVariable("name") String name) {
+        try{
+            AbilityDto abilityDto = abilityMapper.mapAbilityToAbilityDto( iAbilityService.findAbilityByName(name));
+            return ResponseEntity.ok().body(ApiResponse.<AbilityDto>builder()
+                    .data(abilityDto)
+                    .build());
+        }catch(AbilityException abilityException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityDto>builder()
+                    .message(abilityException.getMessage())
+                    .build());
+        }
+
+    }
+
+    //TODO UPDATE
+    //TODO DELETE
+
+
 
 }

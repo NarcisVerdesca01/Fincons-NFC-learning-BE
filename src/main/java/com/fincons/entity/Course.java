@@ -49,16 +49,10 @@ public class Course {
     @Column(name = "description",nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
+    private List<CourseLesson> lessons;
 
-    //1. CORSO - LEZIONE N:M
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })// Capire dato che il tutor associa lezione a corso quando elimino
-    @JoinTable(name = "courses_lessons",
-            joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")
-    )
-    private List<Lesson> lessons;
-
-    @OneToMany( mappedBy = "course")
+    @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
     private List<AbilityCourse> abilities;
 
 

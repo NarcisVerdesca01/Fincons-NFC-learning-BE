@@ -1,22 +1,18 @@
 package com.fincons.service.authorization;
 
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.UserDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
-import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
 import com.fincons.utility.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 

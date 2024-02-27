@@ -39,7 +39,7 @@ public class Ability {
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<AbilityUser> courses;
+    private List<AbilityCourse> courses;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
     @JsonIgnore

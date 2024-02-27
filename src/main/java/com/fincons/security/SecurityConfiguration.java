@@ -86,6 +86,9 @@ public class SecurityConfiguration {
     @Value("${ability.base.uri}")
     private String abilityBaseUri;
 
+    @Value("${ability-user.base.uri}")
+    private String abilityUserBaseUri;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -108,6 +111,7 @@ public class SecurityConfiguration {
                          */
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
+                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
                         /*
                         Filtri RU per il tutor
                         TODO TUTOR  RU On Lessons (GetAllLessons getLessonById/ updateLesson)

@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -43,9 +44,9 @@ public class Lesson {
     @Column(name = "title",nullable = false)
     private String title;
 
-    //1. CORSO - LEZIONE N:M
-    @ManyToMany(mappedBy = "lessons", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private List<Course> courses;
+
+    @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
+    private List<CourseLesson> courses;
 
     //3. LEZIONE - QUIZ 1:1
     @OneToOne(cascade = CascadeType.ALL)
