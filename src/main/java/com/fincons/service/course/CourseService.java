@@ -59,27 +59,6 @@ public class CourseService implements ICourseService {
         return courseRepository.save(course);
     }
 
-    private List<Ability> assignAbilities(CourseDto courseDto, List<Ability> abilitiesForNewCourse) {
-        // Per ogni abilità nel DTO dell'utente
-        for (AbilityDto abilityDto : courseDto.getAbilities()) {
-
-            // Controlla se l'abilità esiste già nel repository
-            Ability existingAbility = abilityRepository.findByName(abilityDto.getName());
-
-            if (existingAbility != null) {
-                // Se l'abilità esiste già, associa quella esistente all'utente
-                abilitiesForNewCourse.add(existingAbility);
-
-            } else {
-                // Se l'abilità non esiste, crea una nuova abilità nel repository e associa all'utente
-                Ability newAbility = new Ability();
-                newAbility.setName(abilityDto.getName());
-                abilityRepository.save(newAbility);
-                abilitiesForNewCourse.add(newAbility);
-            }
-        }
-        return abilitiesForNewCourse;
-    }
 
     @Override
     public Course findCourseById(long id)  {
