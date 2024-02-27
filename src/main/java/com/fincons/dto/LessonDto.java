@@ -1,5 +1,6 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fincons.entity.CourseLesson;
 import jakarta.persistence.Column;
@@ -26,13 +27,13 @@ public class LessonDto {
 
     private String title;
 
-    @JsonIgnoreProperties("lessons")
+    @JsonIgnore
     private List<CourseLessonDto> courses;
 
-    @JsonIgnoreProperties("lesson")
+    @JsonIgnore
     private QuizDto quiz;
 
-    @JsonIgnoreProperties("lesson")
+    @JsonIgnore
     private ContentDto content;
 
 

@@ -14,7 +14,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -41,4 +46,28 @@ public class Quiz {
     //3. LEZIONE - QUIZ 1:1
     @OneToOne(mappedBy = "quiz")
     private Lesson lesson;
+
+    //AUDITING
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private LocalDateTime createDate;
+
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModified;
+
+
+    @CreatedBy
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private String createdBy;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private String lastModifiedBy;
 }

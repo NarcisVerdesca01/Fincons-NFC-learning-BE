@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,6 +55,20 @@ public class AbilityController {
 
     }
 
+    @PostMapping("${ability.create}")
+    public ResponseEntity<ApiResponse<AbilityDto>> createAbility(@RequestBody AbilityDto abilityDto){
+        try {
+            AbilityDto abilityDtoToShow = abilityMapper.mapAbilityToAbilityDto(iAbilityService.createAbility(abilityDto));
+            return ResponseEntity.ok().body(ApiResponse.<AbilityDto>builder()
+                    .data(abilityDtoToShow)
+                    .build());
+        }catch( AbilityException abilityException){
+            return ResponseEntity.badRequest().body(ApiResponse.<AbilityDto>builder()
+                            .message(abilityException.getMessage())
+                    .build());
+        }
+
+    }
     //TODO UPDATE
     //TODO DELETE
 
