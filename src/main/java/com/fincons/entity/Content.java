@@ -1,12 +1,6 @@
 package com.fincons.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -30,11 +24,11 @@ public class Content {
     @Column(name = "typeContent")
     private String typeContent;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "content", columnDefinition = "VARBINARY(MAX)")
+    private byte[] content;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(mappedBy = "content")
+    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
     private Lesson lesson;
 
 

@@ -80,6 +80,11 @@ public class SecurityConfiguration {
     @Value("${course.get-all-courses}")
     private String getAllCoursesUri;
 
+    @Value("${lesson.base.uri}")
+    private String lessonsBaseUri;
+
+    @Value("${content.base.uri}")
+    private String contentBaseUri;
     @Value("${course.getDedicatedCourses}")
     private String getDedicatedCourses;
 
@@ -98,12 +103,16 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
                         .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO Da rimuovere in produzione
                         .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
+                        .requestMatchers(applicationContext + lessonsBaseUri + "/**").authenticated()
+                        .requestMatchers(applicationContext + contentBaseUri + "/**").authenticated()
+
                         /*
                          Filtri CRUD per l'amministratore:
                          applicationContext = /nfc-learning
                          courseBaseUri = v1/course
                          */
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
+
                         /*
                         Filtri RU per il tutor
                         TODO TUTOR  RU On Lessons (GetAllLessons getLessonById/ updateLesson)

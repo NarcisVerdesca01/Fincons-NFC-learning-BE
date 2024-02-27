@@ -14,7 +14,7 @@ public class LessonMapper {
     public LessonDto mapLessonToLessonDto(Lesson lesson){
         return modelMapper.map(lesson, LessonDto.class);
     }
-    public Lesson mapLessonDtoToCourseEntity(LessonDto lessonDto){
+    public Lesson mapLessonDtoToLessonEntity(LessonDto lessonDto){
         return modelMapper.map(lessonDto, Lesson.class);
     }
 }

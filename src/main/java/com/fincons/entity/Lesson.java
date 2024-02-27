@@ -1,5 +1,8 @@
 package com.fincons.entity;
 
+import com.fincons.dto.ContentDto;
+import com.fincons.dto.CourseDto;
+import com.fincons.dto.QuizDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,7 +56,7 @@ public class Lesson {
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "id_content", referencedColumnName = "id")
     private Content content;
 
@@ -82,4 +85,13 @@ public class Lesson {
     @Column(insertable = false)
     private String lastModifiedBy;
 
+    public Lesson(Lesson lesson) {
+        this.title= lesson.getTitle();
+        this.courses= lesson.getCourses();
+        this.quiz= lesson.getQuiz();
+        this.content= lesson.getContent();
+        this.createDate= lesson.getCreateDate();
+        this.lastModified=lesson.getLastModified();
+        this.lastModifiedBy= lesson.getLastModifiedBy();
+    }
 }
