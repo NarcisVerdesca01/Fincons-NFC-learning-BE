@@ -1,6 +1,9 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fincons.entity.AbilityCourse;
+import com.fincons.entity.CourseLesson;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +30,11 @@ public class CourseDto {
 
     private String description;
 
-    @JsonIgnoreProperties("courses")
-    private List<LessonDto> lessons;
+    @JsonIgnore
+    private List<CourseLessonDto> lessons;
 
-    @JsonIgnoreProperties("courses")
-    private List<AbilityDto> abilities;
+    @JsonIgnore
+    private List<AbilityCourseDto> abilities;
 
     private LocalDateTime createDate;
 

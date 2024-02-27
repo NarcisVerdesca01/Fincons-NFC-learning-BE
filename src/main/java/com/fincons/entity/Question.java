@@ -39,7 +39,7 @@ public class Question {
     private String correctAnswer;
 
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più rispostesbagliate
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL) //
     private List<WrongAnswer> wrongAnswer;
 
     //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande

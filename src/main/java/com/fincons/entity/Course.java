@@ -1,5 +1,7 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,22 +51,16 @@ public class Course {
     @Column(name = "description",nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CourseLesson> lessons;
 
-    //1. CORSO - LEZIONE N:M
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })// Capire dato che il tutor associa lezione a corso quando elimino
-    @JoinTable(name = "courses_lessons",
-            joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_lesson", referencedColumnName = "id")
-    )
-    private List<Lesson> lessons;
+    @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbilityCourse> abilities;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "courses_abilities", //Requisiti del corso
-            joinColumns = @JoinColumn(name = "id_course", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_abilities", referencedColumnName = "id")
-    )
-    private List<Ability> abilities;
 
+    //AUDITING
     @CreatedDate
     @Column(
             nullable = false,
