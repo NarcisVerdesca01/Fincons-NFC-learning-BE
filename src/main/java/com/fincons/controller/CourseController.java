@@ -102,7 +102,6 @@ public class CourseController {
     }
 
 
-    /*
      @PutMapping("${course.update}/{id}")
     public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable long id, @RequestBody CourseDto courseDto) {
         try {
@@ -117,7 +116,6 @@ public class CourseController {
         }
      }
 
-     */
 
 
 

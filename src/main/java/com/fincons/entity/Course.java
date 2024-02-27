@@ -47,6 +47,9 @@ public class Course {
     @Column(name = "name",nullable = false)
     private String name;
 
+    @Column(name ="background_image")
+    private String backgroundImage;
+
 
     @Column(name = "description",nullable = false)
     private String description;
@@ -58,6 +61,8 @@ public class Course {
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AbilityCourse> abilities;
+
+
 
 
     //AUDITING
