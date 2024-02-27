@@ -1,5 +1,6 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fincons.entity.Ability;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,10 @@ public class UserDto {
 
     private LocalDate birthDate;
 
-    @JsonIgnoreProperties("users")
+    @JsonIgnore
     private Set<RoleDto> roles;
 
+    @JsonIgnore
     private List<AbilityUserDto> abilities;
 
 

@@ -13,6 +13,6 @@ import lombok.Setter;
 public class CourseLessonDto {
 
     private long id;
-    private CourseDto courseDto;
-    private LessonDto lessonDto;
+    private CourseDto course;
+    private LessonDto lesson;
 }

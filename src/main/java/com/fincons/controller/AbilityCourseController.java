@@ -25,7 +25,7 @@ public class AbilityCourseController {
     private IAbilityCourseService iAbilityCourseService;
 
     private AbilityCourseMapper abilityCourseMapper;
-/*
+
     @GetMapping("${ability-course.list}")
     public ResponseEntity<ApiResponse<List<AbilityCourseDto>>> getAllAbilityCourse(){
 
@@ -45,7 +45,7 @@ public class AbilityCourseController {
                 .build());
     }
 
- */
+
 
     //TODO DELETE
     //TODO UPDATE

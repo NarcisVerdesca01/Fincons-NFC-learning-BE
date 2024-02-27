@@ -14,7 +14,7 @@ import lombok.Setter;
 public class AbilityUserDto {
 
     private long id;
-    private UserDto userDto;
-    private AbilityDto abilityDto;
+    private UserDto user;
+    private AbilityDto ability;
 
 }

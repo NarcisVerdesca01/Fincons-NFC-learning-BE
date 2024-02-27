@@ -1,6 +1,8 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class AbilityCourse {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "courseId")
     private Course course;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "abilityId")
     private Ability ability;

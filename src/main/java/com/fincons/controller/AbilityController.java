@@ -55,7 +55,7 @@ public class AbilityController {
 
     }
 
-    @PostMapping("{ability.create}")
+    @PostMapping("${ability.create}")
     public ResponseEntity<ApiResponse<AbilityDto>> createAbility(@RequestBody AbilityDto abilityDto){
         try {
             AbilityDto abilityDtoToShow = abilityMapper.mapAbilityToAbilityDto(iAbilityService.createAbility(abilityDto));
@@ -63,7 +63,9 @@ public class AbilityController {
                     .data(abilityDtoToShow)
                     .build());
         }catch( AbilityException abilityException){
-
+            return ResponseEntity.badRequest().body(ApiResponse.<AbilityDto>builder()
+                            .message(abilityException.getMessage())
+                    .build());
         }
 
     }

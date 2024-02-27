@@ -21,11 +21,12 @@ public class AbilityDto {
 
     private String name;
 
-    //@JsonIgnoreProperties("abilities")
+
+    @JsonIgnore
+    private List<AbilityCourseDto> courses;
+
     @JsonIgnore
     private List<AbilityUserDto> users;
 
-    //@JsonIgnoreProperties("abilities")
-    @JsonIgnore
-    private List<AbilityCourseDto> courses;
+
 }
