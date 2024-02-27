@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -112,10 +113,11 @@ public class SecurityConfiguration {
                          applicationContext = /nfc-learning
                          courseBaseUri = v1/course
                          */
+                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
+
                         /*
                         Filtri RU per il tutor
                         TODO TUTOR  RU On Lessons (GetAllLessons getLessonById/ updateLesson)

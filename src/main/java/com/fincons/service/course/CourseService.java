@@ -5,13 +5,17 @@ import com.fincons.dto.AbilityDto;
 import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.Ability;
+import com.fincons.entity.AbilityCourse;
+import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
 import com.fincons.entity.User;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.mapper.AbilityMapper;
+import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
+import com.fincons.repository.AbilityUserRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService implements ICourseService {
@@ -34,6 +40,12 @@ public class CourseService implements ICourseService {
     private AbilityRepository abilityRepository;
 
     @Autowired
+    private AbilityUserRepository abilityUserRepository;
+
+    @Autowired
+    private AbilityCourseRepository abilityCourseRepository;
+
+    @Autowired
     private AbilityMapper abilityMapper;
 
     @Override
@@ -45,10 +57,10 @@ public class CourseService implements ICourseService {
     @Override
     public Course createCourse(CourseDto courseDto) throws CourseException {
 
-        if(StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription())){
+        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription())) {
             throw new CourseException("Name, description or requirements not present");
         }
-        if(courseRepository.existsByName(courseDto.getName())){
+        if (courseRepository.existsByName(courseDto.getName())) {
             throw new CourseException(CourseException.courseAlreadyExist());
         }
 
@@ -61,7 +73,7 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public Course findCourseById(long id)  {
+    public Course findCourseById(long id) {
         if (!courseRepository.existsById(id)) {
             throw new ResourceNotFoundException("The course does not exist!");
         }
@@ -79,39 +91,56 @@ public class CourseService implements ICourseService {
         courseRepository.deleteById(id);
     }
 
+    @Override
+    public List<Course> findDedicatedCourses(String email) throws UserDataException {
+        if (!userRepository.existsByEmail(email)) {
+            throw new UserDataException("User does not exist");
+        }
+        User user = userRepository.findByEmail(email);
+        boolean isUserAdmin = user.getRoles()
+                .stream()
+                .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+
+        if(isUserAdmin){
+            return courseRepository.findAll();
+        }
+
+        //List of ability-course
+        List<AbilityCourse> abilityCourses = abilityCourseRepository.findAll();
+
+        //List of ability-user
+        List<AbilityUser> abilityUsers = abilityUserRepository.findAll();
+
+        //List of Interested user
+        List<AbilityUser> abilitiesOfInterestedUser = abilityUsers
+                .stream()
+                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(email))
+                .toList();
+
+
+        //Name of Ability of User
+        List<String> abilityNameOfInterestedUser = abilitiesOfInterestedUser
+                .stream()
+                .map(a -> a.getAbility().getName())
+                .toList();
+
+        List<AbilityCourse> dedicatedAbilityCourses = abilityCourses
+                .stream()
+                .filter(abilityCourse -> abilityNameOfInterestedUser.contains(abilityCourse.getAbility().getName()))
+                .toList();
+
+        List<Course> dedicatedCourses = dedicatedAbilityCourses
+                .stream()
+                .map(AbilityCourse::getCourse)
+                .toList();
+
+        return dedicatedCourses;
+    }
+
 }
 
-    /*
-
-    @Override
-    public Course updateCourse(long id, CourseDto courseDto) throws CourseException {
-
-        if(!courseRepository.existsById(id)){
-            throw new CourseException(CourseException.courseDosNotExist());
-        }
-        if(StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || courseDto.getAbilities()==null){
-            throw new CourseException("Name, description or requirements not present");
-        }
-        if(courseRepository.existsByName(courseDto.getName())){
-            throw new CourseException(CourseException.courseAlreadyExist());
-        }
-
-        Course existingCourse = courseRepository.findById(id).orElseThrow(() -> new CourseException(CourseException.courseDosNotExist()));
-
-        if(courseDto.getName()!= null ){
-            existingCourse.setName(courseDto.getName());
-        }
-        if (courseDto.getDescription() != null) {
-            existingCourse.setDescription(courseDto.getDescription());
-        }
-
-        if (courseDto.getAbilities() != null) {
-            existingCourse.setAbilities(courseDto.getAbilities());
-        }
 
 
-        return null;
-    }
-*/
+
 
 
