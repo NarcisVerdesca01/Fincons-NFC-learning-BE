@@ -57,7 +57,7 @@ public class CourseService implements ICourseService {
     @Override
     public Course createCourse(CourseDto courseDto) throws CourseException {
 
-        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
+        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || courseDto.getBackgroundImage().length==0) {
             throw new CourseException("Name, description or requirements not present");
         }
         if (courseRepository.existsByName(courseDto.getName())) {

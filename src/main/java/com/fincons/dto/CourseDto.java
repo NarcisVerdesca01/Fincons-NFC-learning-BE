@@ -28,7 +28,7 @@ public class CourseDto {
 
     private String name;
 
-    private String backgroundImage;
+    private byte[] backgroundImage;
 
     private String description;
 

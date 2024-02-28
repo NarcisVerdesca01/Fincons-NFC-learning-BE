@@ -47,8 +47,8 @@ public class Course {
     @Column(name = "name",nullable = false)
     private String name;
 
-    @Column(name ="background_image")
-    private String backgroundImage;
+    @Column(name ="background_image", columnDefinition = "LONGBLOB")
+    private byte[] backgroundImage;
 
 
     @Column(name = "description",nullable = false)
