@@ -39,7 +39,7 @@ public class LessonController {
 
     @GetMapping("${course.get-all-lessons}")
     public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessons(){
-        List<LessonDto> lessonDtoList= iLessonService.findAllCourses()
+        List<LessonDto> lessonDtoList= iLessonService.findAllLessons()
                 .stream()
                 .map(s->lessonMapper.mapLessonToLessonDto(s))
                 .toList();
@@ -47,5 +47,7 @@ public class LessonController {
                 .data(lessonDtoList)
                 .build());
     }
+
+
 
 }

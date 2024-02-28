@@ -5,5 +5,5 @@ import com.fincons.entity.Lesson;
 import java.util.List;
 
 public interface ILessonService {
-    List<Lesson> findAllCourses();
+    List<Lesson> findAllLessons();
 }

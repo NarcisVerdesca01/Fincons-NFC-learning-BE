@@ -11,7 +11,7 @@ public class LessonService implements ILessonService{
     private LessonRepository lessonRepository;
 
     @Override
-    public List<Lesson> findAllCourses() {
+    public List<Lesson> findAllLessons() {
         return lessonRepository.findAll();
     }
 
