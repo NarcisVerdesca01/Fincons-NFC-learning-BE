@@ -1,6 +1,9 @@
 package com.fincons.controller;
 
+import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
+import com.fincons.exception.CourseException;
+import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.LessonMapper;
 import com.fincons.service.lesson.ILessonService;
@@ -8,10 +11,14 @@ import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +63,33 @@ public class LessonController {
         }
     }
 
+    @PostMapping("${lesson.add}")
+    public ResponseEntity<ApiResponse<LessonDto>> createLesson(@RequestBody LessonDto lessonDto){
+        try {
+            LessonDto lessonDtoToShow = lessonMapper.mapLessonToLessonDto(iLessonService.createLesson(lessonDto));
+            return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
+                    .data(lessonDtoToShow)
+                    .build());
+        } catch (LessonException lessonException) {
+            return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
+                            .message(lessonException.getMessage())
+                    .build());
+        }
+    }
+
+    @PutMapping("${lesson.update}/{id}")
+    public ResponseEntity<ApiResponse<LessonDto>> updateLesson(@PathVariable long id, @RequestBody LessonDto lessonDto) {
+        try {
+            LessonDto updatedLessoneDto = lessonMapper.mapLessonToLessonDto(iLessonService.updateLesson(id, lessonDto));
+            return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
+                    .data(updatedLessoneDto)
+                    .build());
+        } catch (ResourceNotFoundException | LessonException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
 
 }
