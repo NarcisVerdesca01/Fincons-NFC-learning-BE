@@ -93,6 +93,9 @@ public class SecurityConfiguration {
     @Value("${ability-course.base.uri}")
     private String abilityCourseBaseUri;
 
+    @Value("${lesson.base.uri}")
+    private String lessonBaseUri;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -108,33 +111,15 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
                         .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO Da rimuovere in produzione
                         .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
-                        /*
-                         Filtri CRUD per l'amministratore:
-                         applicationContext = /nfc-learning
-                         courseBaseUri = v1/course
-                         */
                         .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
-
-                        /*
-                        Filtri RU per il tutor
-                        TODO TUTOR  RU On Lessons (GetAllLessons getLessonById/ updateLesson)
-                        Filtri CRUD su Quiz
-                        TODO TUTOR CRUD On Quiz
-                        TODO TUTOR Associa Lezioni a corsi
-                        TODO TUTOR Associa Quiz a lezione
-                        TODO TUTOR Associa Quiz a Studente
-                        TODO STUDENT Read on Corsi, Lesson, Quiz afferenti al proprio profilo tecnico
-                        TODO STUDENT CRUD su Risposte Quiz a lui associate
-                         */
+                        .requestMatchers(applicationContext + lessonBaseUri + "/**").hasRole("ADMIN")
 
 
 
-                        //Filtri CRUD per il tutor:
-                //a. Controllo per l'operazione di lettura (Read)
-                //b. Controllo per l'operazione di aggiornamento (Update)
+
 
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());

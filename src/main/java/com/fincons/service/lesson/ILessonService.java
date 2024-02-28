@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ILessonService {
     List<Lesson> findAllLessons();
+
+    Lesson findLessonById(long id);
 }
