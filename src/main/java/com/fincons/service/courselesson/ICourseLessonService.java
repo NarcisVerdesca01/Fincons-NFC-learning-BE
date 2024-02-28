@@ -13,5 +13,7 @@ public interface ICourseLessonService {
 
     CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws CourseException, LessonException, CourseLessonException;
 
-    CourseLesson updateCourseLesson(int id, CourseLessonDto courseLessonDto);
+    CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws CourseLessonException, CourseException, LessonException;
+
+    void deleteCourseLesson(long id) throws CourseLessonException;
 }

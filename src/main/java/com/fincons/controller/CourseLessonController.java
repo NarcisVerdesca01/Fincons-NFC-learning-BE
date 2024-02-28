@@ -10,8 +10,10 @@ import com.fincons.service.courselesson.ICourseLessonService;
 import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,17 +60,36 @@ public class CourseLessonController {
     }
 
     @PutMapping("${course-lesson.update}/{id}")
-    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable int id, @RequestBody CourseLessonDto courseLessonDto){
-
-
-
-            CourseLessonDto courseLessonDtoToShow = courseLessonMapper.mapCourseLessonToCourseLessonDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
+    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto) throws CourseLessonException, LessonException, CourseException {
+        try{
+            CourseLessonDto courseLessonDtoToShow =
+                    courseLessonMapper.mapCourseLessonToCourseLessonDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
 
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
 
+        }catch(CourseLessonException | LessonException | CourseException exception ){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(exception.getMessage())
+                    .build());
+        }
     }
+
+    @DeleteMapping("${course-lesson.delete}/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) throws CourseLessonException {
+        try{
+            iCourseLessonService.deleteCourseLesson(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .message("Deleted relationship between course and lesson chosen")
+                    .build());
+        }catch(CourseLessonException courseLessonException){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(courseLessonException.getMessage())
+                    .build());
+        }
+    }
+
 
 
 

@@ -45,8 +45,35 @@ public class CourseLessonService implements ICourseLessonService {
     }
 
     @Override
-    public CourseLesson updateCourseLesson(int id, CourseLessonDto courseLessonDto) {
+    public CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws CourseLessonException, CourseException, LessonException {
 
-        return null;
+        CourseLesson existingCourseLesson = courseLessonRepository.findById(id)
+                .orElseThrow(()-> new CourseLessonException("Course-Lesson does not exist"));
+
+        Course existingCourseToAssociate = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new CourseException("Course does not exist"));
+        Lesson existingLessonToAddAssociate = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new LessonException("Lesson does not exist"));
+
+        if(courseLessonRepository.existsByCourseAndLesson(existingCourseToAssociate,existingLessonToAddAssociate)){
+            throw new CourseLessonException(CourseLessonException.duplicateException());
+        }
+
+        existingCourseLesson.setCourse(existingCourseToAssociate);
+        existingCourseLesson.setLesson(existingLessonToAddAssociate);
+
+        return courseLessonRepository.save(existingCourseLesson);
     }
+
+    @Override
+    public void deleteCourseLesson(long id) throws CourseLessonException {
+
+        if (!courseLessonRepository.existsById(id)) {
+            throw new CourseLessonException("The course-lesson does not exist") ;
+        }
+
+        courseLessonRepository.deleteById(id);
+    }
+
+
+
+
 }
