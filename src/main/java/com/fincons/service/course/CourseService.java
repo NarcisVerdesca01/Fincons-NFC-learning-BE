@@ -1,10 +1,6 @@
 package com.fincons.service.course;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.CourseDto;
-import com.fincons.dto.LessonDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
@@ -21,11 +17,8 @@ import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 public class CourseService implements ICourseService {
@@ -57,7 +50,7 @@ public class CourseService implements ICourseService {
     @Override
     public Course createCourse(CourseDto courseDto) throws CourseException {
 
-        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || courseDto.getBackgroundImage().length==0) {
+        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
             throw new CourseException("Name, description or requirements not present");
         }
         if (courseRepository.existsByName(courseDto.getName())) {
@@ -88,7 +81,6 @@ public class CourseService implements ICourseService {
             throw new ResourceNotFoundException("The course does not exist");
         }
 
-        // Elimina il corso
         courseRepository.deleteById(id);
     }
 
@@ -135,8 +127,10 @@ public class CourseService implements ICourseService {
         Course courseToModify = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseException.courseDosNotExist()));
 
-        if (courseDto.getName() != null) {
+        if (courseDto.getName() != null && !courseRepository.existsByName(courseDto.getName())) {
             courseToModify.setName(courseDto.getName());
+        }else if(courseRepository.existsByName(courseDto.getName())){
+            throw new CourseException(CourseException.courseAlreadyExist());
         }
 
         if (courseDto.getBackgroundImage() != null) {
