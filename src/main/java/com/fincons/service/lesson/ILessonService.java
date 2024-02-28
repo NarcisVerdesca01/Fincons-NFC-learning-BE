@@ -14,4 +14,6 @@ public interface ILessonService {
     Lesson createLesson(LessonDto lessonDto) throws LessonException;
 
     Lesson updateLesson(long id, LessonDto lessonDto) throws LessonException;
+
+    void deleteLesson(long id) throws LessonException;
 }
