@@ -67,6 +67,7 @@ public class CourseService implements ICourseService {
         Course course = new Course();
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
+        course.setBackgroundImage(courseDto.getBackgroundImage());
 
         return courseRepository.save(course);
     }
@@ -100,25 +101,18 @@ public class CourseService implements ICourseService {
         boolean isUserAdmin = user.getRoles()
                 .stream()
                 .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
-
         if(isUserAdmin){
             return courseRepository.findAll();
         }
-
-        //List of ability-course
         List<AbilityCourse> abilityCourses = abilityCourseRepository.findAll();
 
-        //List of ability-user
         List<AbilityUser> abilityUsers = abilityUserRepository.findAll();
 
-        //List of Interested user
         List<AbilityUser> abilitiesOfInterestedUser = abilityUsers
                 .stream()
                 .filter( abilityUser -> abilityUser.getUser().getEmail().equals(email))
                 .toList();
 
-
-        //Name of Ability of User
         List<String> abilityNameOfInterestedUser = abilitiesOfInterestedUser
                 .stream()
                 .map(a -> a.getAbility().getName())
@@ -129,13 +123,33 @@ public class CourseService implements ICourseService {
                 .filter(abilityCourse -> abilityNameOfInterestedUser.contains(abilityCourse.getAbility().getName()))
                 .toList();
 
-        List<Course> dedicatedCourses = dedicatedAbilityCourses
+        return dedicatedAbilityCourses
                 .stream()
                 .map(AbilityCourse::getCourse)
                 .toList();
-
-        return dedicatedCourses;
     }
+
+    @Override
+    public Course updateCourse(long id, CourseDto courseDto) throws CourseException {
+
+        Course courseToModify = courseRepository.findById(id)
+                .orElseThrow(() -> new CourseException(CourseException.courseDosNotExist()));
+
+        if (courseDto.getName() != null) {
+            courseToModify.setName(courseDto.getName());
+        }
+
+        if (courseDto.getBackgroundImage() != null) {
+            courseToModify.setBackgroundImage(courseDto.getBackgroundImage());
+        }
+
+        if (courseDto.getDescription() != null) {
+            courseToModify.setDescription(courseDto.getDescription());
+        }
+
+        return courseRepository.save(courseToModify);
+    }
+
 
 }
 

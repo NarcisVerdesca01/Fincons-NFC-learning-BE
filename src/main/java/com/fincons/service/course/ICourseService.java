@@ -20,6 +20,7 @@ public interface ICourseService {
 
     List<Course> findDedicatedCourses(String email) throws UserDataException;
 
+    Course updateCourse(long id, CourseDto courseDto) throws CourseException;
 
-    //Course updateCourse(long id, CourseDto courseDto) throws CourseException;
+
 }
