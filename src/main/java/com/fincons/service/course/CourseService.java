@@ -135,17 +135,14 @@ public class CourseService implements ICourseService {
         Course courseToModify = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseException(CourseException.courseDosNotExist()));
 
-        // Update name
         if (courseDto.getName() != null) {
             courseToModify.setName(courseDto.getName());
         }
 
-        // Update background image
         if (courseDto.getBackgroundImage() != null) {
             courseToModify.setBackgroundImage(courseDto.getBackgroundImage());
         }
 
-        // Update description
         if (courseDto.getDescription() != null) {
             courseToModify.setDescription(courseDto.getDescription());
         }
