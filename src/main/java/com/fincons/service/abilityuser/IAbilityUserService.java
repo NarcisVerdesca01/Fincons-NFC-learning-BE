@@ -14,4 +14,6 @@ public interface IAbilityUserService {
     AbilityUser getAbilityUserById(long id);
 
     AbilityUser updateAbilityUser(long id, AbilityUserDto abilityUserDto) throws DuplicateException;
+
+    void deleteAbilityUser(long id);
 }

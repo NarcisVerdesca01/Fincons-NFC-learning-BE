@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,6 +92,20 @@ public class AbilityUserController {
         } catch (DuplicateException duplicateException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<AbilityUserDto>builder()
                     .message(duplicateException.getMessage())
+                    .build());
+        }
+    }
+
+    @DeleteMapping("${ability-user.delete}/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteAbilityUser(@PathVariable long id) {
+        try{
+            iAbilityUserService.deleteAbilityUser(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .message("Deleted relationship between ability  and user chosen")
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
                     .build());
         }
     }

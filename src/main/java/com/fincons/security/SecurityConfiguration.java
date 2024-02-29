@@ -109,7 +109,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
-                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO Da rimuovere in produzione
+                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO To remove
                         .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
                         .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")

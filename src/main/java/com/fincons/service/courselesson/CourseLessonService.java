@@ -7,6 +7,7 @@ import com.fincons.entity.Lesson;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.LessonException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.LessonRepository;
@@ -73,7 +74,11 @@ public class CourseLessonService implements ICourseLessonService {
         courseLessonRepository.deleteById(id);
     }
 
-
+    @Override
+    public CourseLesson getCourseLessonById(long id) {
+        return courseLessonRepository
+                .findById(id).orElseThrow(()-> new ResourceNotFoundException("The Course-Lesson association does not exist"));
+    }
 
 
 }
