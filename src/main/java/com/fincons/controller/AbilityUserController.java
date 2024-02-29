@@ -1,6 +1,7 @@
 package com.fincons.controller;
 
 
+import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
 import com.fincons.dto.CourseLessonDto;
@@ -67,12 +68,22 @@ public class AbilityUserController {
 
 
     @PostMapping("${ability-user.add}")
-    public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(@RequestBody AbilityUserDto abilityUserDto ){
-        AbilityUserDto abilityUserDtoToShow = abilityUserMapper
-                .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(abilityUserDto));
-        return ResponseEntity.ok().body(ApiResponse.<AbilityUserDto>builder()
-                .data(abilityUserDtoToShow)
-                .build());
+    public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(@RequestBody AbilityUserDto abilityUserDto ) {
+        try {
+            AbilityUserDto abilityUserDtoToShow = abilityUserMapper
+                    .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(abilityUserDto));
+            return ResponseEntity.ok().body(ApiResponse.<AbilityUserDto>builder()
+                    .data(abilityUserDtoToShow)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.badRequest().body(ApiResponse.<AbilityUserDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<AbilityUserDto>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
+        }
     }
 
     //TODO Delete

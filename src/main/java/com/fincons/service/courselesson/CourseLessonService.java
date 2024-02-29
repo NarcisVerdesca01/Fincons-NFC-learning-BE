@@ -6,6 +6,7 @@ import com.fincons.entity.CourseLesson;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.CourseLessonRepository;
@@ -33,13 +34,13 @@ public class CourseLessonService implements ICourseLessonService {
     }
 
     @Override
-    public CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws CourseException, LessonException, CourseLessonException {
+    public CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws DuplicateException {
 
-        Course existingCourse = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new CourseException("Course does not exist"));
-        Lesson existingLesson = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new LessonException("Lesson does not exist"));
+        Course existingCourse = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
+        Lesson existingLesson = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new ResourceNotFoundException("Lesson does not exist"));
 
         if(courseLessonRepository.existsByCourseAndLesson(existingCourse,existingLesson)){
-            throw new CourseLessonException(CourseLessonException.duplicateException());
+            throw new DuplicateException("Course-Lesson association already exists");
         }
         CourseLesson courseLessonToSave = new CourseLesson(existingCourse,existingLesson);
         return courseLessonRepository.save(courseLessonToSave);

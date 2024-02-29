@@ -39,5 +39,8 @@ public class AbilityUser {
     @JoinColumn(name = "abilityId")
     private Ability ability;
 
-
+    public AbilityUser(User user, Ability ability) {
+        this.user = user;
+        this.ability = ability;
+    }
 }

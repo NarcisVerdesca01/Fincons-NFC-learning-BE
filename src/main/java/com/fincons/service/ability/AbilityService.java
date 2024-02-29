@@ -51,7 +51,7 @@ public class AbilityService implements IAbilityService{
         if(abilityDto.getName().isBlank()){
             throw new IllegalArgumentException("The name of ability can't be empty");
         }
-        if(abilityRepository.existsByName(abilityDto.getName())){
+        if(abilityRepository.existsByNameIgnoreCase(abilityDto.getName())){
             throw new DuplicateException("The name of ability already exists");
         }
         Ability abilityToSave = abilityMapper.mapDtoToAbility(abilityDto);

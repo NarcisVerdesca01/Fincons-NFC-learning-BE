@@ -9,7 +9,7 @@ import java.util.List;
 public interface IAbilityUserService {
     List<AbilityUser> getAllAbilityUser();
 
-    AbilityUser addAbilityUser(AbilityUserDto abilityUserDto);
+    AbilityUser addAbilityUser(AbilityUserDto abilityUserDto) throws DuplicateException;
 
     AbilityUser getAbilityUserById(long id);
 

@@ -5,6 +5,7 @@ import com.fincons.dto.CourseLessonDto;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.CourseLessonMapper;
@@ -54,9 +55,13 @@ public class CourseLessonController {
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
-        }catch(CourseException | LessonException | CourseLessonException  exception){
+        }catch(ResourceNotFoundException resourceNotFoundException){
             return ResponseEntity.badRequest().body(ApiResponse.<CourseLessonDto>builder()
-                    .message(exception.getMessage())
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }

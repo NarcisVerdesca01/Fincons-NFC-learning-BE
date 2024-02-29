@@ -37,4 +37,9 @@ public class AbilityCourse {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abilityId")
     private Ability ability;
+
+    public AbilityCourse(Course course, Ability ability) {
+        this.course = course;
+        this.ability = ability;
+    }
 }

@@ -8,4 +8,6 @@ public interface AbilityRepository extends JpaRepository<Ability, Long> {
     Ability findByName(String nameOfAbility);
 
     boolean existsByName(String name);
+
+    boolean existsByNameIgnoreCase(String name);
 }
