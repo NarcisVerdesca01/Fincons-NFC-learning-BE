@@ -40,10 +40,10 @@ public class LessonService implements ILessonService{
     public Lesson createLesson(LessonDto lessonDto) throws LessonException {
 
         if(StringUtils.isBlank(lessonDto.getTitle())){
-            throw new LessonException("Title required");
+            throw new IllegalArgumentException("Title required");
         }
         if(lessonRepository.existsByTitle(lessonDto.getTitle())){
-            throw new LessonException("Lesson with this title already exists");
+            throw new IllegalArgumentException("Lesson with this title already exists");
         }
         Lesson lesson = new Lesson();
         lesson.setTitle(lessonDto.getTitle());

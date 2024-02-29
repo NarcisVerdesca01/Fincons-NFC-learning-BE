@@ -101,6 +101,9 @@ public class SecurityConfiguration {
     @Value("${lesson.base.uri}")
     private String lessonBaseUri;
 
+    @Value("${course-lesson.base.uri}")
+    private String courseLessonBaseUri;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -125,14 +128,30 @@ public class SecurityConfiguration {
                          courseBaseUri = v1/course
                          */
                         .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
+
+                        //ADMIN CRUD on Courses and Lessons
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + lessonBaseUri + "/**").hasRole("ADMIN")
 
+                        //TUTOR RU on Lessons
+                        .requestMatchers(HttpMethod.GET, applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT,applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
+                        .requestMatchers(applicationContext + courseLessonBaseUri + "/**").hasRole("TUTOR")
 
+                        //TODO -  Tutor CRUD on Quiz
+                        //TODO - Associate Quiz to Student
+                        //ADMIN creates abilities and associates with Course
+                        .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
+                        .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
 
+                        //STUDENT associates him with abilities
+                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
 
+                        //DEDICATED COURSES Entry requirements to Course for Technical profile
+                        .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
+
+                        //TODO STUDENT Read on Courses, Lessons, Quiz related to its technical profile
+                        //TODO STUDENT CRUD on associated Quiz Answers
 
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
