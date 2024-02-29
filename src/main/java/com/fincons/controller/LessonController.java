@@ -1,8 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.LessonMapper;
@@ -11,7 +9,6 @@ import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
