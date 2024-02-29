@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,20 @@ public class AbilityController {
 
     }
 
+    @GetMapping("${ability.get-by-id}/{id}")
+    public ResponseEntity<ApiResponse<AbilityDto>> getAbilityById(@PathVariable("id") long id) {
+        try{
+            AbilityDto abilityDto = abilityMapper.mapAbilityToAbilityDto( iAbilityService.findAbilityById(id));
+            return ResponseEntity.ok().body(ApiResponse.<AbilityDto>builder()
+                    .data(abilityDto)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
+
     @PostMapping("${ability.create}")
     public ResponseEntity<ApiResponse<AbilityDto>> createAbility(@RequestBody AbilityDto abilityDto){
         try {
@@ -96,8 +111,19 @@ public class AbilityController {
         }
     }
 
-
-    //TODO DELETE
+    @DeleteMapping("${ability.delete}/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteAbility(@PathVariable long id) {
+        try {
+            iAbilityService.deleteAbility(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The ability has been successfully deleted!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
 
 

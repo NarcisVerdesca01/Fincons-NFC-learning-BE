@@ -73,4 +73,21 @@ public class AbilityService implements IAbilityService{
         return abilityRepository.save(abilityToModify);
 
     }
+
+    @Override
+    public void deleteAbility(long id) {
+        if (!abilityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The ability does not exist");
+        }
+
+        abilityRepository.deleteById(id);
+    }
+
+    @Override
+    public Ability findAbilityById(long id) {
+        if (!abilityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The ability does not exist!");
+        }
+        return abilityRepository.findById(id).orElse(null);
+    }
 }
