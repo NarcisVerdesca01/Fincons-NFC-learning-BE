@@ -17,4 +17,8 @@ public interface IAbilityService {
     Ability createAbility(AbilityDto abilityDto) throws DuplicateException;
 
     Ability updateAbility(long id, AbilityDto abilityDto) throws DuplicateException;
+
+    void deleteAbility(long id);
+
+    Ability findAbilityById(long id);
 }
