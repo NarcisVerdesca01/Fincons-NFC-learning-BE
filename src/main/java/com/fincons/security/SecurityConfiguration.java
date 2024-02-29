@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -97,6 +98,9 @@ public class SecurityConfiguration {
     @Value("${ability-course.base.uri}")
     private String abilityCourseBaseUri;
 
+    @Value("${lesson.base.uri}")
+    private String lessonBaseUri;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -110,7 +114,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
-                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO Da rimuovere in produzione
+                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO To remove
                         .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
                         .requestMatchers(applicationContext + lessonsBaseUri + "/**").authenticated()
                         .requestMatchers(applicationContext + contentBaseUri + "/**").authenticated()
@@ -120,27 +124,15 @@ public class SecurityConfiguration {
                          applicationContext = /nfc-learning
                          courseBaseUri = v1/course
                          */
+                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
                         .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
                         .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
-                        /*
-                        Filtri RU per il tutor
-                        TODO TUTOR  RU On Lessons (GetAllLessons getLessonById/ updateLesson)
-                        Filtri CRUD su Quiz
-                        TODO TUTOR CRUD On Quiz
-                        TODO TUTOR Associa Lezioni a corsi
-                        TODO TUTOR Associa Quiz a lezione
-                        TODO TUTOR Associa Quiz a Studente
-                        TODO STUDENT Read on Corsi, Lesson, Quiz afferenti al proprio profilo tecnico
-                        TODO STUDENT CRUD su Risposte Quiz a lui associate
-                         */
+                        .requestMatchers(applicationContext + lessonBaseUri + "/**").hasRole("ADMIN")
 
 
 
-                        //Filtri CRUD per il tutor:
-                //a. Controllo per l'operazione di lettura (Read)
-                //b. Controllo per l'operazione di aggiornamento (Update)
+
 
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());

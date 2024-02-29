@@ -16,7 +16,6 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Getter
 @Setter
 @Entity
@@ -28,11 +27,16 @@ public class CourseLesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId")
     private Course course;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lessonId")
     private Lesson lesson;
 
+
+    public CourseLesson(Course course, Lesson lesson) {
+        this.course = course;
+        this.lesson = lesson;
+    }
 }

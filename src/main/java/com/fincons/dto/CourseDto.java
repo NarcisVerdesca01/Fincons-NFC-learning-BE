@@ -28,6 +28,8 @@ public class CourseDto {
 
     private String name;
 
+    private String backgroundImage;
+
     private String description;
 
     @JsonIgnore
@@ -43,6 +45,8 @@ public class CourseDto {
     private String createdBy;
 
     private String lastModifiedBy;
+
+
 
 
 }

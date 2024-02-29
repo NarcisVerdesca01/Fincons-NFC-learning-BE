@@ -36,7 +36,6 @@ public class LessonDto {
     @JsonIgnore
     private ContentDto content;
 
-
     private LocalDateTime createDate;
 
     private LocalDateTime lastModified;

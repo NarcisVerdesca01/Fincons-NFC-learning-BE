@@ -36,7 +36,6 @@ public class AuthController {
 
     }
 
-
     @PostMapping("${register.tutor.uri}") //register tutor
     public ResponseEntity<String> registerTutor(
             @RequestBody UserDto userDto

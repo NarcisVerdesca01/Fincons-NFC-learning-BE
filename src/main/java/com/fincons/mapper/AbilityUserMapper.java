@@ -1,5 +1,6 @@
 package com.fincons.mapper;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.AbilityUser;
 import org.modelmapper.ModelMapper;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AbilityUserMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();

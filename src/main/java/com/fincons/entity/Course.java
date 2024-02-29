@@ -44,11 +44,14 @@ public class Course {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "name",nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name ="background_image", length = 20971520)
+    private String backgroundImage;
 
-    @Column(name = "description",nullable = false)
+
+    @Column(name = "description", nullable = false)
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
@@ -58,6 +61,8 @@ public class Course {
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AbilityCourse> abilities;
+
+
 
 
     //AUDITING

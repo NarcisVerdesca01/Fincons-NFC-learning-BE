@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fincons.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +21,10 @@ public class QuestionDto {
 
     private String textQuestion;
 
-    private String correctAnswer;
+    private int correctAnswer;
 
     @JsonIgnoreProperties("question")
-    private List<WrongAnswerDto> wrongAnswer;
+    private Answer[] answer;
 
     @JsonIgnoreProperties("questions")
     private QuizDto quiz;

@@ -2,7 +2,11 @@ package com.fincons.service.ability;
 
 import com.fincons.dto.AbilityDto;
 import com.fincons.entity.Ability;
+import com.fincons.entity.Course;
 import com.fincons.exception.AbilityException;
+import com.fincons.exception.CourseException;
+import com.fincons.exception.DuplicateException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityRepository;
@@ -34,23 +38,56 @@ public class AbilityService implements IAbilityService{
     }
 
     @Override
-    public Ability findAbilityByName(String name) throws AbilityException {
+    public Ability findAbilityByName(String name)  {
         Ability ability = abilityRepository.findByName(name);
         if(ability==null || name.isEmpty()){
-           throw new AbilityException(AbilityException.abilityDosNotExist());
+           throw new ResourceNotFoundException("Ability " + name + " does not exists!");
         }
         return ability;
     }
 
     @Override
-    public Ability createAbility(AbilityDto abilityDto) throws AbilityException {
+    public Ability createAbility(AbilityDto abilityDto) throws DuplicateException {
         if(abilityDto.getName().isBlank()){
-            throw new AbilityException("The name of ability can't be empty");
+            throw new IllegalArgumentException("The name of ability can't be empty");
         }
         if(abilityRepository.existsByName(abilityDto.getName())){
-            throw new AbilityException("The name of ability already exists");
+            throw new DuplicateException("The name of ability already exists");
         }
         Ability abilityToSave = abilityMapper.mapDtoToAbility(abilityDto);
         return abilityRepository.save(abilityToSave);
+    }
+
+    @Override
+    public Ability updateAbility(long id, AbilityDto abilityDto) throws DuplicateException {
+
+        Ability abilityToModify = abilityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ability does not exist"));
+
+        if (abilityDto.getName() != null && !abilityRepository.existsByName(abilityDto.getName())) {
+            abilityToModify.setName(abilityDto.getName());
+        }else if(abilityRepository.existsByName(abilityDto.getName())){
+            throw new DuplicateException("Ability already exists!");
+        }
+
+        return abilityRepository.save(abilityToModify);
+
+    }
+
+    @Override
+    public void deleteAbility(long id) {
+        if (!abilityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The ability does not exist");
+        }
+
+        abilityRepository.deleteById(id);
+    }
+
+    @Override
+    public Ability findAbilityById(long id) {
+        if (!abilityRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The ability does not exist!");
+        }
+        return abilityRepository.findById(id).orElse(null);
     }
 }
