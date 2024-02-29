@@ -138,8 +138,6 @@ public class SecurityConfiguration {
                         //TODO STUDENT Read on Courses, Lessons, Quiz related to its technical profile
                         //TODO STUDENT CRUD on associated Quiz Answers
 
-
-
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());
 
