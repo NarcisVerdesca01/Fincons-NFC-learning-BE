@@ -53,14 +53,7 @@ public class AuthService implements IAuthService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userAndRoleMapper = userAndRoleMapper;
     }
-
-    @Value("${admin.password}")
-    private String passwordAdmin;
-
-    @Value("${tutor.password}")
-    private String passwordTutor;
-
-
+    
     @Override
     public String registerStudent(UserDto userDto) throws UserDataException {
 
