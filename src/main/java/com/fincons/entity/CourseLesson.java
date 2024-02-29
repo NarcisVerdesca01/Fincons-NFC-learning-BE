@@ -16,7 +16,6 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Getter
 @Setter
 @Entity
@@ -35,4 +34,9 @@ public class CourseLesson {
     @JoinColumn(name = "lessonId")
     private Lesson lesson;
 
+
+    public CourseLesson(Course course, Lesson lesson) {
+        this.course = course;
+        this.lesson = lesson;
+    }
 }

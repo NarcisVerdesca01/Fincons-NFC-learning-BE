@@ -72,5 +72,13 @@ public class LessonService implements ILessonService{
         return lessonRepository.save(lessonToModify);
     }
 
+    @Override
+    public void deleteLesson(long id) throws LessonException {
+        if(!lessonRepository.existsById(id)){
+            throw new LessonException("Lesson does not exists!");
+        }
+        lessonRepository.deleteById(id);
+    }
+
 
 }

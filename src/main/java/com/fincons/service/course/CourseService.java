@@ -144,6 +144,16 @@ public class CourseService implements ICourseService {
         return courseRepository.save(courseToModify);
     }
 
+    @Override
+    public Course findCourseByName(String name) {
+
+        if(!courseRepository.existsByName(name)){
+            throw new ResourceNotFoundException("The ability does not exist");
+        }
+
+        return courseRepository.findByName(name);
+    }
+
 
 }
 

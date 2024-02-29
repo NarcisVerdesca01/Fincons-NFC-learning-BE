@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,6 +91,21 @@ public class LessonController {
                     .build());
         }
     }
+
+    @DeleteMapping("${lesson.delete}/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteLesson(@PathVariable long id) {
+        try {
+            iLessonService.deleteLesson(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The lesson has been successfully deleted!")
+                    .build());
+        } catch (ResourceNotFoundException | LessonException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
+
 
 
 }

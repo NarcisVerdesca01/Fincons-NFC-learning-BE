@@ -16,6 +16,9 @@ public class AbilityCourseMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    private AbilityMapper abilityMapper;
+    private CourseMapper courseMapper;
+
     public AbilityCourseDto mapAbilityCourseToAbilityCourseDto(AbilityCourse abilityCourse){
         return modelMapper.map(abilityCourse, AbilityCourseDto.class);
     }
