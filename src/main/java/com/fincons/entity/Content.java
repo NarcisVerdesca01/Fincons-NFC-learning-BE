@@ -30,8 +30,8 @@ public class Content {
     @Column(name = "typeContent")
     private String typeContent;
 
-    @Column(name = "content", columnDefinition = "LONGBLOB")
-    private byte[] content;
+    @Column(name = "content")
+    private String content;
 
     //2. LEZIONE - CONTENUTO 1:1
     @OneToOne(mappedBy = "content")

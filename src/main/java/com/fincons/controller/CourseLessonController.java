@@ -2,9 +2,11 @@ package com.fincons.controller;
 
 import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.CourseLessonDto;
+import com.fincons.entity.AbilityCourse;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.LessonException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.CourseLessonMapper;
 import com.fincons.service.courselesson.ICourseLessonService;
 import com.fincons.service.lesson.ILessonService;
@@ -89,6 +91,26 @@ public class CourseLessonController {
                     .build());
         }
     }
+
+    @GetMapping("${course-lesson.find-by-id}/{id}")
+    public ResponseEntity<ApiResponse<CourseLessonDto>> getCourseLessonById(@PathVariable long id){
+
+        try{
+            CourseLessonDto courseLessonDtoToShow = courseLessonMapper
+                    .mapCourseLessonToCourseLessonDto(iCourseLessonService.getCourseLessonById(id));
+            return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
+                    .data(courseLessonDtoToShow)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+
+    }
+
+
+
 
 
 

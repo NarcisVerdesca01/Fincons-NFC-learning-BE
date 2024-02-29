@@ -71,4 +71,12 @@ public class AbilityUserService implements IAbilityUserService{
         return abilityUserRepository.save(existingAbilityUser);
 
     }
+
+    @Override
+    public void deleteAbilityUser(long id) {
+        if (!abilityUserRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The course-lesson association does not exist") ;
+        }
+        abilityUserRepository.deleteById(id);
+    }
 }

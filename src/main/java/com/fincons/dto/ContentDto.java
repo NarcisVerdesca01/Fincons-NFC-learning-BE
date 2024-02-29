@@ -16,7 +16,7 @@ public class ContentDto {
 
     private String typeContent;
 
-    private byte[] content;
+    private String content;
 
     @JsonIgnoreProperties("content")
     private LessonDto lesson;
