@@ -23,4 +23,5 @@ public interface ICourseService {
     Course updateCourse(long id, CourseDto courseDto) throws CourseException;
 
 
+    Course findCourseByName(String name);
 }

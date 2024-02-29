@@ -74,6 +74,19 @@ public class CourseController {
                     .build());
         }
     }
+    @GetMapping("${course.getByName}/{name}")
+    public ResponseEntity<ApiResponse<CourseDto>> getCourseByName(@PathVariable String name){
+        try{
+            CourseDto courseDtoToShow = courseMapper.mapCourseToCourseDto(iCourseService.findCourseByName(name));
+            return ResponseEntity.ok().body(ApiResponse.<CourseDto>builder()
+                    .data(courseDtoToShow)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
     @DeleteMapping("${course.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteCourse(@PathVariable long id) {
@@ -115,6 +128,8 @@ public class CourseController {
                     .build());
         }
      }
+
+
 
 
 
