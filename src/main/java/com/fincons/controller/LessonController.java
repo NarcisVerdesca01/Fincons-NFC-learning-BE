@@ -1,8 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.LessonMapper;
@@ -11,7 +9,6 @@ import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,9 +68,9 @@ public class LessonController {
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(lessonDtoToShow)
                     .build());
-        } catch (LessonException lessonException) {
+        } catch (IllegalArgumentException | LessonException illegalArgumentException) {
             return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
-                            .message(lessonException.getMessage())
+                            .message(illegalArgumentException.getMessage())
                     .build());
         }
     }
@@ -81,9 +78,9 @@ public class LessonController {
     @PutMapping("${lesson.update}/{id}")
     public ResponseEntity<ApiResponse<LessonDto>> updateLesson(@PathVariable long id, @RequestBody LessonDto lessonDto) {
         try {
-            LessonDto updatedLessoneDto = lessonMapper.mapLessonToLessonDto(iLessonService.updateLesson(id, lessonDto));
+            LessonDto updatedLessonDto = lessonMapper.mapLessonToLessonDto(iLessonService.updateLesson(id, lessonDto));
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
-                    .data(updatedLessoneDto)
+                    .data(updatedLessonDto)
                     .build());
         } catch (ResourceNotFoundException | LessonException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
