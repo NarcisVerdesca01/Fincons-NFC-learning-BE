@@ -19,13 +19,13 @@ public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "typeContent")
     private String typeContent;
 
-    @Column(name = "content", columnDefinition = "VARBINARY(MAX)")
-    private byte[] content;
+    @Column(name = "content")
+    private String content;
 
     //2. LEZIONE - CONTENUTO 1:1
     @OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
