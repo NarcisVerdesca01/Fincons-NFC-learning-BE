@@ -3,6 +3,7 @@ package com.fincons.service.authorization;
 import com.fincons.dto.UserDto;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
@@ -145,6 +146,15 @@ public class AuthService implements IAuthService {
         }
         return "Admin registered successfully";
     }
+
+    @Override
+    public User getUserDtoByEmail(String email) {
+        if(userRepository.findByEmail(email)==null){
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+        return userRepository.findByEmail(email);
+    }
+
 
 
     @Override

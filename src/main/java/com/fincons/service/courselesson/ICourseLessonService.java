@@ -14,9 +14,9 @@ public interface ICourseLessonService {
 
     CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws DuplicateException;
 
-    CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws CourseLessonException, CourseException, LessonException;
+    CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws DuplicateException;
 
-    void deleteCourseLesson(long id) throws CourseLessonException;
+    void deleteCourseLesson(long id);
 
     CourseLesson getCourseLessonById(long id);
 }

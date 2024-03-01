@@ -48,7 +48,7 @@ public class CourseLessonController {
     }
 
     @PostMapping("${course-lesson.add}")
-    public ResponseEntity<ApiResponse<CourseLessonDto>> addAbilityCourse(@RequestBody CourseLessonDto courseLessonDto) {
+    public ResponseEntity<ApiResponse<CourseLessonDto>> addCourseLesson(@RequestBody CourseLessonDto courseLessonDto) {
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
                     .mapCourseLessonToCourseLessonDto(iCourseLessonService.addCourseLesson(courseLessonDto));
@@ -67,7 +67,7 @@ public class CourseLessonController {
     }
 
     @PutMapping("${course-lesson.update}/{id}")
-    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto) throws CourseLessonException, LessonException, CourseException {
+    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto){
         try{
             CourseLessonDto courseLessonDtoToShow =
                     courseLessonMapper.mapCourseLessonToCourseLessonDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
@@ -76,23 +76,27 @@ public class CourseLessonController {
                     .data(courseLessonDtoToShow)
                     .build());
 
-        }catch(CourseLessonException | LessonException | CourseException exception ){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<CourseLessonDto>builder()
-                    .message(exception.getMessage())
+        }catch(ResourceNotFoundException resourceNotFoundException ){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }
 
     @DeleteMapping("${course-lesson.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) throws CourseLessonException {
+    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) {
         try{
             iCourseLessonService.deleteCourseLesson(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .message("Deleted relationship between course and lesson chosen")
                     .build());
-        }catch(CourseLessonException courseLessonException){
+        }catch(ResourceNotFoundException resourceNotFoundException){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
-                    .message(courseLessonException.getMessage())
+                    .message(resourceNotFoundException.getMessage())
                     .build());
         }
     }
