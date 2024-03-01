@@ -2,6 +2,7 @@ package com.fincons.controller;
 
 import com.fincons.dto.CourseDto;
 import com.fincons.exception.CourseException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.mapper.CourseMapper;
@@ -54,9 +55,13 @@ public class CourseController {
             return ResponseEntity.ok().body(ApiResponse.<CourseDto>builder()
                             .data(courseDtoToShow)
                     .build());
-        } catch (CourseException courseException) {
+        } catch (IllegalArgumentException illegalArgumentException) {
             return ResponseEntity.badRequest().body(ApiResponse.<CourseDto>builder()
-                            .message(courseException.getMessage())
+                            .message(illegalArgumentException.getMessage())
+                    .build());
+        }catch(DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }
@@ -74,6 +79,7 @@ public class CourseController {
                     .build());
         }
     }
+
     @GetMapping("${course.getByName}/{name}")
     public ResponseEntity<ApiResponse<CourseDto>> getCourseByName(@PathVariable String name){
         try{
@@ -105,13 +111,20 @@ public class CourseController {
     @GetMapping ("${course.getDedicatedCourses}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@RequestParam String email) throws UserDataException {
 
-        List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(email)
-                .stream()
-                .map(c->courseMapper.mapCourseToCourseDto(c))
-                .toList();
-        return ResponseEntity.ok().body(ApiResponse.<List<CourseDto>>builder()
-                .data(coursesDtoList)
-                .build());
+        try{
+            List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(email)
+                    .stream()
+                    .map(c->courseMapper.mapCourseToCourseDto(c))
+                    .toList();
+            return ResponseEntity.ok().body(ApiResponse.<List<CourseDto>>builder()
+                    .data(coursesDtoList)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<List<CourseDto>>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+
     }
 
 
@@ -122,9 +135,13 @@ public class CourseController {
             return ResponseEntity.ok().body(ApiResponse.<CourseDto>builder()
                     .data(updatedCourseDto)
                     .build());
-        } catch (ResourceNotFoundException | CourseException resourceNotFoundException) {
+        } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseDto>builder()
                     .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
      }

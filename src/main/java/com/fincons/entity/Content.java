@@ -30,7 +30,7 @@ public class Content {
     @Column(name = "typeContent")
     private String typeContent;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 20971520)
     private String content;
 
     //2. LEZIONE - CONTENUTO 1:1

@@ -51,7 +51,7 @@ public class Course {
     private String backgroundImage;
 
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 20971520)
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)

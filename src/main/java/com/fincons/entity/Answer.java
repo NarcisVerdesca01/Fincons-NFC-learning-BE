@@ -26,7 +26,7 @@ public class Answer {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 20971520)
     private String text;
 
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte

@@ -32,7 +32,7 @@ public class Question {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 20971520)
     private String textQuestion;
 
     @Column(name = "correctAnswer")
