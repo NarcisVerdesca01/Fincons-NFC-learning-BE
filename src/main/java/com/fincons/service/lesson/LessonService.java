@@ -42,9 +42,7 @@ public class LessonService implements ILessonService{
         if(StringUtils.isBlank(lessonDto.getTitle())){
             throw new IllegalArgumentException("Title required");
         }
-        if(lessonRepository.existsByTitle(lessonDto.getTitle())){
-            throw new IllegalArgumentException("Lesson with this title already exists");
-        }
+
         Lesson lesson = new Lesson();
         lesson.setTitle(lessonDto.getTitle());
 
@@ -57,17 +55,10 @@ public class LessonService implements ILessonService{
         if(!lessonRepository.existsById(id)){
             throw new LessonException("Lesson does not exist");
         }
-        if(lessonRepository.existsByTitle(lessonDto.getTitle())){
+        if(lessonRepository.existsByTitleIgnoreCase(lessonDto.getTitle())){
             throw  new LessonException("Title of lesson already exists!");
         }
-
         Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new LessonException("Lesson does not exist"));
-
-        if(!lessonRepository.existsByTitle(lessonDto.getTitle())){
-            lessonToModify.setTitle(lessonDto.getTitle());
-        }else if(lessonRepository.existsByTitle(lessonDto.getTitle())){
-            throw new LessonException("Title of lesson already exists");
-        }
 
         return lessonRepository.save(lessonToModify);
     }

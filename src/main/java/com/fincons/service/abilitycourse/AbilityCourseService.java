@@ -12,6 +12,7 @@ import com.fincons.exception.AbilityCourseException;
 import com.fincons.exception.AbilityException;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
@@ -46,22 +47,29 @@ public class AbilityCourseService implements IAbilityCourseService{
     }
 
     @Override
-    public AbilityCourse addAbilityCourse(AbilityCourseDto abilityCourseDto) {
+    public AbilityCourse addAbilityCourse(AbilityCourseDto abilityCourseDto) throws DuplicateException {
 
-        return abilityCourseRepository.save(abilityCourseMapper.mapDtoToAbilityCourse(abilityCourseDto)) ;
+        Ability existingAbility = abilityRepository.findById(abilityCourseDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        Course existingCourse = courseRepository.findById(abilityCourseDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
+        if(abilityCourseRepository.existsByAbilityAndCourse(existingAbility,existingCourse)){
+            throw new DuplicateException("The Ability-Course association already exists");
+        }
+        AbilityCourse abilityCourseToSave = new AbilityCourse(existingCourse, existingAbility);
+
+        return abilityCourseRepository.save(abilityCourseToSave) ;
     }
 
     @Override
-    public AbilityCourse updateAbilityCourse(long id, AbilityCourseDto abilityCourseDto) throws AbilityException, CourseException, AbilityCourseException, CourseLessonException {
+    public AbilityCourse updateAbilityCourse(long id, AbilityCourseDto abilityCourseDto) throws  DuplicateException {
 
         AbilityCourse existingAbilityCourse = abilityCourseRepository.findById(id)
-                .orElseThrow(()-> new AbilityCourseException("Ability-Course association does not exist"));
+                .orElseThrow(()-> new ResourceNotFoundException("Ability-Course association does not exist"));
 
-        Ability existingAbilityToAssociate = abilityRepository.findById(abilityCourseDto.getAbility().getId()).orElseThrow(()-> new AbilityException("Ability does not exist"));
-        Course existingCourseToAssociate = courseRepository.findById(abilityCourseDto.getCourse().getId()).orElseThrow(()-> new CourseException("Course does not exist"));
+        Ability existingAbilityToAssociate = abilityRepository.findById(abilityCourseDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        Course existingCourseToAssociate = courseRepository.findById(abilityCourseDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
 
         if(abilityCourseRepository.existsByAbilityAndCourse(existingAbilityToAssociate,existingCourseToAssociate)){
-            throw new AbilityCourseException(AbilityCourseException.duplicateException());
+            throw new DuplicateException("Ability-CourseAssociation already exists");
         }
         existingAbilityCourse.setAbility(existingAbilityToAssociate);
         existingAbilityCourse.setCourse(existingCourseToAssociate);

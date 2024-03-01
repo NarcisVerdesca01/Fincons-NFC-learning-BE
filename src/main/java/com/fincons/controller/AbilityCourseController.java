@@ -6,6 +6,7 @@ import com.fincons.exception.AbilityCourseException;
 import com.fincons.exception.AbilityException;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.CourseLessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
@@ -67,12 +68,22 @@ public class AbilityCourseController {
 
 
     @PostMapping("${ability-course.add}")
-    public ResponseEntity<ApiResponse<AbilityCourseDto>> addAbilityCourse(@RequestBody AbilityCourseDto abilityCourseDto ){
-        AbilityCourseDto abilityCourseDtoToShow = abilityCourseMapper
-                .mapAbilityCourseToAbilityCourseDto(iAbilityCourseService.addAbilityCourse(abilityCourseDto));
-        return ResponseEntity.ok().body(ApiResponse.<AbilityCourseDto>builder()
-                .data(abilityCourseDtoToShow)
-                .build());
+    public ResponseEntity<ApiResponse<AbilityCourseDto>> addAbilityCourse(@RequestBody AbilityCourseDto abilityCourseDto ) throws DuplicateException {
+        try{
+            AbilityCourseDto abilityCourseDtoToShow = abilityCourseMapper
+                    .mapAbilityCourseToAbilityCourseDto(iAbilityCourseService.addAbilityCourse(abilityCourseDto));
+            return ResponseEntity.ok().body(ApiResponse.<AbilityCourseDto>builder()
+                    .data(abilityCourseDtoToShow)
+                    .build());
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.badRequest().body(ApiResponse.<AbilityCourseDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<AbilityCourseDto>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
+        }
     }
 
 
@@ -86,9 +97,13 @@ public class AbilityCourseController {
                     .data(abilityCourseDtoToShow)
                     .build());
 
-        }catch(AbilityCourseException | AbilityException | CourseException | LessonException | CourseLessonException abilityCourseException){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<AbilityCourseDto>builder()
-                    .message(abilityCourseException.getMessage())
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityCourseDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<AbilityCourseDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }

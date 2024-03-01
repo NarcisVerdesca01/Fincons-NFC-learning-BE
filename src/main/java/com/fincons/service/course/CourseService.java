@@ -6,6 +6,7 @@ import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
 import com.fincons.entity.User;
 import com.fincons.exception.CourseException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.mapper.AbilityMapper;
@@ -48,13 +49,13 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public Course createCourse(CourseDto courseDto) throws CourseException {
+    public Course createCourse(CourseDto courseDto) throws  DuplicateException {
 
         if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
-            throw new CourseException("Name, description or requirements not present");
+            throw new IllegalArgumentException("Name, description or background image not present");
         }
         if (courseRepository.existsByName(courseDto.getName())) {
-            throw new CourseException(CourseException.courseAlreadyExist());
+            throw new DuplicateException(CourseException.courseAlreadyExist());
         }
 
         Course course = new Course();
@@ -85,9 +86,9 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<Course> findDedicatedCourses(String email) throws UserDataException {
+    public List<Course> findDedicatedCourses(String email){
         if (!userRepository.existsByEmail(email)) {
-            throw new UserDataException("User does not exist");
+            throw new ResourceNotFoundException("User does not exist");
         }
         User user = userRepository.findByEmail(email);
         boolean isUserAdmin = user.getRoles()
@@ -122,15 +123,19 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public Course updateCourse(long id, CourseDto courseDto) throws CourseException {
+    public Course updateCourse(long id, CourseDto courseDto) throws DuplicateException {
 
         Course courseToModify = courseRepository.findById(id)
-                .orElseThrow(() -> new CourseException(CourseException.courseDosNotExist()));
+                .orElseThrow(() -> new ResourceNotFoundException("Course does not exist"));
 
-        if (courseDto.getName() != null && !courseRepository.existsByName(courseDto.getName())) {
-            courseToModify.setName(courseDto.getName());
-        }else if(courseRepository.existsByName(courseDto.getName())){
-            throw new CourseException(CourseException.courseAlreadyExist());
+        if (courseDto.getName() != null) {
+            if (!courseRepository.existsByNameAndIdNot(courseDto.getName(), courseToModify.getId())) {
+                courseToModify.setName(courseDto.getName());
+            } else {
+                throw new DuplicateException("Course already exists");
+            }
+        } else {
+            throw new IllegalArgumentException("Course name cannot be null");
         }
 
         if (courseDto.getBackgroundImage() != null) {
@@ -148,7 +153,7 @@ public class CourseService implements ICourseService {
     public Course findCourseByName(String name) {
 
         if(!courseRepository.existsByName(name)){
-            throw new ResourceNotFoundException("The ability does not exist");
+            throw new ResourceNotFoundException("The course does not exist");
         }
 
         return courseRepository.findByName(name);

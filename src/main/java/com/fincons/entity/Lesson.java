@@ -46,7 +46,7 @@ public class Lesson {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "title",nullable = false)
+    @Column(name = "title",nullable = false, length = 20971520)
     private String title;
 
 

@@ -36,7 +36,7 @@ public class Quiz {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 20971520)
     private String title;
 
     //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande

@@ -42,8 +42,16 @@ public class AbilityUserService implements IAbilityUserService{
     }
 
     @Override
-    public AbilityUser addAbilityUser(AbilityUserDto abilityUserDto) {
-        return abilityUserRepository.save(abilityUserMapper.mapDtoToAbilityUser(abilityUserDto));
+    public AbilityUser addAbilityUser(AbilityUserDto abilityUserDto) throws DuplicateException {
+
+        Ability existingAbility = abilityRepository.findById(abilityUserDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        User existingUser = userRepository.findById(abilityUserDto.getUser().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        if(abilityUserRepository.existsByAbilityAndUser(existingAbility,existingUser)){
+            throw new DuplicateException("The Ability-User association already exists");
+        }
+        AbilityUser abilityUserToSave = new AbilityUser(existingUser, existingAbility);
+
+        return abilityUserRepository.save(abilityUserToSave);
     }
 
     @Override
