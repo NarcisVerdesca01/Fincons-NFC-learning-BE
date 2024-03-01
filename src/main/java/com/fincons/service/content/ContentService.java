@@ -24,7 +24,11 @@ public class ContentService implements IContentService {
     private ContentMapper contentMapper;
 
     @Override
-    public Content findById(Long id) {
+    public Content findById(long id) {
+
+        if (!contentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("The content does not exist!");
+        }
         return contentRepository.findById(id).orElse(null);
     }
 

@@ -39,15 +39,16 @@ public class ContentController {
                 .build());
     }
     @GetMapping("${content.get-by-id}/{id}")
-    public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable long id){
         try{
             ContentDto contentDto= contentMapper.mapContentToContentDto(iContentService.findById(id));
             return ResponseEntity.ok().body(ApiResponse.<ContentDto>builder()
                     .data(contentDto)
                     .build());
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
+        }catch(ResourceNotFoundException resourceNotFoundException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<ContentDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
         }
     }
     @PostMapping("${content.create}")

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface IContentService {
 
-     Content findById(Long id);
+     Content findById(long id);
      List<Content> findAllContent();
      Content createContent(ContentDto contentDto);
      void deleteContent(long id);

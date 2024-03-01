@@ -120,7 +120,7 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO To remove
                         .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
                         .requestMatchers(applicationContext + lessonsBaseUri + "/**").authenticated()
-                        .requestMatchers(applicationContext + contentBaseUri + "/**").authenticated()
+
 
                         /*
                          Filtri CRUD per l'amministratore:
@@ -137,6 +137,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT,applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
                         .requestMatchers(applicationContext + courseLessonBaseUri + "/**").hasRole("TUTOR")
+
+                        //ADMIN TUTOR CRUD ON content STUDENT can read
+                        .requestMatchers(HttpMethod.GET, applicationContext + contentBaseUri + "/**").hasRole("STUDENT")
+                        .requestMatchers(applicationContext + contentBaseUri + "/**").hasAnyRole("TUTOR","ADMIN")
+
+
+
 
                         //TODO -  Tutor CRUD on Quiz
                         //TODO - Associate Quiz to Student
