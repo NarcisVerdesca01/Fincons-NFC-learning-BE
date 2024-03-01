@@ -47,16 +47,16 @@ public class CourseLessonService implements ICourseLessonService {
     }
 
     @Override
-    public CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws CourseLessonException, CourseException, LessonException {
+    public CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws  DuplicateException {
 
         CourseLesson existingCourseLesson = courseLessonRepository.findById(id)
-                .orElseThrow(()-> new CourseLessonException("Course-Lesson does not exist"));
+                .orElseThrow(()-> new ResourceNotFoundException("Course-Lesson does not exist"));
 
-        Course existingCourseToAssociate = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new CourseException("Course does not exist"));
-        Lesson existingLessonToAddAssociate = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new LessonException("Lesson does not exist"));
+        Course existingCourseToAssociate = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
+        Lesson existingLessonToAddAssociate = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new ResourceNotFoundException("Lesson does not exist"));
 
         if(courseLessonRepository.existsByCourseAndLesson(existingCourseToAssociate,existingLessonToAddAssociate)){
-            throw new CourseLessonException(CourseLessonException.duplicateException());
+            throw new DuplicateException("Course-Lesson association already exists");
         }
 
         existingCourseLesson.setCourse(existingCourseToAssociate);
@@ -66,10 +66,10 @@ public class CourseLessonService implements ICourseLessonService {
     }
 
     @Override
-    public void deleteCourseLesson(long id) throws CourseLessonException {
+    public void deleteCourseLesson(long id)  {
 
         if (!courseLessonRepository.existsById(id)) {
-            throw new CourseLessonException("The course-lesson does not exist") ;
+            throw new ResourceNotFoundException("The course-lesson does not exist") ;
         }
 
         courseLessonRepository.deleteById(id);
