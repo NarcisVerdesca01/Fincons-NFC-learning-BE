@@ -1,15 +1,7 @@
 package com.fincons.controller;
 
-
-import com.fincons.dto.AbilityCourseDto;
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
-import com.fincons.dto.CourseLessonDto;
-import com.fincons.entity.AbilityUser;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityUserMapper;
 import com.fincons.service.abilityuser.IAbilityUserService;
@@ -26,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
 import java.util.List;
 
 @CrossOrigin("*")

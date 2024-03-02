@@ -2,22 +2,13 @@ package com.fincons.service.ability;
 
 import com.fincons.dto.AbilityDto;
 import com.fincons.entity.Ability;
-import com.fincons.entity.Course;
-import com.fincons.exception.AbilityException;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityRepository;
-import com.fincons.repository.RoleRepository;
-import com.fincons.repository.UserRepository;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class AbilityService implements IAbilityService{

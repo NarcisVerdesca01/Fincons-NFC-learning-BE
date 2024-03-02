@@ -1,16 +1,10 @@
 package com.fincons.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fincons.dto.CourseDto;
 import com.fincons.dto.CourseLessonDto;
-import com.fincons.dto.LessonDto;
-import com.fincons.entity.Course;
 import com.fincons.entity.CourseLesson;
-import com.fincons.entity.Lesson;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,9 +1,7 @@
 package com.fincons.mapper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
-import com.fincons.entity.Course;
 import com.fincons.entity.Lesson;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

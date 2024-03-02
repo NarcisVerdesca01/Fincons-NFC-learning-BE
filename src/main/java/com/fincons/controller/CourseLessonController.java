@@ -1,16 +1,10 @@
 package com.fincons.controller;
 
-import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.CourseLessonDto;
-import com.fincons.entity.AbilityCourse;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.CourseLessonMapper;
 import com.fincons.service.courselesson.ICourseLessonService;
-import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

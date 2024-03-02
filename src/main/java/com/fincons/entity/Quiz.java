@@ -1,6 +1,8 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +20,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,6 +47,12 @@ public class Quiz {
     //3. LEZIONE - QUIZ 1:1
     @OneToOne(mappedBy = "quiz")
     private Lesson lesson;
+
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<QuizResults> users;
+
 
     //AUDITING
     @CreatedDate

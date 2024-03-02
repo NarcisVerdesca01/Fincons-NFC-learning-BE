@@ -7,7 +7,6 @@ import com.fincons.jwt.LoginDto;
 
 public interface IAuthService {
 
-
     String registerStudent(UserDto userDto) throws UserDataException;
 
     String login(LoginDto loginDto);

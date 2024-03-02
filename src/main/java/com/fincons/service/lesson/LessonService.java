@@ -60,6 +60,7 @@ public class LessonService implements ILessonService{
         }
         Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new LessonException("Lesson does not exist"));
 
+       lessonToModify.setTitle(lessonDto.getTitle());
         return lessonRepository.save(lessonToModify);
     }
 

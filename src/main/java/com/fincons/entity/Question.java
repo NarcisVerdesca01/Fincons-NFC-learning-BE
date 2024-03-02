@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter
@@ -46,8 +45,8 @@ public class Question {
     @ManyToOne
     private Quiz quiz;
 
-    @Column(name = "score")
-    private int score;
+    @Column(name = "valueOfQuestion")
+    private int valueOfQuestion;
 
 
 }

@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,29 +15,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Getter
 @Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "ability_course")
-public class AbilityCourse {
+@Table(name = "quiz_result_student")
+public class QuizResults {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courseId")
-    private Course course;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userId")
+    private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "abilityId")
-    private Ability ability;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "quizId")
+    private Quiz quiz;
 
-    public AbilityCourse(Course course, Ability ability) {
-        this.course = course;
-        this.ability = ability;
-    }
+    @Column(name = "totalScore")
+    private double totalScore;
+
+    // TODO List<Integer> lista di indici delle risposte date
+
 }

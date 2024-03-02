@@ -1,25 +1,15 @@
 package com.fincons.service.abilitycourse;
 
 import com.fincons.dto.AbilityCourseDto;
-import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
-import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
-import com.fincons.entity.CourseLesson;
-import com.fincons.entity.Lesson;
 import com.fincons.exception.AbilityCourseException;
-import com.fincons.exception.AbilityException;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
-import com.fincons.mapper.AbilityUserMapper;
 import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
-import com.fincons.repository.AbilityUserRepository;
 import com.fincons.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

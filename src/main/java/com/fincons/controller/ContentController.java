@@ -1,20 +1,14 @@
 package com.fincons.controller;
 
 import com.fincons.dto.ContentDto;
-import com.fincons.dto.CourseDto;
-import com.fincons.dto.LessonDto;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
-import com.fincons.mapper.CourseMapper;
-import com.fincons.service.content.ContentService;
 import com.fincons.service.content.IContentService;
 import com.fincons.utility.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

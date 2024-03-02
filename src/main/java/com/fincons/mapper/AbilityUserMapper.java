@@ -5,7 +5,6 @@ import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.AbilityUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,13 +1,8 @@
 package com.fincons.controller;
 
 import com.fincons.dto.AbilityCourseDto;
-import com.fincons.dto.CourseLessonDto;
 import com.fincons.exception.AbilityCourseException;
-import com.fincons.exception.AbilityException;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
 import com.fincons.service.abilitycourse.IAbilityCourseService;

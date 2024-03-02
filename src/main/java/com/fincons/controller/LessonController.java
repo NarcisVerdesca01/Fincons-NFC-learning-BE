@@ -3,14 +3,9 @@ package com.fincons.controller;
 import com.fincons.dto.LessonDto;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.entity.Ability;
-import com.fincons.entity.Course;
-import com.fincons.entity.Lesson;
-import com.fincons.exception.CourseException;
 import com.fincons.mapper.LessonMapper;
 import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
-import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,9 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 

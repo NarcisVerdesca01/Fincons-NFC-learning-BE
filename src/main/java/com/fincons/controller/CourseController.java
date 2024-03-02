@@ -1,7 +1,6 @@
 package com.fincons.controller;
 
 import com.fincons.dto.CourseDto;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
@@ -47,6 +46,7 @@ public class CourseController {
                     .data(coursesDtoList)
                     .build());
     }
+
 
     @PostMapping("${course.create}")
     public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody CourseDto courseDto) {
@@ -112,19 +112,21 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@RequestParam String email) throws UserDataException {
 
         try{
+
             List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(email)
                     .stream()
                     .map(c->courseMapper.mapCourseToCourseDto(c))
                     .toList();
+
             return ResponseEntity.ok().body(ApiResponse.<List<CourseDto>>builder()
                     .data(coursesDtoList)
                     .build());
+
         }catch(ResourceNotFoundException resourceNotFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<List<CourseDto>>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
-
     }
 
 
