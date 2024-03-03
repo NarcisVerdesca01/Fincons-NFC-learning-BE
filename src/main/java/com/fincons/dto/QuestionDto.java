@@ -21,10 +21,8 @@ public class QuestionDto {
 
     private int correctAnswer;
 
-    @JsonIgnoreProperties("question")
-    private Answer[] answer;
+    private AnswerDto[] answers;
 
-    @JsonIgnoreProperties("questions")
     private QuizDto quiz;
 
     private int score;

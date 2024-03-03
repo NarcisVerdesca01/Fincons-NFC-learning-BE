@@ -1,5 +1,7 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +30,9 @@ public class Content {
     private String content;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
+    @OneToOne
+    @JsonBackReference
+    @JoinColumn(name = "id_lesson")
     private Lesson lesson;
 
 

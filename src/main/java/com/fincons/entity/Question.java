@@ -1,5 +1,8 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,10 +42,12 @@ public class Question {
 
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più rispostesbagliate
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL) //
-    private Answer[] answer;
+    @JsonManagedReference
+    private Answer[] answers;
 
     //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @ManyToOne
+    @JsonBackReference
     private Quiz quiz;
 
     @Column(name = "valueOfQuestion")

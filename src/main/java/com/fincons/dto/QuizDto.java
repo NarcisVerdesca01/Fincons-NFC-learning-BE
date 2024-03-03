@@ -18,10 +18,8 @@ public class QuizDto {
 
     private String title;
 
-    @JsonIgnoreProperties("quiz")
     private List<QuestionDto> questions;
 
-    @JsonIgnoreProperties("quiz")
     private LessonDto lesson;
 
     //AUDITING

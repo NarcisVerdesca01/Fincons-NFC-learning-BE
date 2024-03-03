@@ -147,10 +147,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
 
                         //Associazione
-                        .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
                         /*
                                                 //TODO -  Tutor CRUD on Quiz

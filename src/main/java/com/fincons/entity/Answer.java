@@ -1,5 +1,7 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class Answer {
 
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
     @ManyToOne
+    @JsonBackReference
     private Question question;
 
 }

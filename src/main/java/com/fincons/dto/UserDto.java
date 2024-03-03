@@ -32,7 +32,6 @@ public class UserDto {
     @JsonIgnoreProperties("users")
     private Set<RoleDto> roles;
 
-    @JsonIgnore
     private List<AbilityUserDto> abilities;
 
 

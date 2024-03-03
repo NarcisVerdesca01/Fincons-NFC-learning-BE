@@ -2,6 +2,8 @@ package com.fincons.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,15 +44,17 @@ public class Quiz {
 
     //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @OneToMany(mappedBy="quiz")
+    @JsonIgnoreProperties("quiz")
     private List<Question> questions;
 
     //3. LEZIONE - QUIZ 1:1
     @OneToOne(mappedBy = "quiz")
+    @JsonManagedReference
     private Lesson lesson;
 
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<QuizResults> users;
 
 

@@ -70,10 +70,10 @@ public class CourseService implements ICourseService {
 
     @Override
     public Course findCourseById(long id) {
-        if (!courseRepository.existsById(id)) {
-            throw new ResourceNotFoundException("The course does not exist!");
-        }
-        return courseRepository.findById(id).orElse(null);
+
+        Course existingCourse = courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The course does not exist!"));
+
+        return existingCourse;
     }
 
     @Override

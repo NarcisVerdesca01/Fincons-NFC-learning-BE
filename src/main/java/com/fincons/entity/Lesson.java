@@ -1,6 +1,9 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +49,7 @@ public class Lesson {
 
 
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<CourseLesson> courses;
 
     //3. LEZIONE - QUIZ 1:1
@@ -55,8 +58,8 @@ public class Lesson {
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinColumn(name = "id_content", referencedColumnName = "id")
+    @OneToOne(mappedBy = "lesson", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JsonManagedReference
     private Content content;
 
 

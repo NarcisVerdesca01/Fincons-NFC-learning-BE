@@ -1,7 +1,10 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,11 +39,11 @@ public class Ability {
     private String name;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<AbilityCourse> courses;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<AbilityUser> users;
 
 

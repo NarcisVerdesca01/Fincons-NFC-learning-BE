@@ -3,6 +3,8 @@ package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,30 +62,14 @@ public class User {
 
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<AbilityUser> abilities;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<QuizResults> quizzes;
 
 
 
-    /*
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_courses",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
-    )
-    private List<Course> courses;
-     */
-
-    // DA SPIEGARE AI COLLEGHI
-
-    //PROFILO TECNICO
-
-    //ADMIN   -->> profiloT:   se ruolo è admin --> get all courses and lesson
-    //TUTOR   --->>profiloT:    se ruolo tutor & requisiti : informaticaa --->> getall courses in base a requisiti
-    //Studente --->> profiloT
 }

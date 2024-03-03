@@ -1,6 +1,9 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +22,12 @@ public class LessonDto {
 
     private String title;
 
-    @JsonIgnore
+    @JsonBackReference
     private List<CourseLessonDto> courses;
 
-    @JsonIgnore
     private QuizDto quiz;
 
-    @JsonIgnore
+    @JsonManagedReference
     private ContentDto content;
 
     private LocalDateTime createDate;

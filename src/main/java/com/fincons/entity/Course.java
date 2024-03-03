@@ -1,6 +1,8 @@
 package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,11 +52,11 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<CourseLesson> lessons;
 
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<AbilityCourse> abilities;
 
 

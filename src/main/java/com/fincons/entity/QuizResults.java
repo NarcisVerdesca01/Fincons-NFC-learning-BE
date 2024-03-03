@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,10 +33,12 @@ public class QuizResults {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
+    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "quizId")
+    @JsonBackReference
     private Quiz quiz;
 
     @Column(name = "totalScore")

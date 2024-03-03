@@ -1,7 +1,8 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.ManyToOne;
+import com.fincons.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,15 +12,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WrongAnswerDto {
+public class AnswerDto {
 
     private long id;
-
-
     private String text;
-
-    @JsonIgnoreProperties("wrongAnswer")
-    @ManyToOne
-    private QuestionDto question;
-
+    @JsonBackReference
+    private Question question;
 }

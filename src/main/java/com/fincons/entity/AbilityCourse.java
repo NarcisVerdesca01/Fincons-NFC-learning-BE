@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,10 +30,12 @@ public class AbilityCourse {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId")
+    @JsonBackReference
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abilityId")
+    @JsonBackReference
     private Ability ability;
 
     public AbilityCourse(Course course, Ability ability) {
