@@ -52,11 +52,9 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<CourseLesson> lessons;
 
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<AbilityCourse> abilities;
 
 

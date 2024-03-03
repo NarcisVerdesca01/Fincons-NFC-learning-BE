@@ -1,8 +1,10 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,28 +17,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class CourseDto {
 
     private long id;
-
     private String name;
-
     private String backgroundImage;
-
     private String description;
-
-    @JsonManagedReference
     private List<CourseLessonDto> lessons;
-
-    @JsonManagedReference
     private List<AbilityCourseDto> abilities;
-
     private LocalDateTime createDate;
-
     private LocalDateTime lastModified;
-
     private String createdBy;
-
     private String lastModifiedBy;
 
 

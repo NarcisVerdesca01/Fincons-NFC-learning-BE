@@ -39,11 +39,9 @@ public class Ability {
     private String name;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<AbilityCourse> courses;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<AbilityUser> users;
 
 

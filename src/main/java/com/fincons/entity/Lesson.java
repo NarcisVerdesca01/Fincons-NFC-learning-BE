@@ -49,7 +49,6 @@ public class Lesson {
 
 
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<CourseLesson> courses;
 
     //3. LEZIONE - QUIZ 1:1
@@ -59,7 +58,6 @@ public class Lesson {
 
     //2. LEZIONE - CONTENUTO 1:1
     @OneToOne(mappedBy = "lesson", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JsonManagedReference
     private Content content;
 
 

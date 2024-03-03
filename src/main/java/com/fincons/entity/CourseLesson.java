@@ -29,12 +29,10 @@ public class CourseLesson {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId")
-    @JsonBackReference
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lessonId")
-    @JsonBackReference
     private Lesson lesson;
 
 

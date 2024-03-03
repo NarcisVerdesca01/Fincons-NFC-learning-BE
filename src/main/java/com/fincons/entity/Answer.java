@@ -33,7 +33,6 @@ public class Answer {
 
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
     @ManyToOne
-    @JsonBackReference
     private Question question;
 
 }

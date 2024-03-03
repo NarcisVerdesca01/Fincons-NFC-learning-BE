@@ -5,6 +5,7 @@ import com.fincons.entity.Lesson;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
 import com.fincons.repository.LessonRepository;
 import io.micrometer.common.util.StringUtils;
@@ -22,6 +23,9 @@ public class LessonService implements ILessonService{
 
     @Autowired
     private LessonMapper lessonMapper;
+
+    @Autowired
+    private ContentMapper contentMapper;
 
     @Override
     public List<Lesson> findAllLessons() {
@@ -71,6 +75,8 @@ public class LessonService implements ILessonService{
         }
         lessonRepository.deleteById(id);
     }
+
+    //TODO associare contenuto a lezione;
 
 
 }

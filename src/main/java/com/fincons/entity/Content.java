@@ -31,7 +31,6 @@ public class Content {
 
     //2. LEZIONE - CONTENUTO 1:1
     @OneToOne
-    @JsonBackReference
     @JoinColumn(name = "id_lesson")
     private Lesson lesson;
 

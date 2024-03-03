@@ -29,12 +29,10 @@ public class AbilityUser {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abilityId")
-    @JsonBackReference
     private Ability ability;
 
     public AbilityUser(User user, Ability ability) {
