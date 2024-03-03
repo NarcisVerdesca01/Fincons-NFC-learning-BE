@@ -1,5 +1,6 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -25,8 +26,14 @@ public class UserDto {
     private String email;
     private String password;
     private LocalDate birthDate;
+
+    @JsonBackReference
     private Set<RoleDto> roles;
+
+    @JsonManagedReference
     private List<AbilityUserDto> abilities;
+
+    @JsonManagedReference
     private List<QuizResults> quizzes;
 
 }

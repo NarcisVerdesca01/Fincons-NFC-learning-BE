@@ -14,10 +14,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AnswerDto {
 
     private long id;
     private String text;
+
+    @JsonBackReference
     private Question question;
 }

@@ -64,10 +64,8 @@ public class User {
     )
     private Set<Role> roles;
 
-
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<AbilityUser> abilities;
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<QuizResults> quizzes;

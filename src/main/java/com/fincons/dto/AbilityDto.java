@@ -17,12 +17,15 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AbilityDto {
 
     private long id;
     private String name;
+
+    @JsonManagedReference
     private List<AbilityCourseDto> courses;
+
+    @JsonManagedReference
     private List<AbilityUserDto> users;
 
 

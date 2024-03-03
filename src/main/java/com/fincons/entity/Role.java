@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +32,6 @@ public class Role {
 
     @Column(unique = true, nullable = false)
     private String name;
-
 
 
     @ManyToMany(mappedBy="roles")

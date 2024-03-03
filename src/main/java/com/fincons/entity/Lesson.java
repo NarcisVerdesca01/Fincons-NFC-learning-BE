@@ -46,13 +46,11 @@ public class Lesson {
     @Column(name = "title",nullable = false, length = 20971520)
     private String title;
 
-
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
     private List<CourseLesson> courses;
 
     //3. LEZIONE - QUIZ 1:1
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_quiz", referencedColumnName = "id")
+    @OneToOne(mappedBy = "lesson", cascade = CascadeType.ALL)
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1

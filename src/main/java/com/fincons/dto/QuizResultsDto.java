@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fincons.entity.Quiz;
@@ -15,11 +16,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class QuizResultsDto {
 
     private long id;
+
+    @JsonBackReference
     private User user;
+
+    @JsonBackReference
     private Quiz quiz;
     private double totalScore;
 

@@ -1,5 +1,6 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -16,13 +17,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class QuizDto {
 
     private long id;
     private String title;
+
+    @JsonManagedReference
     private List<QuestionDto> questions;
+
+    @JsonBackReference
     private LessonDto lesson;
+
+    @JsonManagedReference
     private List<QuizResults> users;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;

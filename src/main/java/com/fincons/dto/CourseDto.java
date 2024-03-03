@@ -17,14 +17,17 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class CourseDto {
 
     private long id;
     private String name;
     private String backgroundImage;
     private String description;
+
+    @JsonManagedReference
     private List<CourseLessonDto> lessons;
+
+    @JsonManagedReference
     private List<AbilityCourseDto> abilities;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;
