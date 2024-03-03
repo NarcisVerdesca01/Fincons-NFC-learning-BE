@@ -1,8 +1,10 @@
 package com.fincons.controller;
 
+import com.fincons.dto.ContentDto;
 import com.fincons.dto.LessonDto;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
 import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class LessonController {
 
     @Autowired
     private LessonMapper lessonMapper;
+
+    @Autowired
+    private ContentMapper contentMapper;
 
     @GetMapping("${lesson.get-all-lessons}")
     public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessons() {
@@ -102,6 +108,25 @@ public class LessonController {
         }
     }
 
+    @PutMapping("${lesson.associate.content}")
+    public ResponseEntity<ApiResponse<LessonDto>> associateContentToLesson(
+            @RequestParam(value = "lesson") long lessonId , @RequestParam(value = "content") long contentId) {
 
+        try {
+            LessonDto updatedLessonDto = lessonMapper.mapLessonToLessonDto(
+                    iLessonService.associateContentToLesson(lessonId,contentId));
 
+            return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
+                    .data(updatedLessonDto)
+                    .build());
+        } catch (ResourceNotFoundException  resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (IllegalArgumentException  illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<LessonDto>builder()
+                    .message(illegalArgumentException.getMessage())
+                    .build());
+        }
+    }
 }

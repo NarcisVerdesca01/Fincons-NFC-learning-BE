@@ -1,12 +1,14 @@
 package com.fincons.service.lesson;
 
 import com.fincons.dto.LessonDto;
+import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.CourseException;
 import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
+import com.fincons.repository.ContentRepository;
 import com.fincons.repository.LessonRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class LessonService implements ILessonService{
 
     @Autowired
     private ContentMapper contentMapper;
+
+    @Autowired
+    private ContentRepository contentRepository;
 
     @Override
     public List<Lesson> findAllLessons() {
@@ -76,7 +81,22 @@ public class LessonService implements ILessonService{
         lessonRepository.deleteById(id);
     }
 
-    //TODO associare contenuto a lezione;
+    @Override
+    public Lesson associateContentToLesson(long lessonId, long contentId) {
+
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson does not exist!"));
+
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist!"));
+
+        lesson.setContent(content);
+        content.setLesson(lesson);
+
+        Lesson updatedLesson = lessonRepository.save(lesson);
+
+        return updatedLesson;
+    }
 
 
 }
