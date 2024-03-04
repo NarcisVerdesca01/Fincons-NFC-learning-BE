@@ -18,18 +18,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class LessonDto {
 
     private long id;
     private String title;
-
-    @JsonManagedReference
     private List<CourseLessonDto> courses;
-
-    @JsonManagedReference
     private QuizDto quiz;
-
-    @JsonManagedReference
     private ContentDto content;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;

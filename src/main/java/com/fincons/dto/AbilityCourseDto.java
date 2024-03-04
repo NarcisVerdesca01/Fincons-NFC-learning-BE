@@ -13,14 +13,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
 public class AbilityCourseDto {
 
     private long id;
 
-    @JsonBackReference
     private CourseDto course;
 
-    @JsonBackReference
     private AbilityDto ability;
 
 }

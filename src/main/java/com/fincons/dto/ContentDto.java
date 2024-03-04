@@ -12,12 +12,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class ContentDto {
 
     private Long id;
     private String typeContent;
     private String content;
 
-    @JsonBackReference
     private LessonDto lesson;
 }

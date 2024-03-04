@@ -16,15 +16,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class QuizResultsDto {
 
     private long id;
 
-    @JsonBackReference
-    private User user;
+    private UserDto user;
 
-    @JsonBackReference
-    private Quiz quiz;
+    private QuizDto quiz;
     private double totalScore;
 
     // TODO List<Integer> lista di indici delle risposte date

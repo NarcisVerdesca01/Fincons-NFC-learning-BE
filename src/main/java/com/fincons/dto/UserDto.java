@@ -1,9 +1,11 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fincons.entity.QuizResults;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class UserDto {
 
     private long id;
@@ -26,14 +29,8 @@ public class UserDto {
     private String email;
     private String password;
     private LocalDate birthDate;
-
-    @JsonBackReference
     private Set<RoleDto> roles;
-
-    @JsonManagedReference
     private List<AbilityUserDto> abilities;
-
-    @JsonManagedReference
-    private List<QuizResults> quizzes;
+    private List<QuizResultsDto> quizzes;
 
 }
