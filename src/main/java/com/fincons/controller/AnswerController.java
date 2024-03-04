@@ -1,8 +1,11 @@
 package com.fincons.controller;
 
+import com.fincons.dto.AnswerDto;
 import com.fincons.dto.ContentDto;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.AnswerMapper;
 import com.fincons.mapper.ContentMapper;
+import com.fincons.service.answer.IAnswerService;
 import com.fincons.service.content.IContentService;
 import com.fincons.utility.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,60 +14,59 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping("${application.context}")
-public class ContentController {
+public class AnswerController {
 
     @Autowired
-    private IContentService iContentService;
+    private IAnswerService iAnswerService;
     @Autowired
-    private ContentMapper contentMapper;
+    private AnswerMapper answerMapper;
 
-    @GetMapping("${content.get-all-content}")
-    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContent(){
-        List<ContentDto> contentDtoList= iContentService.findAllContent()
+    @GetMapping("${answer.get-all-answer}")
+    public ResponseEntity<ApiResponse<List<AnswerDto>>> getAllContent(){
+        List<AnswerDto> answerDtoList= iAnswerService.findAllAnswer()
                 .stream()
-                .map(s->contentMapper.mapContentToContentDto(s))
+                .map(s->answerMapper.mapAnswerToAnswerDto(s))
                 .toList();
-        return ResponseEntity.ok().body(ApiResponse.<List<ContentDto>>builder()
-                .data(contentDtoList)
+        return ResponseEntity.ok().body(ApiResponse.<List<AnswerDto>>builder()
+                .data(answerDtoList)
                 .build());
     }
-    @GetMapping("${content.get-by-id}/{id}")
-    public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable long id){
+    @GetMapping("${answer.get-by-id}/{id}")
+    public ResponseEntity<ApiResponse<AnswerDto>> getById(@PathVariable long id){
         try{
-            ContentDto contentDto= contentMapper.mapContentToContentDto(iContentService.findById(id));
-            return ResponseEntity.ok().body(ApiResponse.<ContentDto>builder()
-                    .data(contentDto)
+            AnswerDto answerDto= answerMapper.mapAnswerToAnswerDto(iAnswerService.findById(id));
+            return ResponseEntity.ok().body(ApiResponse.<AnswerDto>builder()
+                    .data(answerDto)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<ContentDto>builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AnswerDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
     }
-    @PostMapping("${content.create}")
-    public ResponseEntity<ApiResponse<ContentDto>> createContent(@RequestBody ContentDto contentDto) {
+    @PostMapping("${answer.create}")
+    public ResponseEntity<ApiResponse<AnswerDto>> createContent(@RequestBody AnswerDto answerDto) {
         try {
-            ContentDto contentDtoToShow = contentMapper.mapContentToContentDto(iContentService.createContent(contentDto));
-            return ResponseEntity.ok().body(ApiResponse.<ContentDto>builder()
-                    .data(contentDtoToShow)
+            AnswerDto answerDtoToShow = answerMapper.mapAnswerToAnswerDto(iAnswerService.createAnswer(answerDto));
+            return ResponseEntity.ok().body(ApiResponse.<AnswerDto>builder()
+                    .data(answerDtoToShow)
                     .build());
         } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(ApiResponse.<ContentDto>builder()
+            return ResponseEntity.badRequest().body(ApiResponse.<AnswerDto>builder()
                     .message(exception.getMessage())
                     .build());
         }
     }
 
-    @PutMapping("${content.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateContent(@PathVariable long id,@RequestBody ContentDto contentDto) {
+    @PutMapping("${answer.update}/{id}")
+    public ResponseEntity<ApiResponse<String>> updateContent(@PathVariable long id,@RequestBody AnswerDto answerDto) {
         try {
-            iContentService.updateContent(id,contentDto);
+            iAnswerService.updateAnswer(id,answerDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
-                    .data("The content has been successfully updated!")
+                    .data("The answer has been successfully updated!")
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
@@ -72,12 +74,12 @@ public class ContentController {
                     .build());
         }
     }
-    @DeleteMapping("${content.delete}/{id}")
+    @DeleteMapping("${answer.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
         try {
-            iContentService.deleteContent(id);
+            iAnswerService.deleteAnswer(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
-                    .data("The content has been successfully deleted!")
+                    .data("The answer has been successfully deleted!")
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
@@ -85,8 +87,5 @@ public class ContentController {
                     .build());
         }
     }
-
-
-
 
 }

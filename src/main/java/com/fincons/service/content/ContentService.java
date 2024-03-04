@@ -20,8 +20,7 @@ public class ContentService implements IContentService {
 
     @Autowired
     private ContentRepository contentRepository;
-    @Autowired
-    private ContentMapper contentMapper;
+
 
     @Override
     public Content findById(long id) {

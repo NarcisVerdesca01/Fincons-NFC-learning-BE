@@ -24,6 +24,6 @@ public class QuestionDto {
     private int correctAnswer;
     private AnswerDto[] answers;
     private QuizDto quiz;
-    private int score;
+    private int valueOfQuestion;
 
 }
