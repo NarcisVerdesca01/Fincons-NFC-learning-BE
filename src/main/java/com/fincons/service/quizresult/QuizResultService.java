@@ -47,37 +47,40 @@ public class QuizResultService implements IQuizResultService{
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(()-> new ResourceNotFoundException("Quiz does not exist"));
 
 
-        // Inizializza variabili per calcolare il punteggio totale e il punteggio raggiunto
+        //Initialise variables to calculate total score and achieved score
         int risultato = 0;
         int totale = 0;
 
-        // Itera su ogni domanda del quiz
+
+        // Iteration on each quiz question
         for (int i = 0; i < quiz.getQuestions().size(); i++) {
             Question domanda = quiz.getQuestions().get(i);
 
-            // Incrementa il punteggio totale aggiungendo il punteggio della domanda corrente
+        // Increases the total score by adding the score of the current question
             totale += domanda.getValueOfQuestion();
 
-            // Controlla se l'indice della risposta data dallo studente è uguale all'indice della risposta corretta
+            // Checks whether the index of the answer given by the student is equal to the index of the correct answer
             if (domanda.getCorrectAnswer() == listAnswers.get(i)) {
-                risultato += domanda.getValueOfQuestion(); // Incrementa il punteggio raggiunto
+                risultato += domanda.getValueOfQuestion(); // Increase result
             }
         }
 
-        // Calcola la percentuale di punteggio raggiunto rispetto al punteggio totale
+        // Calculates the percentage of score achieved in relation to the total score
         double percentualeRisultato = (double) risultato / totale * 100;
 
-        // Crea un oggetto QuizResultsDto per memorizzare i risultati
+        // Create a QuizResultsDto object to store results
         QuizResults quizResult = new QuizResults();
-        quizResult.setUser(user); // Imposta l'utente
-        quizResult.setQuiz(quiz); // Imposta il quiz
-        quizResult.setTotalScore(percentualeRisultato); // Imposta il punteggio totale del quiz
+        quizResult.setUser(user);
+        quizResult.setQuiz(quiz);
+        quizResult.setTotalScore(percentualeRisultato);
 
-        // Salva i risultati nel repository dei risultati del quiz
         QuizResults  quizResults = quizResultRepository.save(quizResult);
 
-        return quizResults; // Restituisce i risultati salvati
+        return quizResults;
     }
+
+
+
 
 
 }
