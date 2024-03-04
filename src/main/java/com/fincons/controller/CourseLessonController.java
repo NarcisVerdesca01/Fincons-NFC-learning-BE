@@ -35,7 +35,7 @@ public class CourseLessonController {
     public ResponseEntity<ApiResponse<List<CourseLessonDto>>> getAllCourseLesson(){
 
         List<CourseLessonDto> courseLessonDtos = courseLessonMapper
-                .mapCourseLessonListToAbilityCourseDtoList(iCourseLessonService.getCourseLessonList()) ;
+                .mapCourseLessonListToCourseLessonDtoList(iCourseLessonService.getCourseLessonList()) ;
         return ResponseEntity.ok().body(ApiResponse.<List<CourseLessonDto>>builder()
                 .data(courseLessonDtos)
                 .build());
@@ -45,7 +45,7 @@ public class CourseLessonController {
     public ResponseEntity<ApiResponse<CourseLessonDto>> addCourseLesson(@RequestBody CourseLessonDto courseLessonDto) {
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
-                    .mapCourseLessonToCourseLessonDto(iCourseLessonService.addCourseLesson(courseLessonDto));
+                    .mapCourseLessonEntityToDto(iCourseLessonService.addCourseLesson(courseLessonDto));
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
@@ -64,7 +64,7 @@ public class CourseLessonController {
     public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto){
         try{
             CourseLessonDto courseLessonDtoToShow =
-                    courseLessonMapper.mapCourseLessonToCourseLessonDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
+                    courseLessonMapper.mapCourseLessonEntityToDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
 
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
@@ -100,7 +100,7 @@ public class CourseLessonController {
 
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
-                    .mapCourseLessonToCourseLessonDto(iCourseLessonService.getCourseLessonById(id));
+                    .mapCourseLessonEntityToDto(iCourseLessonService.getCourseLessonById(id));
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
