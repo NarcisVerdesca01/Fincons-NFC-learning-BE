@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@JsonIdentityInfo(scope = AbilityUserDto.class, generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class AbilityUserDto {
 
     private long id;

@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@JsonIdentityInfo(scope = AbilityDto.class,  generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class AbilityDto {
 
     private long id;

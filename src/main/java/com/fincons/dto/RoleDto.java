@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@JsonIdentityInfo(scope = RoleDto.class ,generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class RoleDto {
 
     private long id;
