@@ -103,6 +103,8 @@ public class SecurityConfiguration {
 
     @Value("${detail.userdto}")
     private String getUserDtoByEmail;
+    @Value("${quiz.base.uri}")
+    private String quizBaseUri;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -152,13 +154,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
-                        /*
+
                                                 //TODO -  Tutor CRUD on Quiz
                          .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
-                         */
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+
 
                         /*
                                                 //TODO - Associate Quiz to Student

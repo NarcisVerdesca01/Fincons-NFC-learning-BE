@@ -1,6 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.dto.ContentDto;
+
 import com.fincons.dto.QuestionDto;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuestionMapper;
@@ -46,7 +46,7 @@ public class QuestionController {
         }
     }
     @PostMapping("${question.create}")
-    public ResponseEntity<ApiResponse<QuestionDto>> createContent(@RequestBody QuestionDto questionDto) {
+    public ResponseEntity<ApiResponse<QuestionDto>> createQuestion(@RequestBody QuestionDto questionDto) {
         try {
             QuestionDto questionDtoToShow = questionMapper.mapQuestionToQuestionDto(iQuestionService.createQuestion(questionDto));
             return ResponseEntity.ok().body(ApiResponse.<QuestionDto>builder()
@@ -60,7 +60,7 @@ public class QuestionController {
     }
 
     @PutMapping("${question.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateContent(@PathVariable long id,@RequestBody QuestionDto questionDto) {
+    public ResponseEntity<ApiResponse<String>> updateQuestion(@PathVariable long id,@RequestBody QuestionDto questionDto) {
         try {
             iQuestionService.updateQuestion(id,questionDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -73,7 +73,7 @@ public class QuestionController {
         }
     }
     @DeleteMapping("${question.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<String>> deleteQuestion(@PathVariable long id) {
         try {
             iQuestionService.deleteQuestion(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

@@ -1,17 +1,23 @@
 package com.fincons.controller;
 
 import com.fincons.dto.QuizDto;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuizMapper;
 import com.fincons.service.quiz.IQuizService;
 import com.fincons.utility.ApiResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-
+@CrossOrigin("*")
+@AllArgsConstructor
+@RestController
+@RequestMapping("${application.context}")
 public class QuizController {
 
     @Autowired
@@ -45,11 +51,11 @@ public class QuizController {
     @PostMapping("${quiz.create}")
     public ResponseEntity<ApiResponse<QuizDto>> createQuiz(@RequestBody QuizDto quizDto) {
         try {
-            QuizDto questionDtoToShow = quizMapper.mapQuizToQuizDto(iQuizService.createQuiz(quizDto));
+            QuizDto quizDtoToShow = quizMapper.mapQuizToQuizDto(iQuizService.createQuiz(quizDto));
             return ResponseEntity.ok().body(ApiResponse.<QuizDto>builder()
-                    .data(questionDtoToShow)
+                    .data(quizDtoToShow)
                     .build());
-        } catch (Exception exception) {
+        } catch (DuplicateException exception) {
             return ResponseEntity.badRequest().body(ApiResponse.<QuizDto>builder()
                     .message(exception.getMessage())
                     .build());
@@ -84,7 +90,42 @@ public class QuizController {
     }
 
 
+    @PutMapping("${quiz.associate.lesson}/{idQuiz}/{idLesson}")
+    public ResponseEntity<ApiResponse<String>> associateQuizLesson(@PathVariable long idQuiz,@PathVariable long idLesson) {
+        try {
+            iQuizService.associateLesson(idQuiz,idLesson);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The quiz has been successfully associated with lesson!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
+        }
+    }
 
+
+    @PutMapping("${quiz.associate.question}/{idQuiz}/{idQuestion}")
+    public ResponseEntity<ApiResponse<String>> associateQuizQuestion(@PathVariable long idQuiz,@PathVariable long idQuestion) {
+        try {
+            iQuizService.associateQuestion(idQuiz,idQuestion);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The quiz has been successfully associated with question!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
+        }
+    }
 
 
 
