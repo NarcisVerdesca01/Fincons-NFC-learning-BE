@@ -4,7 +4,6 @@ import com.fincons.dto.AbilityCourseDto;
 import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.Course;
-import com.fincons.exception.AbilityCourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
@@ -13,7 +12,6 @@ import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -68,9 +66,9 @@ public class AbilityCourseService implements IAbilityCourseService{
     }
 
     @Override
-    public void deleteAbilityCourse(long id) throws AbilityCourseException {
+    public void deleteAbilityCourse(long id) throws ResourceNotFoundException {
         if (!abilityCourseRepository.existsById(id)) {
-            throw new AbilityCourseException("The course-ability association does not exist") ;
+            throw new ResourceNotFoundException("The course-ability association does not exist") ;
         }
         abilityCourseRepository.deleteById(id);
     }

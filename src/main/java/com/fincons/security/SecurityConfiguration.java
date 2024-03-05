@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -104,6 +103,9 @@ public class SecurityConfiguration {
     @Value("${detail.userdto}")
     private String getUserDtoByEmail;
 
+    @Value("${quiz-result-student.base.uri}")
+    private String quizResultStudentBaseUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -160,6 +162,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
                          */
+
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
                         /*
                                                 //TODO - Associate Quiz to Student

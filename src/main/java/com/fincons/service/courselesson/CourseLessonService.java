@@ -4,17 +4,13 @@ import com.fincons.dto.CourseLessonDto;
 import com.fincons.entity.Course;
 import com.fincons.entity.CourseLesson;
 import com.fincons.entity.Lesson;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

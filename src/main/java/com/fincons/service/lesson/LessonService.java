@@ -3,8 +3,7 @@ package com.fincons.service.lesson;
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.LessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LessonService implements ILessonService{
@@ -46,7 +44,7 @@ public class LessonService implements ILessonService{
     }
 
     @Override
-    public Lesson createLesson(LessonDto lessonDto) throws LessonException {
+    public Lesson createLesson(LessonDto lessonDto) {
 
         if(StringUtils.isBlank(lessonDto.getTitle())){
             throw new IllegalArgumentException("Title required");
@@ -59,24 +57,24 @@ public class LessonService implements ILessonService{
     }
 
     @Override
-    public Lesson updateLesson(long id, LessonDto lessonDto) throws LessonException {
+    public Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException {
 
         if(!lessonRepository.existsById(id)){
-            throw new LessonException("Lesson does not exist");
+            throw new ResourceNotFoundException("Lesson does not exist");
         }
         if(lessonRepository.existsByTitleIgnoreCase(lessonDto.getTitle())){
-            throw  new LessonException("Title of lesson already exists!");
+            throw  new DuplicateException("Title of lesson already exists!");
         }
-        Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new LessonException("Lesson does not exist"));
+        Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Lesson does not exist"));
 
        lessonToModify.setTitle(lessonDto.getTitle());
         return lessonRepository.save(lessonToModify);
     }
 
     @Override
-    public void deleteLesson(long id) throws LessonException {
+    public void deleteLesson(long id)  {
         if(!lessonRepository.existsById(id)){
-            throw new LessonException("Lesson does not exists!");
+            throw new ResourceNotFoundException("Lesson does not exists!");
         }
         lessonRepository.deleteById(id);
     }

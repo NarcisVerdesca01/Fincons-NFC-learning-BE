@@ -5,10 +5,8 @@ import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
 import com.fincons.entity.User;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.exception.UserDataException;
 import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
@@ -19,7 +17,6 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-
 
 @Service
 public class CourseService implements ICourseService {
@@ -56,13 +53,17 @@ public class CourseService implements ICourseService {
             throw new IllegalArgumentException("Name, description or background image not present");
         }
         if (courseRepository.existsByName(courseDto.getName())) {
-            throw new DuplicateException(CourseException.courseAlreadyExist());
+            throw new DuplicateException("The name of course already exist");
         }
 
         Course course = new Course();
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
         course.setBackgroundImage(courseDto.getBackgroundImage());
+
+        if(courseDto.getImageResource() != null){
+            course.setImageResource(courseDto.getImageResource());
+        }
 
         return courseRepository.save(course);
     }

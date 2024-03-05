@@ -1,9 +1,6 @@
 package com.fincons.service.quizresult;
 
-import com.fincons.dto.QuizResultsDto;
 import com.fincons.entity.QuizResults;
-
-import java.util.Arrays;
 import java.util.List;
 
 public interface IQuizResultService {

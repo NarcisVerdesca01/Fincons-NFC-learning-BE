@@ -5,15 +5,11 @@ import com.fincons.entity.Content;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.repository.ContentRepository;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 @Service
 public class ContentService implements IContentService {

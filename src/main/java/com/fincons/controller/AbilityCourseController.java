@@ -1,7 +1,6 @@
 package com.fincons.controller;
 
 import com.fincons.dto.AbilityCourseDto;
-import com.fincons.exception.AbilityCourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityCourseMapper;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @CrossOrigin("*")
@@ -104,15 +102,15 @@ public class AbilityCourseController {
     }
 
     @DeleteMapping("${ability-course.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAbilityCourse(@PathVariable long id) throws AbilityCourseException {
+    public ResponseEntity<ApiResponse<String>> deleteAbilityCourse(@PathVariable long id)  {
         try{
             iAbilityCourseService.deleteAbilityCourse(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .message("Deleted relationship between ability and course chose")
                     .build());
-        }catch(AbilityCourseException abilityCourseException){
+        }catch(ResourceNotFoundException resourceNotFoundException){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
-                    .message(abilityCourseException.getMessage())
+                    .message(resourceNotFoundException.getMessage())
                     .build());
         }
     }

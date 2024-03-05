@@ -1,6 +1,5 @@
 package com.fincons.controller;
 
-
 import com.fincons.dto.AbilityDto;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @CrossOrigin("*")

@@ -1,10 +1,6 @@
 package com.fincons.controller;
 
-
-import com.fincons.dto.AbilityDto;
-import com.fincons.dto.CourseLessonDto;
 import com.fincons.dto.QuizResultsDto;
-import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuizResultMapper;
 import com.fincons.service.quizresult.IQuizResultService;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @CrossOrigin("*")
@@ -64,18 +59,18 @@ public class QuizResultController {
     }
 
     @Transactional
-    @PostMapping("${quiz-results.calculate-and-save}")
+    @PostMapping("${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
             @RequestParam("userEmail") String userEmail,
             @RequestBody List<Integer> listAnswers) {
 
         try {
-            QuizResultsDto risultati = quizResultMapper
+            QuizResultsDto results = quizResultMapper
                     .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, userEmail, listAnswers)) ;
 
             return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
-                    .data(risultati)
+                    .data(results)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.badRequest().body(ApiResponse.<QuizResultsDto>builder()

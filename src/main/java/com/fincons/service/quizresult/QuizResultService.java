@@ -1,7 +1,5 @@
 package com.fincons.service.quizresult;
 
-
-import com.fincons.dto.QuizResultsDto;
 import com.fincons.entity.Question;
 import com.fincons.entity.Quiz;
 import com.fincons.entity.QuizResults;
@@ -12,8 +10,8 @@ import com.fincons.repository.QuizResultRepository;
 import com.fincons.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class QuizResultService implements IQuizResultService{
@@ -46,8 +44,8 @@ public class QuizResultService implements IQuizResultService{
 
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(()-> new ResourceNotFoundException("Quiz does not exist"));
 
-
-        //Initialise variables to calculate total score and achieved score
+        /*
+                //Initialise variables to calculate total score and achieved score
         int risultato = 0;
         int totale = 0;
 
@@ -64,9 +62,24 @@ public class QuizResultService implements IQuizResultService{
                 risultato += domanda.getValueOfQuestion(); // Increase result
             }
         }
+         */
+
+        int total = quiz.getQuestions()
+                .stream()
+                .map(Question::getValueOfQuestion)
+                .mapToInt(Integer::intValue)
+                .sum();
+
+        int result = IntStream.range(0, quiz.getQuestions().size())
+                .filter(i -> quiz.getQuestions().get(i).getCorrectAnswer() == listAnswers.get(i))
+                .mapToObj(i -> quiz.getQuestions().get(i))
+                .mapToInt(Question::getValueOfQuestion)
+                .sum();
+
+
 
         // Calculates the percentage of score achieved in relation to the total score
-        double percentualeRisultato = (double) risultato / totale * 100;
+        double percentualeRisultato = (double) result / total * 100;
 
         // Create a QuizResultsDto object to store results
         QuizResults quizResult = new QuizResults();
