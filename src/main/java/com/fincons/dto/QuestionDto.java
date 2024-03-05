@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,8 +18,7 @@ public class QuestionDto {
 
     private long id;
     private String textQuestion;
-    private int correctAnswer;
-    private AnswerDto[] answers;
+    private List<AnswerDto> answers;
     private QuizDto quiz;
     private int score;
 

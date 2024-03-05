@@ -50,6 +50,8 @@ public class Lesson {
     @OneToOne(mappedBy = "lesson", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Content content;
 
+    @Column(name = "backgroundImage")
+    private String backgroundImage;
 
 
     @CreatedDate

@@ -58,7 +58,8 @@ public class QuizResultController {
         }
     }
 
-    @Transactional
+    /*
+        @Transactional
     @PostMapping("${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
@@ -78,6 +79,8 @@ public class QuizResultController {
                     .build());
         }
     }
+     */
+
 
 
 }

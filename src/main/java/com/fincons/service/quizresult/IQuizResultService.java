@@ -9,5 +9,5 @@ public interface IQuizResultService {
 
     QuizResults getQuizResultsById(long id);
 
-    QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers);
+    //QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers);
 }

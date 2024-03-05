@@ -17,6 +17,6 @@ public class AnswerDto {
 
     private long id;
     private String text;
-
     private Question question;
+    private boolean isCorrect;
 }

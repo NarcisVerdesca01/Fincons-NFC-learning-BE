@@ -37,6 +37,8 @@ public class QuizResultService implements IQuizResultService{
                 .orElseThrow(()-> new ResourceNotFoundException("The Quiz-Results-Student association does not exist"));
     }
 
+
+    /*
     @Override
     public QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers) {
 
@@ -62,7 +64,7 @@ public class QuizResultService implements IQuizResultService{
                 risultato += domanda.getValueOfQuestion(); // Increase result
             }
         }
-         */
+
 
         int total = quiz.getQuestions()
                 .stream()
@@ -92,6 +94,7 @@ public class QuizResultService implements IQuizResultService{
         return quizResults;
     }
 
+    */
 
 
 

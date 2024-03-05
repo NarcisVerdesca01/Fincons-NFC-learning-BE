@@ -21,9 +21,11 @@ public class LessonDto {
     private List<CourseLessonDto> courses;
     private QuizDto quiz;
     private ContentDto content;
+    private String backgroundImage;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;
     private String createdBy;
     private String lastModifiedBy;
+
 
 }

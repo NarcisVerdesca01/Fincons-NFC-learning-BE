@@ -31,4 +31,8 @@ public class Answer {
     @ManyToOne
     private Question question;
 
+    @Column(name = "isCorrect")
+    private boolean isCorrect;
+
+
 }
