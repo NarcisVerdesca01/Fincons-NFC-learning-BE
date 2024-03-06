@@ -51,7 +51,14 @@ public class LessonService implements ILessonService{
         }
 
         Lesson lesson = new Lesson();
-        lesson.setTitle(lessonDto.getTitle());
+
+        if(lessonDto.getTitle() != null){
+            lesson.setTitle(lessonDto.getTitle());
+        }
+
+        if(lessonDto.getBackgroundImage() != null ){
+            lesson.setBackgroundImage(lesson.getBackgroundImage());
+        }
 
         return lessonRepository.save(lesson);
     }
@@ -68,6 +75,10 @@ public class LessonService implements ILessonService{
         Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Lesson does not exist"));
 
        lessonToModify.setTitle(lessonDto.getTitle());
+
+       if(lessonDto.getBackgroundImage() != null){
+           lessonToModify.setBackgroundImage(lessonDto.getBackgroundImage());
+       }
         return lessonRepository.save(lessonToModify);
     }
 

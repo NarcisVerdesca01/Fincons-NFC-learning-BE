@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @AllArgsConstructor
@@ -58,17 +59,17 @@ public class QuizResultController {
         }
     }
 
-    /*
-        @Transactional
+
+    @Transactional
     @PostMapping("${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
             @RequestParam("userEmail") String userEmail,
-            @RequestBody List<Integer> listAnswers) {
+            @RequestBody Map<Long, List<Long>> answersMap) {
 
         try {
             QuizResultsDto results = quizResultMapper
-                    .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, userEmail, listAnswers)) ;
+                    .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, userEmail, answersMap)) ;
 
             return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
                     .data(results)
@@ -79,7 +80,8 @@ public class QuizResultController {
                     .build());
         }
     }
-     */
+
+
 
 
 
