@@ -1,10 +1,8 @@
 package com.fincons.service.lesson;
 
 import com.fincons.dto.LessonDto;
-import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
-import com.fincons.exception.LessonException;
-
+import com.fincons.exception.DuplicateException;
 import java.util.List;
 
 public interface ILessonService {
@@ -12,11 +10,11 @@ public interface ILessonService {
 
     Lesson findLessonById(long id);
 
-    Lesson createLesson(LessonDto lessonDto) throws LessonException;
+    Lesson createLesson(LessonDto lessonDto);
 
-    Lesson updateLesson(long id, LessonDto lessonDto) throws LessonException;
+    Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException;
 
-    void deleteLesson(long id) throws LessonException;
+    void deleteLesson(long id);
 
     Lesson associateContentToLesson(long lessonId, long contentId);
 }

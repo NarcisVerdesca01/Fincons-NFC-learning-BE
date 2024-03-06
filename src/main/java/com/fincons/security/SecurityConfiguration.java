@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -106,6 +105,9 @@ public class SecurityConfiguration {
     @Value("${quiz.base.uri}")
     private String quizBaseUri;
 
+    @Value("${quiz-result-student.base.uri}")
+    private String quizResultStudentBaseUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -161,17 +163,16 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
 
-
                         /*
-                                                //TODO - Associate Quiz to Student
-                        .requestMatchers(HttpMethod.GET, applicationContext +  + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, applicationContext +  + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.PUT, applicationContext +  + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.DELETE, applicationContext +  + "/**").hasAnyRole("TUTOR")
-
-                         */
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
 
+                                                               //TODO - Associate Quiz to Student
+                                       .requestMatchers(HttpMethod.GET, applicationContext +  + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                                       .requestMatchers(HttpMethod.POST, applicationContext +  + "/**").hasAnyRole("TUTOR")
+                                       .requestMatchers(HttpMethod.PUT, applicationContext +  + "/**").hasAnyRole("TUTOR")
+                                       .requestMatchers(HttpMethod.DELETE, applicationContext +  + "/**").hasAnyRole("TUTOR")
 
 
                         /*

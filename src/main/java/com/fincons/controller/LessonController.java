@@ -1,8 +1,7 @@
 package com.fincons.controller;
 
-import com.fincons.dto.ContentDto;
 import com.fincons.dto.LessonDto;
-import com.fincons.exception.LessonException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-
 
 @CrossOrigin("*")
 @AllArgsConstructor
@@ -73,7 +71,7 @@ public class LessonController {
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(lessonDtoToShow)
                     .build());
-        } catch (IllegalArgumentException | LessonException illegalArgumentException) {
+        } catch (IllegalArgumentException illegalArgumentException) {
             return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
                             .message(illegalArgumentException.getMessage())
                     .build());
@@ -87,9 +85,13 @@ public class LessonController {
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(updatedLessonDto)
                     .build());
-        } catch (ResourceNotFoundException | LessonException resourceNotFoundException) {
+        } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (DuplicateException duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }
@@ -101,7 +103,7 @@ public class LessonController {
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .data("The lesson has been successfully deleted!")
                     .build());
-        } catch (ResourceNotFoundException | LessonException resourceNotFoundException) {
+        } catch (ResourceNotFoundException  resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
@@ -129,4 +131,6 @@ public class LessonController {
                     .build());
         }
     }
+
+
 }
