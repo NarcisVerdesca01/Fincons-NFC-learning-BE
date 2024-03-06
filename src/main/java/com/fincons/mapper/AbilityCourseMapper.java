@@ -3,6 +3,7 @@ package com.fincons.mapper;
 import com.fincons.dto.AbilityCourseDto;
 import com.fincons.entity.AbilityCourse;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +13,10 @@ public class AbilityCourseMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
+    @Autowired
     private AbilityMapper abilityMapper;
+
+    @Autowired
     private CourseMapper courseMapper;
 
     public AbilityCourseDto mapAbilityCourseToAbilityCourseDto(AbilityCourse abilityCourse){

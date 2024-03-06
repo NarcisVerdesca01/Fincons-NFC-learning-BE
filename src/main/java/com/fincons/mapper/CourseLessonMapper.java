@@ -3,6 +3,7 @@ package com.fincons.mapper;
 import com.fincons.dto.CourseLessonDto;
 import com.fincons.entity.CourseLesson;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +12,11 @@ import java.util.stream.Collectors;
 public class CourseLessonMapper {
 
     private final ModelMapper modelMapperStandard = new ModelMapper();
+
+    @Autowired
     private CourseMapper courseMapper;
+
+    @Autowired
     private LessonMapper lessonMapper;
 
 

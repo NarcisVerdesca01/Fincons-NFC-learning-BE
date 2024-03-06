@@ -3,6 +3,7 @@ package com.fincons.mapper;
 import com.fincons.dto.QuizResultsDto;
 import com.fincons.entity.QuizResults;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
@@ -12,8 +13,9 @@ public class QuizResultMapper {
 
     private final ModelMapper modelMapperStandard = new ModelMapper();
 
+    @Autowired
     private QuizMapper quizMapper;
-
+    @Autowired
     private UserAndRoleMapper userAndRoleMapper;
 
     public QuizResultsDto mapQuizResultsEntityToDto(QuizResults quizResults) {
