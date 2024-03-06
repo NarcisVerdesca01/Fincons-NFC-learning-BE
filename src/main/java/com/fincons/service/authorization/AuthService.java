@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -73,7 +75,7 @@ public class AuthService implements IAuthService {
 
 
         Role role = roleToAssign("ROLE_STUDENT");
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
 
 
        User userSaved = userRepository.save(userToSave);
@@ -109,7 +111,7 @@ public class AuthService implements IAuthService {
         userToSave.setBirthDate(userDto.getBirthDate());//Controllo dell'età ?
 
         Role role = roleToAssign("ROLE_TUTOR");
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
         User userSaved = userRepository.save(userToSave);
         if (!userRepository.existsByEmail(userSaved.getEmail())) {
             throw new UserDataException("Something goes wrong!");
@@ -135,7 +137,7 @@ public class AuthService implements IAuthService {
 
         Role role = roleToAssign("ROLE_ADMIN");
 
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
 
         User userSaved = userRepository.save(userToSave);
         if (!userRepository.existsByEmail(userSaved.getEmail())) {
@@ -145,11 +147,15 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public User getUserDtoByEmail(String email) {
-        if(userRepository.findByEmail(email)==null){
+    public User getUserByEmail(String email) {
+        if(userRepository.findByEmail(email) == null){
             throw new ResourceNotFoundException("User with this email doesn't exist");
         }
-        return userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+
+        LOG.info("User info: " + user.getEmail());
+
+        return user;
     }
 
 
@@ -167,11 +173,11 @@ public class AuthService implements IAuthService {
 
 
 
-    public Role roleToAssign(String nomeRuolo) {
-        Role role = roleRepository.findByName(nomeRuolo);
+    public Role roleToAssign(String nameRole) {
+        Role role = roleRepository.findByName(nameRole);
         if (role == null) {
             Role newRole = new Role();
-            newRole.setName(nomeRuolo);
+            newRole.setName(nameRole);
             role = roleRepository.save(newRole);
         }
         return role;

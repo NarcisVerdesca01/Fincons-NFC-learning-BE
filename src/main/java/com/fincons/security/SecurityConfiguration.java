@@ -122,8 +122,8 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
-                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO To remove
-                        .requestMatchers(applicationContext + getUserDtoByEmail).authenticated()
+                        .requestMatchers(applicationContext + registerAdminUri).authenticated()  // TODO To remove
+                        .requestMatchers(applicationContext + getUserDtoByEmail).permitAll()
 
                         .requestMatchers(HttpMethod.GET, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")

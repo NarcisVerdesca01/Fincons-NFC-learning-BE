@@ -6,9 +6,12 @@ import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
+import com.fincons.service.authorization.AuthService;
 import com.fincons.service.authorization.IAuthService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("${application.context}")
 public class AuthController {
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
     private IAuthService iAuthService;
 
@@ -84,9 +90,11 @@ public class AuthController {
     }
 
     @GetMapping("${detail.userdto}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@RequestParam String email) {
+    public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@RequestParam(value = "email") String email) {
         try{
-            UserDto userDTO = userAndRoleMapper.userToUserDto(iAuthService.getUserDtoByEmail(email));
+            UserDto userDTO = userAndRoleMapper.userToUserDto(iAuthService.getUserByEmail(email));
+            LOG.info("User info: " + userDTO.getRoles().get(0).getName());
+
             return ResponseEntity.status(HttpStatus.OK).body(
                     ApiResponse.<UserDto>builder()
                             .data(userDTO)

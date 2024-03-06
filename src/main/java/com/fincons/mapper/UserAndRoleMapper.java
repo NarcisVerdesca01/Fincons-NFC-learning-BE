@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,7 +28,7 @@ public class UserAndRoleMapper {
 
     public UserDto userToUserDto(User user) {
         UserDto userDTO = modelMapper.map(user, UserDto.class);
-        userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).collect(Collectors.toSet()));
+        userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
         return userDTO;
     }
 

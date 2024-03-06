@@ -15,5 +15,5 @@ public interface IAuthService {
 
     String registerAdmin(UserDto userDto) throws UserDataException;
 
-    User getUserDtoByEmail(String email);
+    User getUserByEmail(String email);
 }

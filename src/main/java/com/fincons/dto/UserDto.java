@@ -23,7 +23,7 @@ public class UserDto {
     private String email;
     private String password;
     private LocalDate birthDate;
-    private Set<RoleDto> roles;
+    private List<RoleDto> roles;
     private List<AbilityUserDto> abilities;
     private List<QuizResultsDto> quizzes;
 
