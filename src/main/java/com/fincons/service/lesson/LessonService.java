@@ -69,9 +69,7 @@ public class LessonService implements ILessonService{
         if(!lessonRepository.existsById(id)){
             throw new ResourceNotFoundException("Lesson does not exist");
         }
-        if(lessonRepository.existsByTitleIgnoreCase(lessonDto.getTitle())){
-            throw  new DuplicateException("Title of lesson already exists!");
-        }
+
         Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Lesson does not exist"));
 
        lessonToModify.setTitle(lessonDto.getTitle());

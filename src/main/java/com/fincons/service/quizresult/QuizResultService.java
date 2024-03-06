@@ -50,6 +50,7 @@ public class QuizResultService implements IQuizResultService{
     @Override
     public QuizResults calculateAndSave(long quizId, String userEmail, Map<Long, List<Long>> userAnswers) {
         User user = userRepository.findByEmail(userEmail);
+
         if (user == null) {
             throw new ResourceNotFoundException("User not found with email: " + userEmail);
         }
