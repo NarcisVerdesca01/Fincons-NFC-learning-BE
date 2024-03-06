@@ -4,7 +4,6 @@ import com.fincons.dto.QuizResultsDto;
 import com.fincons.entity.QuizResults;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component
@@ -27,7 +26,7 @@ public class QuizResultMapper {
     public QuizResults mapQuizResultsDtoToEntity(QuizResultsDto quizResultsDto) {
         QuizResults quizResults = new QuizResults();
         quizResults.setId(quizResultsDto.getId());
-        quizResults.setQuiz(quizMapper.mapDtoToQuiz(quizResultsDto.getQuiz()));
+        quizResults.setQuiz(quizMapper.mapQuizDtoToQuizEntity(quizResultsDto.getQuiz()));
         quizResults.setUser(userAndRoleMapper.dtoToUser(quizResultsDto.getUser()));
         return quizResults;
     }
