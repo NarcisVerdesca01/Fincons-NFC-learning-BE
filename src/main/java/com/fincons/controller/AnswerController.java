@@ -2,6 +2,7 @@ package com.fincons.controller;
 
 import com.fincons.dto.AnswerDto;
 import com.fincons.dto.ContentDto;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AnswerMapper;
 import com.fincons.mapper.ContentMapper;
@@ -25,7 +26,7 @@ public class AnswerController {
     private AnswerMapper answerMapper;
 
     @GetMapping("${answer.get-all-answer}")
-    public ResponseEntity<ApiResponse<List<AnswerDto>>> getAllContent(){
+    public ResponseEntity<ApiResponse<List<AnswerDto>>> getAllAnswer(){
         List<AnswerDto> answerDtoList= iAnswerService.findAllAnswer()
                 .stream()
                 .map(s->answerMapper.mapAnswerToAnswerDto(s))
@@ -48,7 +49,7 @@ public class AnswerController {
         }
     }
     @PostMapping("${answer.create}")
-    public ResponseEntity<ApiResponse<AnswerDto>> createContent(@RequestBody AnswerDto answerDto) {
+    public ResponseEntity<ApiResponse<AnswerDto>> createAnswer(@RequestBody AnswerDto answerDto) {
         try {
             AnswerDto answerDtoToShow = answerMapper.mapAnswerToAnswerDto(iAnswerService.createAnswer(answerDto));
             return ResponseEntity.ok().body(ApiResponse.<AnswerDto>builder()
@@ -62,7 +63,7 @@ public class AnswerController {
     }
 
     @PutMapping("${answer.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateContent(@PathVariable long id,@RequestBody AnswerDto answerDto) {
+    public ResponseEntity<ApiResponse<String>> updateAnswer(@PathVariable long id,@RequestBody AnswerDto answerDto) {
         try {
             iAnswerService.updateAnswer(id,answerDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -75,7 +76,7 @@ public class AnswerController {
         }
     }
     @DeleteMapping("${answer.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<String>> deleteAnswer(@PathVariable long id) {
         try {
             iAnswerService.deleteAnswer(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -87,5 +88,25 @@ public class AnswerController {
                     .build());
         }
     }
+
+
+    @PutMapping("${answer.associate.question}/{idAnswer}/{idQuestion}")
+    public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@PathVariable long idAnswer,@PathVariable long idQuestion) {
+        try {
+            iAnswerService.associateQuestionToAnswer(idAnswer,idQuestion);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The question has been successfully associated with answer!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
+        }
+    }
+
 
 }

@@ -29,7 +29,7 @@ public class QuizService implements IQuizService{
         if (!quizRepository.existsById(id)) {
             throw new ResourceNotFoundException("The quiz does not exist!");
         }
-        return quizRepository.findById(id).orElse(null);
+        return quizRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("The quiz does not exist."));
     }
 
     @Override

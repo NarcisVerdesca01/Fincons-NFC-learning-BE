@@ -38,9 +38,9 @@ public class QuizController {
     @GetMapping("${quiz.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<QuizDto>> getById(@PathVariable long id){
         try{
-            QuizDto questionDto= quizMapper.mapQuizToQuizDto(iQuizService.findById(id));
+            QuizDto quizDto= quizMapper.mapQuizToQuizDto(iQuizService.findById(id));
             return ResponseEntity.ok().body(ApiResponse.<QuizDto>builder()
-                    .data(questionDto)
+                    .data(quizDto)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<QuizDto>builder()
@@ -98,7 +98,7 @@ public class QuizController {
                     .data("The quiz has been successfully associated with lesson!")
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         } catch (DuplicateException duplicateException){
