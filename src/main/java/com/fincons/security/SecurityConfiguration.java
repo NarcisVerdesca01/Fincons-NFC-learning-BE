@@ -168,11 +168,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
 
-                        /*
                         .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
-
+            /*
                                                                //TODO - Associate Quiz to Student
                                        .requestMatchers(HttpMethod.GET, applicationContext +  + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                                        .requestMatchers(HttpMethod.POST, applicationContext +  + "/**").hasAnyRole("TUTOR")

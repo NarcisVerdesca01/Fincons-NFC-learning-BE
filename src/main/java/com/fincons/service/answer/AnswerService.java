@@ -45,7 +45,6 @@ public class AnswerService implements IAnswerService{
         Answer newAnswer= new Answer();
         newAnswer.setText(answerDto.getText());
         newAnswer.setCorrect(answerDto.isCorrect());
-        newAnswer.setQuestion(questionMapper.mapQuestionDtoToQuestionEntity(answerDto.getQuestion()));
         Answer savedAnswer= answerRepository.save(newAnswer);
         return savedAnswer;
     }
