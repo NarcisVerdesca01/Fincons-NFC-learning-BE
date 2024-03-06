@@ -1,10 +1,15 @@
 package com.fincons.service.answer;
 
 import com.fincons.dto.AnswerDto;
+import com.fincons.dto.QuestionDto;
 import com.fincons.entity.Answer;
 import com.fincons.entity.Question;
+import com.fincons.entity.Quiz;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.QuestionMapper;
 import com.fincons.repository.AnswerRepository;
+import com.fincons.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +20,11 @@ public class AnswerService implements IAnswerService{
     @Autowired
     private AnswerRepository answerRepository;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionMapper questionMapper;
 
     @Override
     public Answer findById(long id) {
@@ -34,7 +44,8 @@ public class AnswerService implements IAnswerService{
     public Answer createAnswer(AnswerDto answerDto) {
         Answer newAnswer= new Answer();
         newAnswer.setText(answerDto.getText());
-        newAnswer.setQuestion(answerDto.getQuestion());
+        newAnswer.setCorrect(answerDto.isCorrect());
+        newAnswer.setQuestion(questionMapper.mapQuestionDtoToQuestionEntity(answerDto.getQuestion()));
         Answer savedAnswer= answerRepository.save(newAnswer);
         return savedAnswer;
     }
@@ -59,9 +70,26 @@ public class AnswerService implements IAnswerService{
             //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
         if(answerDto.getQuestion()!= null){
-            Question question = answerDto.getQuestion();
-            answerToModify.setQuestion(question);
+            QuestionDto question = answerDto.getQuestion();
+            answerToModify.setQuestion(questionMapper.mapQuestionDtoToQuestionEntity(question));
         }
         return answerRepository.save(answerToModify);
+    }
+
+    @Override
+    public Answer associateQuestionToAnswer(long idAnswer, long idQuestion) throws DuplicateException {
+        Answer answerToAssociateQuestion = answerRepository.findById(idAnswer)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer does not exist. "));
+
+        Question questionToAssociate = questionRepository.findById(idQuestion)
+                .orElseThrow(() -> new ResourceNotFoundException("Question does not exist. "));
+/*
+        if(answerToAssociateQuestion.getQuestion().getId()== idQuestion){
+            throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
+        }*/
+
+        answerToAssociateQuestion.setQuestion(questionToAssociate);
+
+        return answerRepository.save(answerToAssociateQuestion);
     }
 }

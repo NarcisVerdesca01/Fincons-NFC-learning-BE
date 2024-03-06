@@ -21,7 +21,7 @@ public class QuizDto {
     private String title;
     private List<QuestionDto> questions;
     private LessonDto lesson;
-    private List<QuizResults> users;
+    private List<QuizResultsDto> users;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;
     private String createdBy;

@@ -105,6 +105,11 @@ public class SecurityConfiguration {
     @Value("${quiz.base.uri}")
     private String quizBaseUri;
 
+    @Value("${answer.base.uri}")
+    private String answerBaseUri;
+
+    @Value("${question.base.uri}")
+    private String questionBaseUri;
     @Value("${quiz-result-student.base.uri}")
     private String quizResultStudentBaseUri;
 
