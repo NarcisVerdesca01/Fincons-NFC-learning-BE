@@ -44,12 +44,11 @@ public class Lesson {
     private List<CourseLesson> courses;
 
     //3. LEZIONE - QUIZ 1:1
-    @OneToOne(mappedBy = "lesson", cascade = CascadeType.ALL)
+    @OneToOne
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
     @OneToOne
-    @JoinColumn(name = "content_Id")
     private Content content;
 
     @Column(name = "backgroundImage")

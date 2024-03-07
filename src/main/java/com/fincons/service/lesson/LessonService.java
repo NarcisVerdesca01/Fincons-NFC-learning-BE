@@ -101,6 +101,7 @@ public class LessonService implements ILessonService{
         content.setLesson(lesson);
 
         Lesson updatedLesson = lessonRepository.save(lesson);
+        Content updatedContent = contentRepository.save(content);
 
         return updatedLesson;
     }

@@ -90,8 +90,8 @@ public class AnswerController {
     }
 
 
-    @PutMapping("${answer.associate.question}/{idAnswer}/{idQuestion}")
-    public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@PathVariable long idAnswer,@PathVariable long idQuestion) {
+    @PutMapping("${answer.associate.question}")
+    public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@RequestParam long idAnswer,@RequestParam long idQuestion) {
         try {
             iAnswerService.associateQuestionToAnswer(idAnswer,idQuestion);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

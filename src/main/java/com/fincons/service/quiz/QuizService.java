@@ -92,7 +92,7 @@ public class QuizService implements IQuizService{
         }
 
         quizToAssociate.setLesson(lessonToAssociate);
-
+        lessonToAssociate.setQuiz(quizToAssociate);
 
         return quizRepository.save(quizToAssociate);
     }

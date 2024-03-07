@@ -90,8 +90,8 @@ public class QuizController {
     }
 
 
-    @PutMapping("${quiz.associate.lesson}/{idQuiz}/{idLesson}")
-    public ResponseEntity<ApiResponse<String>> associateQuizLesson(@PathVariable long idQuiz,@PathVariable long idLesson) {
+    @PutMapping("${quiz.associate.lesson}")
+    public ResponseEntity<ApiResponse<String>> associateQuizLesson(@RequestParam long idQuiz,@RequestParam long idLesson) {
         try {
             iQuizService.associateLesson(idQuiz,idLesson);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -109,8 +109,8 @@ public class QuizController {
     }
 
 
-    @PutMapping("${quiz.associate.question}/{idQuiz}/{idQuestion}")
-    public ResponseEntity<ApiResponse<String>> associateQuizQuestion(@PathVariable long idQuiz,@PathVariable long idQuestion) {
+    @PutMapping("${quiz.associate.question}")
+    public ResponseEntity<ApiResponse<String>> associateQuizQuestion(@RequestParam long idQuiz,@RequestParam long idQuestion) {
         try {
             iQuizService.associateQuestion(idQuiz,idQuestion);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

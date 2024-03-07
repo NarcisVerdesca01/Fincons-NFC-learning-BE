@@ -45,8 +45,7 @@ public class Quiz {
     private List<Question> questions;
 
     //3. LEZIONE - QUIZ 1:1
-    @OneToOne
-    @JoinColumn(name = "lesson_id")
+    @OneToOne(mappedBy = "quiz")
     private Lesson lesson;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
