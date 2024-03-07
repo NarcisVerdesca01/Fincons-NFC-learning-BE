@@ -68,6 +68,9 @@ public class QuizResultService implements IQuizResultService{
             Question question = questionRepository.findById(questionId)
                     .orElseThrow(() -> new ResourceNotFoundException("Question not found with ID: " + questionId));
 
+            userAnswerIndices.forEach(a-> answerRepository.findById(a).orElseThrow(() -> new ResourceNotFoundException("Answer not found ")));
+
+
             total += question.getValueOfQuestion(); // Aumenta il conteggio delle domande
 
             // Ottieni le risposte corrette associate alla domanda
