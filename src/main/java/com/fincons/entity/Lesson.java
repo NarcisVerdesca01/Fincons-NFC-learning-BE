@@ -48,7 +48,7 @@ public class Lesson {
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToOne
     @JoinColumn(name = "content_Id")
     private Content content;
 
