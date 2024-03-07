@@ -62,6 +62,7 @@ public class QuizResultService implements IQuizResultService{
         double score = 0;
 
         for (Map.Entry<Long, List<Long>> entry : userAnswers.entrySet()) {
+
             Long questionId = entry.getKey();
             List<Long> userAnswerIndices = entry.getValue();
 
@@ -70,29 +71,30 @@ public class QuizResultService implements IQuizResultService{
 
             userAnswerIndices.forEach(a-> answerRepository.findById(a).orElseThrow(() -> new ResourceNotFoundException("Answer not found ")));
 
-
             total += question.getValueOfQuestion(); // Aumenta il conteggio delle domande
 
             // Ottieni le risposte corrette associate alla domanda
-            List<Answer> correctAnswers = question.getAnswers()
+            List<Answer> correctAnswersOfQuestion = question.getAnswers()
                     .stream()
-                    .filter(a->a.isCorrect() == true)
+                    .filter(Answer::isCorrect)
                     .toList();
 
 
             // Conta le risposte corrette date dall'utente
-            long correctUserAnswersCount = correctAnswers
+            long correctUserAnswersCount = correctAnswersOfQuestion
                     .stream()
                     .filter(answer -> userAnswerIndices.contains(answer.getId())).count();
 
+
+
             // Calcola il punteggio parziale in base alle risposte corrette date dall'utente e le risposte corrette totali
-            double partialScore = ((double) correctUserAnswersCount / (double) userAnswerIndices.size()) *  question.getValueOfQuestion();
+            double partialScore = ((double) correctUserAnswersCount / (double) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
 
             score +=  partialScore;
+
         }
 
         double percentageScore = ( score / total) * 100;
-        System.out.println(percentageScore);
         QuizResults quizResult = new QuizResults();
         quizResult.setUser(user);
         quizResult.setQuiz(quiz);
