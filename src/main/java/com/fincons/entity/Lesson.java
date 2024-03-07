@@ -7,6 +7,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -47,7 +48,8 @@ public class Lesson {
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(mappedBy = "lesson", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinColumn(name = "content_Id")
     private Content content;
 
     @Column(name = "backgroundImage")
