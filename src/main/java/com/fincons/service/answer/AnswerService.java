@@ -10,6 +10,7 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuestionMapper;
 import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,10 @@ public class AnswerService implements IAnswerService{
     @Override
     public Answer createAnswer(AnswerDto answerDto) {
         Answer newAnswer= new Answer();
+
+        if(StringUtils.isBlank(answerDto.getText())){
+            throw new IllegalArgumentException("User must enter the text of answer!");
+        }
         newAnswer.setText(answerDto.getText());
         newAnswer.setCorrect(answerDto.isCorrect());
         Answer savedAnswer= answerRepository.save(newAnswer);
@@ -62,7 +67,7 @@ public class AnswerService implements IAnswerService{
     @Override
     public Answer updateAnswer(long id, AnswerDto answerDto) {
         Answer answerToModify = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer does not exist. "));
+                .orElseThrow(() -> new ResourceNotFoundException("Answer does not exist."));
 
         if (answerDto.getText() == null || answerDto.getQuestion()== null) {
             throw new IllegalArgumentException("Text of answer is null");

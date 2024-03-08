@@ -55,9 +55,9 @@ public class AnswerController {
             return ResponseEntity.ok().body(ApiResponse.<AnswerDto>builder()
                     .data(answerDtoToShow)
                     .build());
-        } catch (Exception exception) {
+        } catch (IllegalArgumentException illegalArgumentException) {
             return ResponseEntity.badRequest().body(ApiResponse.<AnswerDto>builder()
-                    .message(exception.getMessage())
+                    .message(illegalArgumentException.getMessage())
                     .build());
         }
     }
@@ -72,6 +72,10 @@ public class AnswerController {
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
                     .build());
         }
     }
