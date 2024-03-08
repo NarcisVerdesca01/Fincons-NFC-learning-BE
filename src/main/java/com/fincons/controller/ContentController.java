@@ -70,6 +70,11 @@ public class ContentController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
+        catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
+                    .build());
+        }
     }
     @DeleteMapping("${content.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
