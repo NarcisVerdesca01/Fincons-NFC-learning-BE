@@ -4,9 +4,11 @@ import com.fincons.dto.CourseDto;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
+import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.CourseMapper;
 import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,9 @@ public class CourseController {
 
     @Autowired
     private CourseMapper courseMapper;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("${course.get-all-courses}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getAllCourses(){
@@ -108,11 +113,14 @@ public class CourseController {
     }
 
     @GetMapping ("${course.getDedicatedCourses}")
-    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(@RequestParam String email) throws UserDataException {
+    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(HttpServletRequest request) throws UserDataException {
 
         try{
+            String token = request.getHeader("Authorization").replace("Bearer ", "");
 
-            List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(email)
+            String userEmail = jwtTokenProvider.getEmailFromJWT(token);
+
+            List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(userEmail)
                     .stream()
                     .map(c->courseMapper.mapCourseToCourseDto(c))
                     .toList();
