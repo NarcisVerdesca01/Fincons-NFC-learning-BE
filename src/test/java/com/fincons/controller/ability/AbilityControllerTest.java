@@ -3,6 +3,7 @@ package com.fincons.controller.ability;
 import com.fincons.controller.AbilityController;
 import com.fincons.dto.AbilityDto;
 import com.fincons.entity.Ability;
+import com.fincons.exception.DuplicateException;
 import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityRepository;
 import com.fincons.service.ability.AbilityService;
@@ -17,13 +18,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import static javax.swing.UIManager.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
@@ -42,6 +49,8 @@ public class AbilityControllerTest {
     @Autowired
     private AbilityController abilityController;
 
+    @MockBean
+    private IAbilityService iAbilityService;
     @MockBean
     private AbilityRepository  abilityRepository;
 
@@ -110,6 +119,23 @@ public class AbilityControllerTest {
         assertEquals("Ability2", responseAbilities.get(1).getName());
     }
 
+
+    @Test
+    public void testGetAAbilityById_Success() throws DuplicateException {
+        Ability ability = new Ability(1L, "Informatica",null,null);
+
+
+        when(iAbilityService.findAbilityById(1L)).thenReturn(ability);
+
+
+        ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityById(abilityMapper.mapAbilityToAbilityDto(ability).getId());
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        assertNotNull(Objects.requireNonNull(responseEntity.getBody()).getData());
+        assertEquals(ability.getId(), responseEntity.getBody().getData().getId());
+        assertEquals(ability.getName(), responseEntity.getBody().getData().getName());
+    }
 
 
 }

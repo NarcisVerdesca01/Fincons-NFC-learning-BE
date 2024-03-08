@@ -51,7 +51,7 @@ public class Lesson {
     @OneToOne
     private Content content;
 
-    @Column(name = "backgroundImage")
+    @Column(name = "backgroundImage" , length = 20971520)
     private String backgroundImage;
 
 
