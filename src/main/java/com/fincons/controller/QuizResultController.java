@@ -69,7 +69,7 @@ public class QuizResultController {
     @PostMapping(value = "${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
-            @RequestParam("userEmail") String userEmail,
+            @RequestParam("userEmail") String userEmail,//TODO decode JWT Token (Payload)
             @RequestBody Map<String, Object> request) {
 
 
