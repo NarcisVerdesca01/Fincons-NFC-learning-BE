@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.dto.QuizResultsDto;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.QuizResultMapper;
 import com.fincons.service.quizresult.IQuizResultService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +38,7 @@ public class QuizResultController {
 
     private QuizResultMapper quizResultMapper;
 
+    private JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("${quiz-result-student.list}")
     public ResponseEntity<ApiResponse<List<QuizResultsDto>>> getAllQuizResults(){
@@ -69,12 +72,15 @@ public class QuizResultController {
     @PostMapping(value = "${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
-            @RequestParam("userEmail") String userEmail,//TODO decode JWT Token (Payload)
-            @RequestBody Map<String, Object> request) {
+            HttpServletRequest request,
+            @RequestBody Map<String, Object> requestBody) {
 
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+
+        String userEmail = jwtTokenProvider.getEmailFromJWT(token);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<Long, List<Long>> answersMap = objectMapper.convertValue(request.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
+        Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
 
         try {
             QuizResultsDto results = quizResultMapper
