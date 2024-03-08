@@ -37,7 +37,7 @@ public class QuizResults {
     private Quiz quiz;
 
     @Column(name = "totalScore")
-    private double totalScore;
+    private float totalScore;
 
     // TODO List<Integer> lista di indici delle risposte date
 

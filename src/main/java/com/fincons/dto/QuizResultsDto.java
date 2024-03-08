@@ -19,7 +19,7 @@ public class QuizResultsDto {
     private UserDto user;
 
     private QuizDto quiz;
-    private double totalScore;
+    private float totalScore;
 
     // TODO List<Integer> lista di indici delle risposte date
 

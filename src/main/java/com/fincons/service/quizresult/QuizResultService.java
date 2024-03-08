@@ -58,8 +58,8 @@ public class QuizResultService implements IQuizResultService{
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with ID: " + quizId));
 
-        double total = 0;
-        double score = 0;
+        float total = 0;
+        float score = 0;
 
         for (Map.Entry<Long, List<Long>> entry : userAnswers.entrySet()) {
 
@@ -94,13 +94,15 @@ public class QuizResultService implements IQuizResultService{
 
         }
 
-        double percentageScore = ( score / total) * 100;
+        float percentageScore = ( score / total) * 100;
         QuizResults quizResult = new QuizResults();
         quizResult.setUser(user);
         quizResult.setQuiz(quiz);
-        quizResult.setTotalScore(percentageScore);
-
-        return quizResultRepository.save(quizResult);
+        quizResult.setTotalScore( percentageScore);
+       float percentuale =  quizResult.getTotalScore();
+        percentageScore=percentageScore;
+          QuizResults savedEntity= quizResultRepository.save(quizResult);
+        return savedEntity;
     }
 
 
