@@ -22,6 +22,7 @@ public class CourseDto {
     private String description;
     private List<CourseLessonDto> lessons;
     private List<AbilityCourseDto> abilities;
+
     private LocalDateTime createDate;
     private LocalDateTime lastModified;
     private String createdBy;

@@ -57,7 +57,7 @@ public class LessonService implements ILessonService{
         }
 
         if(lessonDto.getBackgroundImage() != null ){
-            lesson.setBackgroundImage(lesson.getBackgroundImage());
+            lesson.setBackgroundImage(lessonDto.getBackgroundImage());
         }
 
         return lessonRepository.save(lesson);
