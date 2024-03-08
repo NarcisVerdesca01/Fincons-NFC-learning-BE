@@ -79,26 +79,6 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testGetAllAbility_Success(){
-        Ability ability = new Ability(1L,"Informatica",null,null);
-
-        when(abilityRepository.findByName("Informatica")).thenReturn(ability);
-
-        // Call the controller method
-        ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityByName("Informatica");
-
-        // Verify the response
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        AbilityDto abilityDto = Objects.requireNonNull(responseEntity.getBody()).getData();
-        assertNotNull(abilityDto);
-        assertEquals(1, abilityDto.getId());
-
-        assertEquals(ability.getId(), abilityDto.getId());
-        assertEquals(ability.getName(), abilityDto.getName());
-
-    }
-
-    @Test
     public void testGetAllAbilities_Success() {
         // Setup
         List<Ability> abilities = Arrays.asList(new Ability(1L, "Ability1", null, null),
@@ -136,6 +116,8 @@ public class AbilityControllerTest {
         assertEquals(ability.getId(), responseEntity.getBody().getData().getId());
         assertEquals(ability.getName(), responseEntity.getBody().getData().getName());
     }
+
+
 
 
 }
