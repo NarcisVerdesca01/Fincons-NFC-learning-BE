@@ -1,9 +1,7 @@
 package com.fincons.controller.answer;
 
 import com.fincons.controller.AnswerController;
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AnswerDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.Answer;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
@@ -37,23 +34,21 @@ public class AnswerControllerTest {
 
     @Autowired
     private AnswerController answerController;
-
     @MockBean
     private IAnswerService iAnswerService;
-
     @Autowired
     private AnswerMapper answerMapper;
 
 
     @Test
-    public void testAllAnswers_Success(){
+    public void testGetAllAnswers_Success(){
         List<Answer> answersList = Arrays.asList(new Answer(1L,"JEE: Java Enterprise Edition",null,true),
                 new Answer(2L,"JEE: Java Enterprise Enter",null,false));
         when(iAnswerService.findAllAnswer()).thenReturn(answersList);
         List<AnswerDto> answerDtoList = answersList.stream().map(a -> answerMapper.mapAnswerToAnswerDto(a)).toList();
         ResponseEntity<ApiResponse<List<AnswerDto>>> responseEntity = answerController.getAllAnswer();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        List<AnswerDto> responseAbilities = responseEntity.getBody().getData();
+        List<AnswerDto> responseAbilities = Objects.requireNonNull(responseEntity.getBody()).getData();
         assertNotNull(responseAbilities);
         assertEquals(2, responseAbilities.size());
         assertEquals("JEE: Java Enterprise Edition", responseAbilities.get(0).getText());
@@ -77,7 +72,7 @@ public class AnswerControllerTest {
         when(iAnswerService.createAnswer(inputAnswerDto)).thenReturn(answerMapper.mapAnswerDtoToAnswerEntity(inputAnswerDto));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(inputAnswerDto.getText(),responseEntity.getBody().getData().getText());
+        assertEquals(inputAnswerDto.getText(), Objects.requireNonNull(responseEntity.getBody()).getData().getText());
     }
 
     @Test
@@ -86,7 +81,7 @@ public class AnswerControllerTest {
         when(iAnswerService.createAnswer(inputAnswerDto)).thenThrow(new IllegalArgumentException("User must enter the text of answer!"));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("User must enter the text of answer!", responseEntity.getBody().getMessage());
+        assertEquals("User must enter the text of answer!", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -97,7 +92,7 @@ public class AnswerControllerTest {
         when(iAnswerService.updateAnswer(answerId, inputAnswerDto)).thenReturn(updatedAnswer);
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.updateAnswer(answerId, inputAnswerDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("The answer has been successfully updated!", responseEntity.getBody().getData());
+        assertEquals("The answer has been successfully updated!", Objects.requireNonNull(responseEntity.getBody()).getData());
     }
 
     @Test
@@ -108,7 +103,7 @@ public class AnswerControllerTest {
                 .thenThrow(new ResourceNotFoundException("Ability does not exist."));
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.updateAnswer(nonExistingAnswerId, inputAnswerDto);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("Ability does not exist.", responseEntity.getBody().getMessage());
+        assertEquals("Ability does not exist.", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -119,7 +114,7 @@ public class AnswerControllerTest {
                 .thenThrow(new IllegalArgumentException("Text of answer is null"));
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.updateAnswer(nonExistingAnswerId, inputAnswerDto);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Text of answer is null", responseEntity.getBody().getMessage());
+        assertEquals("Text of answer is null", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -127,7 +122,7 @@ public class AnswerControllerTest {
         long answerId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.deleteAnswer(answerId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("The answer has been successfully deleted!", responseEntity.getBody().getData());
+        assertEquals("The answer has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
         verify(iAnswerService).deleteAnswer(answerId);
     }
 
@@ -137,7 +132,7 @@ public class AnswerControllerTest {
         doThrow(new ResourceNotFoundException("The answer does not exist")).when(iAnswerService).deleteAnswer(nonExistingAnswerId);
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.deleteAnswer(nonExistingAnswerId);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("The answer does not exist", responseEntity.getBody().getMessage());
+        assertEquals("The answer does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
 

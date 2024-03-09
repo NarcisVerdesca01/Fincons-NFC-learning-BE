@@ -1,12 +1,10 @@
 package com.fincons.controller.content;
 
-
 import com.fincons.controller.ContentController;
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.ContentDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.Content;
 import com.fincons.exception.DuplicateException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.service.content.IContentService;
 import com.fincons.utility.ApiResponse;
@@ -19,13 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -35,10 +33,8 @@ public class ContentControllerTest {
 
     @Autowired
     private ContentController contentController;
-
     @MockBean
     private IContentService iContentService;
-
     @Autowired
     private ContentMapper contentMapper;
 
@@ -52,7 +48,7 @@ public class ContentControllerTest {
                 new ContentDto(2L, "video","randomContent2",null));
         ResponseEntity<ApiResponse<List<ContentDto>>> responseEntity = contentController.getAllContent();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        List<ContentDto> responseContents = responseEntity.getBody().getData();
+        List<ContentDto> responseContents = Objects.requireNonNull(responseEntity.getBody()).getData();
         assertNotNull(responseContents);
         assertEquals(2, responseContents.size());
         assertEquals("randomContent", responseContents.get(0).getContent());
@@ -81,6 +77,7 @@ public class ContentControllerTest {
         assertEquals(inputContentDto.getContent(),responseEntity.getBody().getData().getContent());
     }
 
+
     @Test
     public void testUpdateContent_Success() throws DuplicateException {
         long contentId = 1L;
@@ -89,9 +86,51 @@ public class ContentControllerTest {
         when(iContentService.updateContent(contentId, inputContentDto)).thenReturn(updatedContent);
         ResponseEntity<ApiResponse<String>> responseEntity = contentController.updateContent(contentId, inputContentDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("The content has been successfully updated!", responseEntity.getBody().getData());
+        assertEquals("The content has been successfully updated!", Objects.requireNonNull(responseEntity.getBody()).getData());
+    }
+
+    @Test
+    public void testUpdateContent_ResourceNotFoundException(){
+        long nonExistingContentId = 999L;
+        ContentDto inputContentDto = new ContentDto();
+        when(iContentService.updateContent(nonExistingContentId,inputContentDto))
+                .thenThrow(new ResourceNotFoundException("Content does not exist."));
+        ResponseEntity<ApiResponse<String>> responseEntity = contentController.updateContent(nonExistingContentId,inputContentDto);
+        assertEquals(HttpStatus.NOT_FOUND,responseEntity.getStatusCode());
+        assertEquals("Content does not exist.", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    public void testUpdateContent_IllegalArgumentException() {
+        long nonExistingContentId = 999L;
+        ContentDto inputContentDto = new ContentDto();
+        when(iContentService.updateContent(nonExistingContentId,inputContentDto))
+                .thenThrow(new IllegalArgumentException("Content is null."));
+        ResponseEntity<ApiResponse<String>> responseEntity = contentController.updateContent(nonExistingContentId,inputContentDto);
+        assertEquals(HttpStatus.BAD_REQUEST,responseEntity.getStatusCode());
+        assertEquals("Content is null.", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    public void testDeleteAnswer_Success() {
+      long contentId = 1L;
+    ResponseEntity<ApiResponse<String>> responseEntity = contentController.deleteContent(contentId);
+    assertEquals("The content has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
+    assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+    verify(iContentService).deleteContent(contentId);
+    }
+
+    @Test
+    public void testDeleteAnswer_ResourceNotFoundException() {
+        long nonExistingContentId = 1L;
+        doThrow(new ResourceNotFoundException("The content does not exist")).when(iContentService).deleteContent(nonExistingContentId);
+        ResponseEntity<ApiResponse<String>> responseEntity = contentController.deleteContent(nonExistingContentId);
+        assertEquals("The content does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+        assertEquals(HttpStatus.NOT_FOUND,responseEntity.getStatusCode());
     }
 
 
-    //TODO UPDATECONTENT EXCEPTION
+
+
+
 }

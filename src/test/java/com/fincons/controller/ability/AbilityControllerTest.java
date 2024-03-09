@@ -6,46 +6,28 @@ import com.fincons.entity.Ability;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityMapper;
-import com.fincons.repository.AbilityRepository;
-import com.fincons.service.ability.AbilityService;
 import com.fincons.service.ability.IAbilityService;
 import com.fincons.utility.ApiResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
-import static javax.swing.UIManager.get;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 public class AbilityControllerTest {
-
 
     @Autowired
     private AbilityController abilityController;
@@ -77,7 +59,7 @@ public class AbilityControllerTest {
                 new AbilityDto(2L, "Ability2",null,null));
         ResponseEntity<ApiResponse<List<AbilityDto>>> responseEntity = abilityController.getAllAbilities();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        List<AbilityDto> responseAbilities = responseEntity.getBody().getData();
+        List<AbilityDto> responseAbilities = Objects.requireNonNull(responseEntity.getBody()).getData();
         assertNotNull(responseAbilities);
         assertEquals(2, responseAbilities.size());
         assertEquals("Ability1", responseAbilities.get(0).getName());
@@ -102,7 +84,7 @@ public class AbilityControllerTest {
         when(iAbilityService.createAbility(inputAbilityDto)).thenReturn(abilityMapper.mapDtoToAbility(inputAbilityDto));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(inputAbilityDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(inputAbilityDto.getName(),responseEntity.getBody().getData().getName());
+        assertEquals(inputAbilityDto.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
     }
 
     @Test
@@ -111,7 +93,7 @@ public class AbilityControllerTest {
         when(iAbilityService.createAbility(invalidAbilityDto)).thenThrow(new IllegalArgumentException("The name of ability can't be empty"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(invalidAbilityDto);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("The name of ability can't be empty", responseEntity.getBody().getMessage());
+        assertEquals("The name of ability can't be empty", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -120,7 +102,7 @@ public class AbilityControllerTest {
         when(iAbilityService.createAbility(inputAbilityDto)).thenThrow(new DuplicateException("The name of ability already exists"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(inputAbilityDto);
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals("The name of ability already exists", responseEntity.getBody().getMessage());
+        assertEquals("The name of ability already exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -131,7 +113,7 @@ public class AbilityControllerTest {
         when(iAbilityService.updateAbility(abilityId, inputAbilityDto)).thenReturn(updatedAbility);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.updateAbility(abilityId, inputAbilityDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(updatedAbility.getName(), responseEntity.getBody().getData().getName());
+        assertEquals(updatedAbility.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
     }
 
     @Test
@@ -142,7 +124,7 @@ public class AbilityControllerTest {
                 .thenThrow(new ResourceNotFoundException("Ability does not exist"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.updateAbility(nonExistingAbilityId, inputAbilityDto);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("Ability does not exist", responseEntity.getBody().getMessage());
+        assertEquals("Ability does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -153,7 +135,7 @@ public class AbilityControllerTest {
                 .thenThrow(new DuplicateException("Ability already exists!"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.updateAbility(abilityId, inputAbilityDto);
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals("Ability already exists!", responseEntity.getBody().getMessage());
+        assertEquals("Ability already exists!", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
@@ -161,7 +143,7 @@ public class AbilityControllerTest {
         long abilityId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(abilityId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("The ability has been successfully deleted!", responseEntity.getBody().getData());
+        assertEquals("The ability has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
         verify(iAbilityService).deleteAbility(abilityId); // Verify that the service method was called
     }
 
@@ -171,7 +153,7 @@ public class AbilityControllerTest {
         doThrow(new ResourceNotFoundException("The ability does not exist")).when(iAbilityService).deleteAbility(nonExistingAbilityId);
         ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(nonExistingAbilityId);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("The ability does not exist", responseEntity.getBody().getMessage());
+        assertEquals("The ability does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
 

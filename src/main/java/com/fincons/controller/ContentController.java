@@ -71,7 +71,7 @@ public class ContentController {
                     .build());
         }
         catch (IllegalArgumentException illegalArgumentException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<String>builder()
                     .message(illegalArgumentException.getMessage())
                     .build());
         }

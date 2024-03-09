@@ -60,7 +60,7 @@ public class ContentService implements IContentService {
     @Override
     public Content updateContent(long id, ContentDto contentDto) {
         Content contentToModify = contentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist. "));
+                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist."));
 
         if (contentDto.getContent() == null && contentDto.getTypeContent()==null) {
             throw new IllegalArgumentException("Content is null");
