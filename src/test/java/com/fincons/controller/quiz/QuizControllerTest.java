@@ -1,18 +1,11 @@
 package com.fincons.controller.quiz;
 
-import com.fincons.controller.AbilityController;
 import com.fincons.controller.QuizController;
-import com.fincons.dto.AbilityDto;
-import com.fincons.dto.CourseDto;
-import com.fincons.dto.QuestionDto;
 import com.fincons.dto.QuizDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.Quiz;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.mapper.AbilityMapper;
 import com.fincons.mapper.QuizMapper;
-import com.fincons.service.ability.IAbilityService;
 import com.fincons.service.quiz.IQuizService;
 import com.fincons.utility.ApiResponse;
 import org.junit.jupiter.api.Test;
@@ -24,13 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -114,7 +107,7 @@ public class QuizControllerTest {
     }
 
     @Test
-    public void testUpdateAbility_ResourceNotFound() throws DuplicateException {
+    public void testUpdateQuiz_ResourceNotFound() throws DuplicateException {
         long nonExistingQuizId = 999L;
         QuizDto inputQuizDto = new QuizDto();
         when(iQuizService.updateQuiz(nonExistingQuizId, inputQuizDto))
@@ -122,6 +115,24 @@ public class QuizControllerTest {
         ResponseEntity<ApiResponse<String>> responseEntity = quizController.updateQuiz(nonExistingQuizId, inputQuizDto);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals("Quiz does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    public void testDeleteQuiz_Success() {
+        long quizId = 1L;
+        ResponseEntity<ApiResponse<String>> responseEntity = quizController.deleteQuiz(quizId);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("The quiz has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
+        verify(iQuizService).deleteQuiz(quizId);
+    }
+
+    @Test
+    public void testDeleteQuiz_ResourceNotFound() {
+        long nonExistingQuizId = 999L;
+        doThrow(new ResourceNotFoundException("The quiz does not exist")).when(iQuizService).deleteQuiz(nonExistingQuizId);
+        ResponseEntity<ApiResponse<String>> responseEntity = quizController.deleteQuiz(nonExistingQuizId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The quiz does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
 

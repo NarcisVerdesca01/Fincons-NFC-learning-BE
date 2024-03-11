@@ -1,12 +1,8 @@
 package com.fincons.controller.lesson;
 
 import com.fincons.controller.LessonController;
-import com.fincons.dto.AbilityDto;
-import com.fincons.dto.CourseDto;
 import com.fincons.dto.LessonDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.Content;
-import com.fincons.entity.Course;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -23,11 +19,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
