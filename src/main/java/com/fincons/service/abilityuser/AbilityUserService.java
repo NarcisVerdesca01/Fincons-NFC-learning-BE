@@ -1,5 +1,6 @@
 package com.fincons.service.abilityuser;
 
+import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityUser;
@@ -35,10 +36,10 @@ public class AbilityUserService implements IAbilityUserService{
     }
 
     @Override
-    public AbilityUser addAbilityUser(AbilityUserDto abilityUserDto) throws DuplicateException {
+    public AbilityUser addAbilityUser(long idOfUser, long abilityIdToAssociate) throws DuplicateException {
 
-        Ability existingAbility = abilityRepository.findById(abilityUserDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
-        User existingUser = userRepository.findById(abilityUserDto.getUser().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        Ability existingAbility = abilityRepository.findById(abilityIdToAssociate).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
+        User existingUser = userRepository.findById(idOfUser).orElseThrow(()-> new ResourceNotFoundException("User does not exist"));
         if(abilityUserRepository.existsByAbilityAndUser(existingAbility,existingUser)){
             throw new DuplicateException("The Ability-User association already exists");
         }
@@ -80,4 +81,6 @@ public class AbilityUserService implements IAbilityUserService{
         }
         abilityUserRepository.deleteById(id);
     }
+
+
 }

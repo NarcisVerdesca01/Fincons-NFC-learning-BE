@@ -17,9 +17,7 @@ public class AbilityDto {
 
     private long id;
     private String name;
-
     private List<AbilityCourseDto> courses;
-
     private List<AbilityUserDto> users;
 
 

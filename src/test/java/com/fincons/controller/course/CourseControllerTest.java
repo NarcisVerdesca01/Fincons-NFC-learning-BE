@@ -2,6 +2,7 @@ package com.fincons.controller.course;
 
 
 import com.fincons.controller.CourseController;
+import com.fincons.dto.AbilityDto;
 import com.fincons.dto.CourseDto;
 import com.fincons.entity.Course;
 import com.fincons.exception.DuplicateException;
@@ -67,6 +68,19 @@ public class CourseControllerTest {
         assertEquals(inputCourseDto.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
         verify(iCourseService).createCourse(inputCourseDto);
     }
+
+    @Test
+    public void testCreateCourse_InvalidInput() throws DuplicateException {
+        CourseDto invalidCourseDto = new CourseDto();
+        when(iCourseService.createCourse(invalidCourseDto)).thenThrow(new IllegalArgumentException("Name, description or background image not present"));
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(invalidCourseDto);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Name, description or background image not present", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+
+
+
 
 
 
