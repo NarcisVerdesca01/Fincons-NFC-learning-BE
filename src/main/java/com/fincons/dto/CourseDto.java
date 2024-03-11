@@ -22,13 +22,11 @@ public class CourseDto {
     private String description;
     private List<CourseLessonDto> lessons;
     private List<AbilityCourseDto> abilities;
-
+    private String imageResource;
     private LocalDateTime createDate;
     private LocalDateTime lastModified;
     private String createdBy;
     private String lastModifiedBy;
-    private String imageResource;
-
 
 
 }
