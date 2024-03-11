@@ -2,17 +2,16 @@ package com.fincons.controller.course;
 
 
 import com.fincons.controller.CourseController;
-import com.fincons.dto.AbilityDto;
-import com.fincons.dto.ContentDto;
 import com.fincons.dto.CourseDto;
-import com.fincons.entity.Ability;
-import com.fincons.entity.Content;
 import com.fincons.entity.Course;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.exception.UserDataException;
+import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.CourseMapper;
 import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,16 +36,14 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class CourseControllerTest {
 
-
     @Autowired
     private CourseController courseController;
-
     @MockBean
     private ICourseService iCourseService;
-
     @Autowired
     private CourseMapper courseMapper;
-
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
      //ctrl-shift-7
     @Test
@@ -82,7 +80,6 @@ public class CourseControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Name, description or background image not present", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
-
 
     @Test
     public void testCreateCourse_Duplicate() throws DuplicateException {
@@ -156,7 +153,70 @@ public class CourseControllerTest {
         assertEquals("The course does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
+    @Test
+    public void testGetDedicatedCourses_Success() throws UserDataException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
+        List<Course> courses = Arrays.asList(
+                new Course(1L, "Course 1", "image1", "Description 1", null, null, null, null, null, null, null),
+                new Course(2L, "Course 2", "image2", "Description 2", null, null, null, null, null, null, null)
+        );
+        when(iCourseService.findDedicatedCourses("test@example.com")).thenReturn(courses);
+        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses(request);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        List<CourseDto> responseCourses = Objects.requireNonNull(responseEntity.getBody()).getData();
+        assertNotNull(responseCourses);
+        assertEquals(2, responseCourses.size());
+        assertEquals("Course 1", responseCourses.get(0).getName());
+        assertEquals("Course 2", responseCourses.get(1).getName());
+    }
 
+    @Test
+    public void testGetDedicatedCourses_ResourceNotFoundException() throws UserDataException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
+        doThrow(new ResourceNotFoundException("The User does not exist") ).when(iCourseService).findDedicatedCourses("test@example.com");
+        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses(request);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        String errorMessage = Objects.requireNonNull(responseEntity.getBody()).getMessage();
+        assertNotNull(errorMessage);
+        assertEquals("The User does not exist", errorMessage);
+    }
+
+    @Test
+    public void testUpdateCourse_Success() throws ResourceNotFoundException, DuplicateException {
+        long courseId = 1L;
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        when(iCourseService.updateCourse(courseId, inputCourseDto)).thenReturn(updatedCourse);
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        CourseDto updatedCourseDto = Objects.requireNonNull(responseEntity.getBody()).getData();
+        assertNotNull(updatedCourseDto);
+        assertEquals(updatedCourse.getName(), responseEntity.getBody().getData().getName());
+    }
+
+    @Test
+    public void testUpdateCourse_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
+        long courseId = 1L;
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        when(iCourseService.updateCourse(courseId, inputCourseDto)).thenThrow(new ResourceNotFoundException("The Course does not exists"));
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The Course does not exists", responseEntity.getBody().getMessage());
+    }
+
+    @Test
+    public void testCreateAbility_Duplicate() throws DuplicateException {
+        CourseDto inputCourseDto = new CourseDto();
+        when(iCourseService.createCourse(inputCourseDto)).thenThrow(new DuplicateException("The name of course already exists"));
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("The name of course already exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
 
 
 }
