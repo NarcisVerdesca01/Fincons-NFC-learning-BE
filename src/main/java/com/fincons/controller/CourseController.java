@@ -113,14 +113,11 @@ public class CourseController {
     }
 
     @GetMapping ("${course.getDedicatedCourses}")
-    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses(HttpServletRequest request) throws UserDataException {
+    public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses() throws UserDataException {
 
         try{
-            String token = request.getHeader("Authorization").replace("Bearer ", "");
 
-            String userEmail = jwtTokenProvider.getEmailFromJWT(token);
-
-            List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses(userEmail)
+            List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses()
                     .stream()
                     .map(c->courseMapper.mapCourseToCourseDto(c))
                     .toList();

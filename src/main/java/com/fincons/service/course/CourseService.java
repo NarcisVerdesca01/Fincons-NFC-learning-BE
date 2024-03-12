@@ -15,6 +15,7 @@ import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -88,11 +89,17 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<Course> findDedicatedCourses(String email){
-        if (!userRepository.existsByEmail(email)) {
+    public List<Course> findDedicatedCourses(){
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        if (!userRepository.existsByEmail(loggedUser)) {
             throw new ResourceNotFoundException("User does not exist");
         }
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(loggedUser);
         boolean isUserAdmin = user.getRoles()
                 .stream()
                 .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
@@ -105,7 +112,7 @@ public class CourseService implements ICourseService {
 
         List<AbilityUser> abilitiesOfInterestedUser = abilityUsers
                 .stream()
-                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(email))
+                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(loggedUser))
                 .toList();
 
         List<String> abilityNameOfInterestedUser = abilitiesOfInterestedUser
