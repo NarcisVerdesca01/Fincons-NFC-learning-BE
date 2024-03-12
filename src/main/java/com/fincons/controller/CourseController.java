@@ -116,6 +116,7 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses() throws UserDataException {
 
         try{
+
             List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses()
                     .stream()
                     .map(c->courseMapper.mapCourseToCourseDto(c))

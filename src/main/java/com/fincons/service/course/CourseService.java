@@ -97,7 +97,10 @@ public class CourseService implements ICourseService {
     public List<Course> findDedicatedCourses(){
 
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(loggedUser);
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
         if (!userRepository.existsByEmail(loggedUser)) {
             throw new ResourceNotFoundException("User does not exist");
         }
