@@ -29,25 +29,28 @@ public class AnswerService implements IAnswerService{
 
     @Override
     public Answer findById(long id) {
-        if (!answerRepository.existsById(id)) {
+        if (!answerRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The answer does not exist!");
         }
-        return answerRepository.findById(id).orElse(null);
+        return answerRepository.findByIdAndDeletedFalse(id);
 
     }
 
     @Override
     public List<Answer> findAllAnswer() {
-        return answerRepository.findAll();
+        return answerRepository.findAllByDeletedFalse();
     }
 
     @Override
-    public Answer createAnswer(AnswerDto answerDto) {
-        Answer newAnswer= new Answer();
+    public Answer createAnswer(AnswerDto answerDto) throws DuplicateException {
 
         if(StringUtils.isBlank(answerDto.getText())){
             throw new IllegalArgumentException("User must enter the text of answer!");
         }
+        if (answerRepository.existsByTextAndDeletedFalse(answerDto.getText())) {
+            throw new DuplicateException("The name of ability already exists");
+        }
+        Answer newAnswer= new Answer();
         newAnswer.setText(answerDto.getText());
         newAnswer.setCorrect(answerDto.isCorrect());
         Answer savedAnswer= answerRepository.save(newAnswer);
@@ -66,10 +69,13 @@ public class AnswerService implements IAnswerService{
 
     @Override
     public Answer updateAnswer(long id, AnswerDto answerDto) {
-        Answer answerToModify = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer does not exist."));
+        Answer answerToModify = answerRepository.findByIdAndDeletedFalse(id);
 
-        if (answerDto.getText() == null || answerDto.getQuestion()== null) {
+        if(answerToModify == null){
+            throw new ResourceNotFoundException("Answer does not exist");
+        }
+
+        if (answerDto.getText() == null || answerDto.getQuestion() == null) {
             throw new IllegalArgumentException("Text of answer is null");
             //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
@@ -82,12 +88,17 @@ public class AnswerService implements IAnswerService{
 
     @Override
     public Answer associateQuestionToAnswer(long idAnswer, long idQuestion) throws DuplicateException {
-        Answer answerToAssociateQuestion = answerRepository.findById(idAnswer)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer does not exist. "));
+        Answer answerToAssociateQuestion = answerRepository.findByIdAndDeletedFalse(idAnswer);
 
-        Question questionToAssociate = questionRepository.findById(idQuestion)
-                .orElseThrow(() -> new ResourceNotFoundException("Question does not exist. "));
-/*
+        Question questionToAssociate = questionRepository.findByIdAndDeletedFalse(idAnswer);
+        if(answerToAssociateQuestion == null){
+            throw new ResourceNotFoundException("Answer does not exist");
+        }
+        if(questionToAssociate == null){
+            throw new ResourceNotFoundException("Question does not exist");
+        }
+
+        /*
         if(answerToAssociateQuestion.getQuestion().getId()== idQuestion){
             throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
         }*/

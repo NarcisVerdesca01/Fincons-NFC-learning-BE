@@ -80,7 +80,7 @@ public class CourseLessonController {
         }
     }
 
-    @DeleteMapping("${course-lesson.delete}/{id}")
+    @PutMapping("${course-lesson.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) {
         try{
             iCourseLessonService.deleteCourseLesson(id);

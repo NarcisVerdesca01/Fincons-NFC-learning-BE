@@ -73,17 +73,15 @@ public class QuizResultController {
     @PostMapping(value = "${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(
             @RequestParam("quizId") long quizId,
-            HttpServletRequest request,
             @RequestBody Map<String, Object> requestBody) {
 
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String userEmail = jwtTokenProvider.getEmailFromJWT(token);
+
         ObjectMapper objectMapper = new ObjectMapper();
         Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
 
         try {
             QuizResultsDto results = quizResultMapper
-                    .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, userEmail, answersMap)) ;
+                    .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, answersMap)) ;
 
             return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
                     .data(results)

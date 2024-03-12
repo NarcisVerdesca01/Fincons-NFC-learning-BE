@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContentRepository extends JpaRepository<Content, Long> {
 
+    boolean existsByIdAndDeletedFalse(long id);
+
+    Content findByIdAndDeletedFalse(long id);
 }

@@ -10,7 +10,7 @@ public interface ILessonService {
 
     Lesson findLessonById(long id);
 
-    Lesson createLesson(LessonDto lessonDto);
+    Lesson createLesson(LessonDto lessonDto) throws DuplicateException;
 
     Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException;
 

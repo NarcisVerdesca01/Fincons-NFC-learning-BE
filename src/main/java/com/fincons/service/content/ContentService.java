@@ -21,10 +21,10 @@ public class ContentService implements IContentService {
     @Override
     public Content findById(long id) {
 
-        if (!contentRepository.existsById(id)) {
+        if (!contentRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The content does not exist!");
         }
-        return contentRepository.findById(id).orElse(null);
+        return contentRepository.findByIdAndDeletedFalse(id);
     }
 
     @Override
@@ -49,12 +49,14 @@ public class ContentService implements IContentService {
 
     @Override
     public void deleteContent(long id) {
-        if (!contentRepository.existsById(id)) {
+
+        if (!contentRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The content does not exist");
         }
 
-        // Elimina il contenuto
-        contentRepository.deleteById(id);
+        Content contentToDelete = contentRepository.findByIdAndDeletedFalse(id);
+        contentToDelete.setDeleted(true);
+        contentRepository.save(contentToDelete);
     }
 
     @Override

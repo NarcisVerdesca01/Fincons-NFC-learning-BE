@@ -63,7 +63,7 @@ public class AbilityUserService implements IAbilityUserService{
         }
         return abilityUserRepository.findByIdAndDeletedFalse(id);
     }
-//TODO
+
     @Override
     public AbilityUser updateAbilityUser(long id, AbilityUserDto abilityUserDto) throws DuplicateException {
 
@@ -84,7 +84,7 @@ public class AbilityUserService implements IAbilityUserService{
 
     @Override
     public void deleteAbilityUser(long id) {
-        if (!abilityUserRepository.existsById(id)) {
+        if (!abilityUserRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The course-lesson association does not exist") ;
         }
         abilityUserRepository.deleteById(id);

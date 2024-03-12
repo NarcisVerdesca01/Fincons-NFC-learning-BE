@@ -59,6 +59,10 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(ApiResponse.<AnswerDto>builder()
                     .message(illegalArgumentException.getMessage())
                     .build());
+        } catch (DuplicateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<AnswerDto>builder()
+                    .message(e.getMessage())
+                    .build());
         }
     }
 
@@ -79,7 +83,7 @@ public class AnswerController {
                     .build());
         }
     }
-    @DeleteMapping("${answer.delete}/{id}")
+    @PutMapping("${answer.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteAnswer(@PathVariable long id) {
         try {
             iAnswerService.deleteAnswer(id);

@@ -12,7 +12,9 @@ import com.fincons.repository.QuestionRepository;
 import com.fincons.repository.QuizRepository;
 import com.fincons.repository.QuizResultRepository;
 import com.fincons.repository.UserRepository;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -44,24 +46,36 @@ public class QuizResultService implements IQuizResultService{
 
     @Override
     public QuizResults getQuizResultsById(long id) {
-        return quizResultRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("The Quiz-Results-Student association does not exist"));
+
+        if(!quizResultRepository.existsByIdAndDeletedFalse(id)){
+            throw new ResourceNotFoundException("The quiz-result-student association does not exist") ;
+        }
+
+        return quizResultRepository.findByIdAndDeletedFalse(id);
+
     }
 
     @Override
-    public QuizResults calculateAndSave(long quizId, String userEmail, Map<Long, List<Long>> userAnswers) throws DuplicateException {
-        User user = userRepository.findByEmail(userEmail);
+    public QuizResults calculateAndSave(long quizId, Map<Long, List<Long>> userAnswers) throws DuplicateException {
 
-
-
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found with email: " + userEmail);
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
         }
 
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with ID: " + quizId));
+        if (!userRepository.existsByEmail(loggedUser)) {
+            throw new ResourceNotFoundException("User does not exist");
+        }
 
-        if(quizResultRepository.existsByUserAndQuiz(user,quiz)){
+        User user = userRepository.findByEmail(loggedUser);
+
+
+        Quiz quiz = quizRepository.findByIdAndDeletedFalse(quizId);
+        if(!quizRepository.existsByIdAndDeletedFalse(quiz.getId())){
+            throw new ResourceNotFoundException("Quiz does not exist");
+        }
+
+        if(quizResultRepository.existsByUserAndQuizAndDeletedFalse(user,quiz)){
             throw new DuplicateException("The user has already completed the Quiz!");
         }
         float total = 0;

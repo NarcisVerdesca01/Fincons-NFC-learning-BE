@@ -8,4 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface QuizResultRepository extends JpaRepository<QuizResults, Long> {
 
     boolean existsByUserAndQuiz(User user, Quiz quiz);
+
+    boolean existsByIdAndDeletedFalse(long id);
+
+    QuizResults findByIdAndDeletedFalse(long id);
+
+    boolean existsByUserAndQuizAndDeletedFalse(User user, Quiz quiz);
 }

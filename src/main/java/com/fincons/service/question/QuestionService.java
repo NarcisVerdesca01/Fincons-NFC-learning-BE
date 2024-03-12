@@ -15,15 +15,15 @@ public class QuestionService implements  IQuestionService{
     private QuestionRepository questionRepository;
     @Override
     public Question findById(long id) {
-        if (!questionRepository.existsById(id)) {
+        if (!questionRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The question does not exist!");
         }
-      return questionRepository.findById(id).orElse(null);
+        return questionRepository.findByIdAndDeletedFalse(id);
     }
 
     @Override
     public List<Question> findAllQuestion() {
-        return questionRepository.findAll();
+        return questionRepository.findAllByDeletedFalse();
     }
 
     @Override
@@ -31,25 +31,27 @@ public class QuestionService implements  IQuestionService{
            Question newQuestion= new Question();
            newQuestion.setTextQuestion(questionDto.getTextQuestion());
            newQuestion.setValueOfQuestion(questionDto.getValueOfQuestion());
-
            Question savedQuestion= questionRepository.save(newQuestion);
            return savedQuestion;
     }
 
     @Override
     public void deleteQuestion(long id) {
-        if (!questionRepository.existsById(id)) {
+        if (!questionRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The question does not exist");
         }
-
-        // Elimina la domanda
-        questionRepository.deleteById(id);
+        Question questionToDelete = questionRepository.findByIdAndDeletedFalse(id);
+        questionToDelete.setDeleted(true);
+        questionRepository.save(questionToDelete);
     }
 
     @Override
     public Question updateQuestion(long id, QuestionDto questionDto) {
-        Question questionToModify = questionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Question does not exist. "));
+        Question questionToModify = questionRepository.findByIdAndDeletedFalse(id);
+
+        if(questionToModify == null ){
+            throw new ResourceNotFoundException("Question does not exist");
+        }
 
         if (questionDto.getTextQuestion() == null && questionDto.getValueOfQuestion()<=0) {
             throw new IllegalArgumentException("Text or score of question is null");

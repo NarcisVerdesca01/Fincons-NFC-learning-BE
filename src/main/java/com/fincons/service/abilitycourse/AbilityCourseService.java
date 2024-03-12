@@ -57,7 +57,6 @@ public class AbilityCourseService implements IAbilityCourseService{
     public AbilityCourse updateAbilityCourse(long id, AbilityCourseDto abilityCourseDto) throws  DuplicateException {
 
         AbilityCourse existingAbilityCourse = abilityCourseRepository.findByIdAndDeletedFalse(id);
-
         if(existingAbilityCourse == null){
             throw new ResourceNotFoundException("Ability-Course association does not exist");
         }

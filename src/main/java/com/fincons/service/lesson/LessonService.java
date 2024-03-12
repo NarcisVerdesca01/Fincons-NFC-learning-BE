@@ -32,30 +32,32 @@ public class LessonService implements ILessonService{
 
     @Override
     public List<Lesson> findAllLessons() {
-        return lessonRepository.findAll();
+        return lessonRepository.findAllByDeletedFalse();
     }
 
     @Override
     public Lesson findLessonById(long id) {
-        if (!lessonRepository.existsById(id)) {
+        if (!lessonRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The lesson does not exist!");
         }
-        return lessonRepository.findById(id).orElseThrow(null);
+        return lessonRepository.findByIdAndDeletedFalse(id);
     }
 
     @Override
-    public Lesson createLesson(LessonDto lessonDto) {
+    public Lesson createLesson(LessonDto lessonDto) throws DuplicateException {
 
         if(StringUtils.isBlank(lessonDto.getTitle())){
             throw new IllegalArgumentException("Title required");
         }
 
-        Lesson lesson = new Lesson();
+        if (lessonRepository.existsByTitleAndDeletedFalse(lessonDto.getTitle())) {
+            throw new DuplicateException("The name of ability already exists");
+        }
 
+        Lesson lesson = new Lesson();
         if(lessonDto.getTitle() != null){
             lesson.setTitle(lessonDto.getTitle());
         }
-
         if(lessonDto.getBackgroundImage() != null ){
             lesson.setBackgroundImage(lessonDto.getBackgroundImage());
         }
@@ -66,42 +68,54 @@ public class LessonService implements ILessonService{
     @Override
     public Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException {
 
-        if(!lessonRepository.existsById(id)){
+        Lesson lessonToModify = lessonRepository.findByIdAndDeletedFalse(id);
+
+        if(lessonToModify == null){
             throw new ResourceNotFoundException("Lesson does not exist");
         }
 
-        Lesson lessonToModify = lessonRepository.findById(id).orElseThrow(() ->  new ResourceNotFoundException("Lesson does not exist"));
+        if(lessonDto.getTitle() != null){
+            if(!lessonRepository.existsByTitleAndIdNot(lessonDto.getTitle(),lessonToModify.getId())){
+                lessonToModify.setTitle(lessonDto.getTitle());
+            }else{
+                throw new DuplicateException("Lesson already exists");
+            }
+        }else{
+            throw new IllegalArgumentException("Lesson title cannot be null");
 
-       lessonToModify.setTitle(lessonDto.getTitle());
-
-       if(lessonDto.getBackgroundImage() != null){
-           lessonToModify.setBackgroundImage(lessonDto.getBackgroundImage());
-       }
+        }
         return lessonRepository.save(lessonToModify);
     }
 
     @Override
     public void deleteLesson(long id)  {
-        if(!lessonRepository.existsById(id)){
-            throw new ResourceNotFoundException("Lesson does not exists!");
+        if (!lessonRepository.existsByIdAndDeletedFalse(id)) {
+            throw new ResourceNotFoundException("The Lesson does not exist");
         }
-        lessonRepository.deleteById(id);
+        Lesson lessonToDelete = lessonRepository.findByIdAndDeletedFalse(id);
+        lessonToDelete.setDeleted(true);
+        lessonRepository.save(lessonToDelete);
     }
+
 
     @Override
     public Lesson associateContentToLesson(long lessonId, long contentId) {
 
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new ResourceNotFoundException("Lesson does not exist!"));
+        Lesson existingLesson = lessonRepository.findByIdAndDeletedFalse(lessonId);
 
-        Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist!"));
+        Content existingContent = contentRepository.findByIdAndDeletedFalse(contentId);
+        if(existingLesson == null){
+            throw new ResourceNotFoundException("Lesson does not exist");
+        }
+        if(existingContent == null){
+            throw new ResourceNotFoundException("Content does not exist");
+        }
 
-        lesson.setContent(content);
-        content.setLesson(lesson);
+        existingLesson.setContent(existingContent);
+        existingContent.setLesson(existingLesson);
 
-        Lesson updatedLesson = lessonRepository.save(lesson);
-        Content updatedContent = contentRepository.save(content);
+        Lesson updatedLesson = lessonRepository.save(existingLesson);
+        Content updatedContent = contentRepository.save(existingContent);
 
         return updatedLesson;
     }

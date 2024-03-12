@@ -76,7 +76,7 @@ public class ContentController {
                     .build());
         }
     }
-    @DeleteMapping("${content.delete}/{id}")
+    @PutMapping("${content.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
         try {
             iContentService.deleteContent(id);

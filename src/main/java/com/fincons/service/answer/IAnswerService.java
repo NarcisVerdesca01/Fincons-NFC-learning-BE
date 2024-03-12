@@ -12,7 +12,7 @@ import java.util.List;
 public interface IAnswerService {
     Answer findById(long id);
     List<Answer> findAllAnswer();
-    Answer createAnswer(AnswerDto answerDto);
+    Answer createAnswer(AnswerDto answerDto) throws DuplicateException;
     void deleteAnswer(long id);
     Answer updateAnswer(long id, AnswerDto answerDto);
 

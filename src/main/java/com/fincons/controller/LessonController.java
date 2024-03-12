@@ -75,6 +75,10 @@ public class LessonController {
             return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
                             .message(illegalArgumentException.getMessage())
                     .build());
+        } catch (DuplicateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
+                    .message(e.getMessage())
+                    .build());
         }
     }
 
@@ -96,7 +100,7 @@ public class LessonController {
         }
     }
 
-    @DeleteMapping("${lesson.delete}/{id}")
+    @PutMapping("${lesson.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteLesson(@PathVariable long id) {
         try {
             iLessonService.deleteLesson(id);

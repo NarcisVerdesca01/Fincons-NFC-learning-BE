@@ -75,7 +75,7 @@ public class QuizController {
                     .build());
         }
     }
-    @DeleteMapping("${quiz.delete}/{id}")
+    @PutMapping("${quiz.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteQuiz(@PathVariable long id) {
         try {
             iQuizService.deleteQuiz(id);
