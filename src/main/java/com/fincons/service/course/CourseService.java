@@ -1,6 +1,7 @@
 package com.fincons.service.course;
 
 import com.fincons.dto.CourseDto;
+import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
@@ -15,6 +16,7 @@ import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -41,10 +43,8 @@ public class CourseService implements ICourseService {
 
     @Override
     public List<Course> findAllCourses() {
-        return courseRepository.findAll();
+        return courseRepository.findAllByDeletedFalse();
     }
-
-    //TOTO prendi tutti i corsi dove l'abilità è nformatica
 
     @Override
     public Course createCourse(CourseDto courseDto) throws  DuplicateException {
@@ -52,7 +52,7 @@ public class CourseService implements ICourseService {
         if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
             throw new IllegalArgumentException("Name, description or background image not present");
         }
-        if (courseRepository.existsByName(courseDto.getName())) {
+        if (courseRepository.existsByNameAndDeletedFalse(courseDto.getName())) {
             throw new DuplicateException("The name of course already exist");
         }
 
@@ -72,40 +72,49 @@ public class CourseService implements ICourseService {
     @Override
     public Course findCourseById(long id) {
 
-        Course existingCourse = courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("The course does not exist!"));
+        if(!courseRepository.existsByIdAndDeletedFalse(id)){
+            throw new ResourceNotFoundException("The course does not exist!");
+        }
 
-        return existingCourse;
+        return  courseRepository.findByIdAndDeletedFalse(id);
     }
 
     @Override
     public void deleteCourse(long id) {
+        validateCourseById(id);
+        Course courseToDelete = courseRepository.findByIdAndDeletedFalse(id);
+        courseToDelete.setDeleted(true);
+        courseRepository.save(courseToDelete);
+    }
 
-        if (!courseRepository.existsById(id)) {
+    private void validateCourseById(long id) {
+        if (!courseRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The course does not exist");
         }
-
-        courseRepository.deleteById(id);
     }
 
     @Override
-    public List<Course> findDedicatedCourses(String email){
-        if (!userRepository.existsByEmail(email)) {
+    public List<Course> findDedicatedCourses(){
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(loggedUser);
+        if (!userRepository.existsByEmail(loggedUser)) {
             throw new ResourceNotFoundException("User does not exist");
         }
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(loggedUser);
         boolean isUserAdmin = user.getRoles()
                 .stream()
                 .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
         if(isUserAdmin){
             return courseRepository.findAll();
         }
-        List<AbilityCourse> abilityCourses = abilityCourseRepository.findAll();
+        List<AbilityCourse> abilityCourses = abilityCourseRepository.findAllByDeletedFalse();
 
-        List<AbilityUser> abilityUsers = abilityUserRepository.findAll();
+        List<AbilityUser> abilityUsers = abilityUserRepository.findAllByDeletedFalse();
 
         List<AbilityUser> abilitiesOfInterestedUser = abilityUsers
                 .stream()
-                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(email))
+                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(loggedUser))
                 .toList();
 
         List<String> abilityNameOfInterestedUser = abilitiesOfInterestedUser
@@ -124,11 +133,15 @@ public class CourseService implements ICourseService {
                 .toList();
     }
 
+
     @Override
     public Course updateCourse(long id, CourseDto courseDto) throws DuplicateException {
 
-        Course courseToModify = courseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Course does not exist"));
+        Course courseToModify = courseRepository.findByIdAndDeletedFalse(id);
+
+        if(courseToModify == null){
+            throw new ResourceNotFoundException("Course does not exist");
+        }
 
         if (courseDto.getName() != null) {
             if (!courseRepository.existsByNameAndIdNot(courseDto.getName(), courseToModify.getId())) {
@@ -154,12 +167,13 @@ public class CourseService implements ICourseService {
     @Override
     public Course findCourseByName(String name) {
 
-        if(!courseRepository.existsByName(name)){
-            throw new ResourceNotFoundException("The course does not exist");
+        Course course = courseRepository.findByNameAndDeletedFalse(name);
+        if(course ==null || name.isEmpty()){
+            throw new ResourceNotFoundException("Course " + name + " does not exists!");
         }
-
-        return courseRepository.findByName(name);
+        return course;
     }
+
 
 
 }

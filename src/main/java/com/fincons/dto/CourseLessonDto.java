@@ -17,4 +17,6 @@ public class CourseLessonDto {
     private long id;
     private CourseDto course;
     private LessonDto lesson;
+    private boolean deleted;
+
 }

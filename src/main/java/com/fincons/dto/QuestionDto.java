@@ -21,5 +21,7 @@ public class QuestionDto {
     private List<AnswerDto> answers;
     private QuizDto quiz;
     private int valueOfQuestion;
+    private boolean deleted;
+
 
 }

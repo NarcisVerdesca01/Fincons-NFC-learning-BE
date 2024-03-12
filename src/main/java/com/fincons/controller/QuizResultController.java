@@ -3,6 +3,7 @@ package com.fincons.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.dto.QuizResultsDto;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.QuizResultMapper;
@@ -76,9 +77,7 @@ public class QuizResultController {
             @RequestBody Map<String, Object> requestBody) {
 
         String token = request.getHeader("Authorization").replace("Bearer ", "");
-
         String userEmail = jwtTokenProvider.getEmailFromJWT(token);
-
         ObjectMapper objectMapper = new ObjectMapper();
         Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
 
@@ -92,6 +91,10 @@ public class QuizResultController {
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.badRequest().body(ApiResponse.<QuizResultsDto>builder()
                     .message(resourceNotFoundException.getMessage())
+                    .build());
+        }catch (DuplicateException duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<QuizResultsDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }

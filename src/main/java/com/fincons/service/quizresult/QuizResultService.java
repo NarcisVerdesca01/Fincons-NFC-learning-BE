@@ -5,6 +5,7 @@ import com.fincons.entity.Question;
 import com.fincons.entity.Quiz;
 import com.fincons.entity.QuizResults;
 import com.fincons.entity.User;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
@@ -48,8 +49,10 @@ public class QuizResultService implements IQuizResultService{
     }
 
     @Override
-    public QuizResults calculateAndSave(long quizId, String userEmail, Map<Long, List<Long>> userAnswers) {
+    public QuizResults calculateAndSave(long quizId, String userEmail, Map<Long, List<Long>> userAnswers) throws DuplicateException {
         User user = userRepository.findByEmail(userEmail);
+
+
 
         if (user == null) {
             throw new ResourceNotFoundException("User not found with email: " + userEmail);
@@ -58,6 +61,9 @@ public class QuizResultService implements IQuizResultService{
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with ID: " + quizId));
 
+        if(quizResultRepository.existsByUserAndQuiz(user,quiz)){
+            throw new DuplicateException("The user has already completed the Quiz!");
+        }
         float total = 0;
         float score = 0;
 

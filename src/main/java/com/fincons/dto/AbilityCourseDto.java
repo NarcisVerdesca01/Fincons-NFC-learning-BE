@@ -2,6 +2,7 @@ package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,7 @@ public class AbilityCourseDto {
     private CourseDto course;
 
     private AbilityDto ability;
+
+    private boolean deleted;
 
 }

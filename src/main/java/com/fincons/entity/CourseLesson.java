@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,9 @@ public class CourseLesson {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lessonId")
     private Lesson lesson;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 
     public CourseLesson(Course course, Lesson lesson) {

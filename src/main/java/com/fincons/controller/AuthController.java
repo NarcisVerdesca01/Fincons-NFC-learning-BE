@@ -90,9 +90,9 @@ public class AuthController {
     }
 
     @GetMapping("${detail.userdto}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@RequestParam(value = "email") String email) {
+    public ResponseEntity<ApiResponse<UserDto>> getUserByEmail() {
         try{
-            UserDto userDTO = userAndRoleMapper.userToUserDto(iAuthService.getUserByEmail(email));
+            UserDto userDTO = userAndRoleMapper.userToUserDto(iAuthService.getUserByEmail());
             LOG.info("User info: " + userDTO.getRoles().get(0).getName());
 
             return ResponseEntity.status(HttpStatus.OK).body(

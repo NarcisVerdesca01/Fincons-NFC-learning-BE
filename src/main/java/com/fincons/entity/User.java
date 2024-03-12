@@ -52,6 +52,8 @@ public class User {
     private LocalDate birthDate;
 
 
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -65,6 +67,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<QuizResults> quizzes;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 
 }

@@ -15,11 +15,9 @@ import lombok.Setter;
 public class AbilityUserDto {
 
     private long id;
-
-
     private UserDto user;
-
-
     private AbilityDto ability;
+    private boolean deleted;
+
 
 }

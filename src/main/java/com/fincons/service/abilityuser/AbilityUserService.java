@@ -32,15 +32,23 @@ public class AbilityUserService implements IAbilityUserService{
 
     @Override
     public List<AbilityUser> getAllAbilityUser() {
-        return abilityUserRepository.findAll();
+        return abilityUserRepository.findAllByDeletedFalse();
     }
 
     @Override
     public AbilityUser addAbilityUser(long idOfUser, long abilityIdToAssociate) throws DuplicateException {
 
-        Ability existingAbility = abilityRepository.findById(abilityIdToAssociate).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
-        User existingUser = userRepository.findById(idOfUser).orElseThrow(()-> new ResourceNotFoundException("User does not exist"));
-        if(abilityUserRepository.existsByAbilityAndUser(existingAbility,existingUser)){
+        Ability existingAbility = abilityRepository.findByIdAndDeletedFalse(abilityIdToAssociate);
+        User existingUser = userRepository.findByIdAndDeletedFalse(idOfUser);
+
+        if(existingAbility == null){
+            throw new ResourceNotFoundException("Ability does not exist");
+        }
+        if(existingUser == null){
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        if(abilityUserRepository.existsByUserAndAbilityAndDeletedFalse(existingAbility,existingUser)){
             throw new DuplicateException("The Ability-User association already exists");
         }
         AbilityUser abilityUserToSave = new AbilityUser(existingUser, existingAbility);
@@ -50,22 +58,22 @@ public class AbilityUserService implements IAbilityUserService{
 
     @Override
     public AbilityUser getAbilityUserById(long id) {
-        return abilityUserRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("The ability-user association does not exist!"));
+        if (!abilityUserRepository.existsByIdAndDeletedFalse(id)) {
+            throw new ResourceNotFoundException("The ability-user associaiton does not exist!");
+        }
+        return abilityUserRepository.findByIdAndDeletedFalse(id);
     }
-
+//TODO
     @Override
     public AbilityUser updateAbilityUser(long id, AbilityUserDto abilityUserDto) throws DuplicateException {
 
-        AbilityUser existingAbilityUser = abilityUserRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Ability-User association does not exist"));
-
-        Ability existingAbilityToAssociate = abilityRepository.findById(abilityUserDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
-        User existingUserToAddAssociate = userRepository.findById(abilityUserDto.getUser().getId()).orElseThrow(()-> new ResourceNotFoundException("Lesson does not exist"));
-
-        if(abilityUserRepository.existsByAbilityAndUser(existingAbilityToAssociate,existingUserToAddAssociate)){
-            throw new DuplicateException("Association between ability and user already exists");
+        AbilityUser existingAbilityUser = abilityUserRepository.findByIdAndDeletedFalse(id);
+        if(existingAbilityUser == null){
+            throw new ResourceNotFoundException("Ability-User association does not exist");
         }
+
+        Ability existingAbilityToAssociate = abilityRepository.findByIdAndDeletedFalse(abilityUserDto.getAbility().getId());
+        User existingUserToAddAssociate = userRepository.findByIdAndDeletedFalse(abilityUserDto.getUser().getId());
 
         existingAbilityUser.setAbility(existingAbilityToAssociate);
         existingAbilityUser.setUser(existingUserToAddAssociate);

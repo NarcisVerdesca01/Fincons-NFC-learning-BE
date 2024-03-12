@@ -17,6 +17,7 @@ public class ContentDto {
     private Long id;
     private String typeContent;
     private String content;
-
     private LessonDto lesson;
+    private boolean deleted;
+
 }

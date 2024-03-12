@@ -22,6 +22,7 @@ public class LessonDto {
     private QuizDto quiz;
     private ContentDto content;
     private String backgroundImage;
+    private boolean deleted;
 
     private LocalDateTime createDate;
     private LocalDateTime lastModified;

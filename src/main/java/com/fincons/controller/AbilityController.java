@@ -106,7 +106,8 @@ public class AbilityController {
         }
     }
 
-    @DeleteMapping("${ability.delete}/{id}")
+    /*
+        @DeleteMapping("${ability.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteAbility(@PathVariable long id) {
         try {
             iAbilityService.deleteAbility(id);
@@ -120,6 +121,21 @@ public class AbilityController {
         }
     }
 
+     */
+
+    @PutMapping("${ability.delete}/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteAbility(@PathVariable long id) {
+        try {
+            iAbilityService.deleteAbility(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The ability has been successfully deleted!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
 
 }

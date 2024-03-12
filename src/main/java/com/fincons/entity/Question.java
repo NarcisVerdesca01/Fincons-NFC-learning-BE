@@ -45,5 +45,7 @@ public class Question {
     @Column(name = "valueOfQuestion")
     private int valueOfQuestion;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 }

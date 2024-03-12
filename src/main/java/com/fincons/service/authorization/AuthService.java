@@ -147,17 +147,14 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        if(userRepository.findByEmail(email) == null){
+    public User getUserByEmail() {
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
             throw new ResourceNotFoundException("User with this email doesn't exist");
         }
-        User user = userRepository.findByEmail(email);
-
-        LOG.info("User info: " + user.getEmail());
-
-        return user;
+        System.out.println(loggedUser);
+        return userRepository.findByEmail(loggedUser);
     }
-
 
 
     @Override

@@ -19,4 +19,6 @@ public class AnswerDto {
     private String text;
     private QuestionDto question;
     private boolean isCorrect;
+    private boolean deleted;
+
 }

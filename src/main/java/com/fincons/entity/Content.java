@@ -29,6 +29,9 @@ public class Content {
     @OneToOne(mappedBy = "content")
     private Lesson lesson;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
 
 }

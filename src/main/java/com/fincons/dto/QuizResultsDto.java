@@ -17,9 +17,11 @@ public class QuizResultsDto {
     private long id;
 
     private UserDto user;
-
     private QuizDto quiz;
     private float totalScore;
+
+    private boolean deleted;
+
 
     // TODO List<Integer> lista di indici delle risposte date
 

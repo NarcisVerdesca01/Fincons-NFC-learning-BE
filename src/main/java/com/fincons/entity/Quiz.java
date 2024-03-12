@@ -51,6 +51,9 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<QuizResults> users;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
     //AUDITING
     @CreatedDate

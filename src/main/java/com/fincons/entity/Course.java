@@ -54,6 +54,9 @@ public class Course {
     @Column(name = "imageResource")
     private String imageResource;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
     //AUDITING
     @CreatedDate

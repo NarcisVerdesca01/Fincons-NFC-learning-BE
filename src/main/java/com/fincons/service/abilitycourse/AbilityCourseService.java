@@ -31,15 +31,21 @@ public class AbilityCourseService implements IAbilityCourseService{
 
     @Override
     public List<AbilityCourse> getAllAbilityCourse() {
-        return abilityCourseRepository.findAll();
+        return abilityCourseRepository.findAllByDeletedFalse();
     }
 
     @Override
     public AbilityCourse addAbilityCourse(AbilityCourseDto abilityCourseDto) throws DuplicateException {
 
-        Ability existingAbility = abilityRepository.findById(abilityCourseDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
-        Course existingCourse = courseRepository.findById(abilityCourseDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
-        if(abilityCourseRepository.existsByAbilityAndCourse(existingAbility,existingCourse)){
+        Ability existingAbility = abilityRepository.findByIdAndDeletedFalse(abilityCourseDto.getAbility().getId());
+        Course existingCourse = courseRepository.findByIdAndDeletedFalse(abilityCourseDto.getCourse().getId());
+        if(existingCourse == null){
+            throw new ResourceNotFoundException("Course does not exist");
+        }
+        if(existingAbility == null){
+            throw new ResourceNotFoundException("Ability does not exist");
+        }
+        if(abilityCourseRepository.existsByAbilityAndCourseAndDeletedFalse(existingAbility,existingCourse)){
             throw new DuplicateException("The Ability-Course association already exists");
         }
         AbilityCourse abilityCourseToSave = new AbilityCourse(existingCourse, existingAbility);
@@ -50,15 +56,15 @@ public class AbilityCourseService implements IAbilityCourseService{
     @Override
     public AbilityCourse updateAbilityCourse(long id, AbilityCourseDto abilityCourseDto) throws  DuplicateException {
 
-        AbilityCourse existingAbilityCourse = abilityCourseRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Ability-Course association does not exist"));
+        AbilityCourse existingAbilityCourse = abilityCourseRepository.findByIdAndDeletedFalse(id);
 
-        Ability existingAbilityToAssociate = abilityRepository.findById(abilityCourseDto.getAbility().getId()).orElseThrow(()-> new ResourceNotFoundException("Ability does not exist"));
-        Course existingCourseToAssociate = courseRepository.findById(abilityCourseDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
-
-        if(abilityCourseRepository.existsByAbilityAndCourse(existingAbilityToAssociate,existingCourseToAssociate)){
-            throw new DuplicateException("Ability-CourseAssociation already exists");
+        if(existingAbilityCourse == null){
+            throw new ResourceNotFoundException("Ability-Course association does not exist");
         }
+
+        Ability existingAbilityToAssociate = abilityRepository.findByIdAndDeletedFalse(abilityCourseDto.getAbility().getId());
+        Course existingCourseToAssociate = courseRepository.findByIdAndDeletedFalse(abilityCourseDto.getCourse().getId());
+
         existingAbilityCourse.setAbility(existingAbilityToAssociate);
         existingAbilityCourse.setCourse(existingCourseToAssociate);
 
@@ -67,7 +73,7 @@ public class AbilityCourseService implements IAbilityCourseService{
 
     @Override
     public void deleteAbilityCourse(long id) throws ResourceNotFoundException {
-        if (!abilityCourseRepository.existsById(id)) {
+        if (!abilityCourseRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The course-ability association does not exist") ;
         }
         abilityCourseRepository.deleteById(id);
@@ -75,8 +81,16 @@ public class AbilityCourseService implements IAbilityCourseService{
 
     @Override
     public AbilityCourse getAbilityCourseById(long id) {
-        return abilityCourseRepository
-                .findById(id).orElseThrow(()-> new ResourceNotFoundException("The Ability-Course association does not exist"));
+        if (!abilityCourseRepository.existsByIdAndDeletedFalse(id)) {
+            throw new ResourceNotFoundException("The ability-course associaiton does not exist!");
+        }
+        return abilityCourseRepository.findByIdAndDeletedFalse(id);
     }
+
+
+
+
+
+
 
 }

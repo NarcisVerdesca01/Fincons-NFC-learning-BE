@@ -13,6 +13,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
+
 import java.util.List;
 
 @Getter
@@ -21,7 +25,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "ability")
 public class Ability {
 
     @Id
@@ -38,6 +41,8 @@ public class Ability {
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
     private List<AbilityUser> users;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 
 }

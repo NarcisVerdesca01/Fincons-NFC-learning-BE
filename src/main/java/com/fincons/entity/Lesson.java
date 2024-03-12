@@ -54,6 +54,8 @@ public class Lesson {
     @Column(name = "backgroundImage" , length = 20971520)
     private String backgroundImage;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
     @CreatedDate
     @Column(

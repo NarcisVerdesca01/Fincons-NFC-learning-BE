@@ -34,6 +34,9 @@ public class Role {
     @ManyToMany(mappedBy="roles")
     private List<User> users;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
     @PreRemove
     public void removeUsersAssociations() {
         for (User user: this.users) {

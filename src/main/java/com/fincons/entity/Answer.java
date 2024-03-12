@@ -34,5 +34,8 @@ public class Answer {
     @Column(name = "isCorrect")
     private boolean isCorrect;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
 }

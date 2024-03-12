@@ -19,6 +19,7 @@ public class AbilityDto {
     private String name;
     private List<AbilityCourseDto> courses;
     private List<AbilityUserDto> users;
+    private boolean deleted;
 
 
 }

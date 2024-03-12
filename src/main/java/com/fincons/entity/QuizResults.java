@@ -39,6 +39,9 @@ public class QuizResults {
     @Column(name = "totalScore")
     private float totalScore;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
     // TODO List<Integer> lista di indici delle risposte date
 
 }

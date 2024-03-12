@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +33,9 @@ public class AbilityCourse {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abilityId")
     private Ability ability;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
 
     public AbilityCourse(Course course, Ability ability) {
         this.course = course;

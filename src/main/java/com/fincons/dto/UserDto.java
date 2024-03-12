@@ -2,6 +2,7 @@ package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +27,6 @@ public class UserDto {
     private List<RoleDto> roles;
     private List<AbilityUserDto> abilities;
     private List<QuizResultsDto> quizzes;
+    private boolean deleted;
 
 }

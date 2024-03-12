@@ -19,4 +19,7 @@ public class RoleDto {
     private String name;
     private List<UserDto> users;
 
+    private boolean deleted;
+
+
 }

@@ -16,7 +16,7 @@ public interface ICourseService {
 
     void deleteCourse(long id);
 
-    List<Course> findDedicatedCourses(String email) throws UserDataException;
+    List<Course> findDedicatedCourses() throws UserDataException;
 
     Course updateCourse(long id, CourseDto courseDto) throws DuplicateException;
 
