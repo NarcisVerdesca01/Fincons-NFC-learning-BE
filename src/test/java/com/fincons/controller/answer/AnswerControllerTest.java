@@ -44,9 +44,12 @@ public class AnswerControllerTest {
     @Test
     public void testGetAllAnswers_Success(){
         List<Answer> answersList = Arrays.asList(new Answer(1L,"JEE: Java Enterprise Edition",null,true,false),
+                new Answer(1L,"JEE: Java Enterprise Edition",null,true,true),
                 new Answer(2L,"JEE: Java Enterprise Enter",null,true,false));
-        when(iAnswerService.findAllAnswer()).thenReturn(answersList);
-        List<AnswerDto> answerDtoList = answersList.stream().map(a -> answerMapper.mapAnswerToAnswerDto(a)).toList();
+        when(iAnswerService.findAllAnswer()).thenReturn(answersList
+                .stream()
+                .filter(a->!a.isDeleted())
+                .toList());
         ResponseEntity<ApiResponse<List<AnswerDto>>> responseEntity = answerController.getAllAnswer();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<AnswerDto> responseAnswers = Objects.requireNonNull(responseEntity.getBody()).getData();

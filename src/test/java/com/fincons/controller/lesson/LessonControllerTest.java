@@ -51,9 +51,13 @@ public class LessonControllerTest {
     public void testGetAllLessons_Success() {
         Lesson lesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         Lesson lesson2 = new Lesson(1L, "randomTitle2", null, null, null, "randomSecondImage",false, null, null, null, null);
-        List<Lesson> lessonList = Arrays.asList(lesson, lesson2);
-        when(iLessonService.findAllLessons()).thenReturn(lessonList);
-        List<LessonDto> lessonDtoList = lessonList.stream().map(l -> lessonMapper.mapLessonToLessonDto(l)).toList();
+        Lesson lesson3 = new Lesson(3L, "randomTitle2", null, null, null, "randomSecondImage",true, null, null, null, null);
+
+        List<Lesson> lessonList = Arrays.asList(lesson, lesson2,lesson3);
+        when(iLessonService.findAllLessons()).thenReturn(lessonList
+                .stream()
+                .filter(l->!l.isDeleted())
+                .toList());
         ResponseEntity<ApiResponse<List<LessonDto>>> responseEntity = lessonController.getAllLessons();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<LessonDto> responseCourses = Objects.requireNonNull(responseEntity.getBody()).getData();

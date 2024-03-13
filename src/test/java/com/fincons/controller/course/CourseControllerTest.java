@@ -50,9 +50,14 @@ public class CourseControllerTest {
     public void testGetAllCourses_Success(){
         Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",false,null,null,null,null);
         Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null,"random second image",false,null,null,null,null);
-        List<Course> courseList = Arrays.asList(course1, course2);
-        when(iCourseService.findAllCourses()).thenReturn(courseList);
-        List<CourseDto> courseDtoList = courseList.stream().map(c -> courseMapper.mapCourseToCourseDto(c)).toList();
+        Course course3 = new Course(3L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",true,null,null,null,null);
+
+        List<Course> courseList = Arrays.asList(course1, course2,course3);
+        when(iCourseService.findAllCourses()).thenReturn(courseList
+                .stream()
+                .filter(c->!c.isDeleted())
+                .toList());
+
         ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getAllCourses();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<CourseDto> responseCourses = Objects.requireNonNull(responseEntity.getBody()).getData();

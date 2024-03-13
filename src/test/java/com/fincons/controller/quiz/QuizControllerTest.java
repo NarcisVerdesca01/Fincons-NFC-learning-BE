@@ -42,10 +42,14 @@ public class QuizControllerTest {
     @Test
     public void testGetAllQuizzes_Success() {
         List<Quiz> quizzes = Arrays.asList(new Quiz(1L, "quizTitle", null, null, null,false, null, null, null, null),
-                new Quiz(2L, "quizTitle2", null, null, null,false, null, null, null, null));
-        when(iQuizService.findAllQuiz()).thenReturn(quizzes);
-        List<QuizDto> quizDtos = Arrays.asList(new QuizDto(1L, "quizTitle", null, null, null,false, null, null, null, null),
-                new QuizDto(2L, "quizTitle2", null, null, null,false, null, null, null, null));
+                new Quiz(3L, "quizTitle3", null, null, null,true, null, null, null, null),
+        new Quiz(2L, "quizTitle2", null, null, null,false, null, null, null, null));
+
+        when(iQuizService.findAllQuiz()).thenReturn(quizzes
+                .stream()
+                .filter(q->!q.isDeleted())
+                .toList());
+
         ResponseEntity<ApiResponse<List<QuizDto>>> responseEntity = quizController.getAllQuiz();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<QuizDto> responseQuiz = Objects.requireNonNull(responseEntity.getBody()).getData();

@@ -41,12 +41,14 @@ public class ContentControllerTest {
 
 
     @Test
-    public void testGetAllAbilities_Success() {
+    public void testGetAllContents_Success() {
         List<Content> contents = Arrays.asList(new Content(1L, "video", "randomContent", null,false),
-                new Content(2L, "video", "randomContent2", null,false));
-        when(iContentService.findAllContent()).thenReturn(contents);
-        List<ContentDto> contentDtoList = Arrays.asList(new ContentDto(1L, "video","randomContent",null,false),
-                new ContentDto(2L, "video","randomContent2",null,false));
+                new Content(3L, "video", "randomContent2", null,true),
+        new Content(2L, "video", "randomContent2", null,false));
+        when(iContentService.findAllContent()).thenReturn(contents
+                .stream()
+                        .filter(c->!c.isDeleted())
+                .toList());
         ResponseEntity<ApiResponse<List<ContentDto>>> responseEntity = contentController.getAllContent();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<ContentDto> responseContents = Objects.requireNonNull(responseEntity.getBody()).getData();

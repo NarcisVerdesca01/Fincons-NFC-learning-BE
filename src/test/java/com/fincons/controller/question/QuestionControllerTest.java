@@ -43,13 +43,13 @@ public class QuestionControllerTest {
         // Mock data
         List<Question> questions = Arrays.asList(
                 new Question(1L, "Question1", null, null,3,false),
-                new Question(2L, "Question2", null, null,3,false)
+                new Question(2L, "Question2", null, null,3,false),
+        new Question(3L, "Question2", null, null,3,true)
         );
-        when(iQuestionService.findAllQuestion()).thenReturn(questions);
-        List<QuestionDto> questionDtos = Arrays.asList(
-                new QuestionDto(1L, "Question1", null, null,3,false),
-                new QuestionDto(2L, "Question2", null, null,3,false)
-        );
+        when(iQuestionService.findAllQuestion()).thenReturn(questions
+                .stream()
+                .filter(q->!q.isDeleted())
+                .toList());
         ResponseEntity<ApiResponse<List<QuestionDto>>> responseEntity = questionController.getAllQuestion();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<QuestionDto> responseQuestions = Objects.requireNonNull(responseEntity.getBody()).getData();
