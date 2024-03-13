@@ -16,6 +16,6 @@ public interface IAbilityUserService {
 
     void deleteAbilityUser(long id);
 
-    AbilityUser addAbilityUser(long idOfUser, long abilityDtoToAssociate) throws DuplicateException;
+    AbilityUser addAbilityUser(long abilityDtoToAssociate) throws DuplicateException;
 
 }

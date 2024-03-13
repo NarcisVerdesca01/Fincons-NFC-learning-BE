@@ -69,19 +69,12 @@ public class AbilityUserController {
 
     @PostMapping("${ability-user.add}")
     public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(
-            @RequestParam(name = "abilityId") long abilityIdToAssociate,
-            HttpServletRequest request
+            @RequestParam(name = "abilityId") long abilityIdToAssociate
             ) {
         try {
 
-            String token = request.getHeader("Authorization").replace("Bearer ", "");
-
-            String userEmail = jwtTokenProvider.getEmailFromJWT(token);
-
-            long idOfUser = userRepository.findByEmail(userEmail).getId();
-
             AbilityUserDto abilityUserDtoToShow = abilityUserMapper
-                    .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(idOfUser,abilityIdToAssociate));
+                    .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(abilityIdToAssociate));
             return ResponseEntity.ok().body(ApiResponse.<AbilityUserDto>builder()
                     .data(abilityUserDtoToShow)
                     .build());

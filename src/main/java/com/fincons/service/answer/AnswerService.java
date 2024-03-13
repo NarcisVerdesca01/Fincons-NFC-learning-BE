@@ -90,7 +90,7 @@ public class AnswerService implements IAnswerService{
     public Answer associateQuestionToAnswer(long idAnswer, long idQuestion) throws DuplicateException {
         Answer answerToAssociateQuestion = answerRepository.findByIdAndDeletedFalse(idAnswer);
 
-        Question questionToAssociate = questionRepository.findByIdAndDeletedFalse(idAnswer);
+        Question questionToAssociate = questionRepository.findByIdAndDeletedFalse(idQuestion);
         if(answerToAssociateQuestion == null){
             throw new ResourceNotFoundException("Answer does not exist");
         }
@@ -98,10 +98,11 @@ public class AnswerService implements IAnswerService{
             throw new ResourceNotFoundException("Question does not exist");
         }
 
-        /*
-        if(answerToAssociateQuestion.getQuestion().getId()== idQuestion){
+
+        if(answerToAssociateQuestion.getQuestion().getId() == idQuestion){
             throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
-        }*/
+        }
+
 
         answerToAssociateQuestion.setQuestion(questionToAssociate);
 

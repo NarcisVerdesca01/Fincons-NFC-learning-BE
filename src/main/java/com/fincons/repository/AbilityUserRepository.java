@@ -14,7 +14,7 @@ public interface AbilityUserRepository extends JpaRepository<AbilityUser,Long> {
 
     List<AbilityUser> findAllByDeletedFalse();
 
-    boolean existsByUserAndAbilityAndDeletedFalse(Ability existingAbility, User existingUser);
+    boolean existsByUserAndAbilityAndDeletedFalse( User existingUser, Ability existingAbility);
 
     boolean existsByIdAndDeletedFalse(long id);
 

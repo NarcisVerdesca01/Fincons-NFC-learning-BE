@@ -12,6 +12,7 @@ import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.AbilityUserRepository;
 import com.fincons.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -36,19 +37,22 @@ public class AbilityUserService implements IAbilityUserService{
     }
 
     @Override
-    public AbilityUser addAbilityUser(long idOfUser, long abilityIdToAssociate) throws DuplicateException {
+    public AbilityUser addAbilityUser(long abilityIdToAssociate) throws DuplicateException {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        User existingUser = userRepository.findByEmail(loggedUser);
 
         Ability existingAbility = abilityRepository.findByIdAndDeletedFalse(abilityIdToAssociate);
-        User existingUser = userRepository.findByIdAndDeletedFalse(idOfUser);
 
         if(existingAbility == null){
             throw new ResourceNotFoundException("Ability does not exist");
         }
-        if(existingUser == null){
-            throw new ResourceNotFoundException("User does not exist");
-        }
 
-        if(abilityUserRepository.existsByUserAndAbilityAndDeletedFalse(existingAbility,existingUser)){
+        if(abilityUserRepository.existsByUserAndAbilityAndDeletedFalse(existingUser,existingAbility)){
             throw new DuplicateException("The Ability-User association already exists");
         }
         AbilityUser abilityUserToSave = new AbilityUser(existingUser, existingAbility);
