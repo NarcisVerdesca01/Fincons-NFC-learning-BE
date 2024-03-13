@@ -76,7 +76,7 @@ public class QuizResultService implements IQuizResultService{
         }
 
         if(quizResultRepository.existsByUserAndQuizAndDeletedFalse(user,quiz)){
-            throw new DuplicateException("The user has already completed the Quiz!");
+            throw new DuplicateException("The user has already completed the Quiz! Go To Update quiz-results page");
         }
         float total = 0;
         float score = 0;
@@ -125,6 +125,78 @@ public class QuizResultService implements IQuizResultService{
         return savedEntity;
     }
 
+    @Override
+    public QuizResults redoQuiz(long quizResultsToModify, Map<Long, List<Long>> userAnswers) {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if(!quizResultRepository.existsByIdAndDeletedFalse(quizResultsToModify)){
+            throw new ResourceNotFoundException("The user has never complete the quiz before please go to do quiz for the first time");
+        }
+
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        if (!userRepository.existsByEmail(loggedUser)) {
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        User user = userRepository.findByEmail(loggedUser);
+
+        Quiz quiz = quizResultRepository.findByIdAndDeletedFalse(quizResultsToModify).getQuiz();
+
+
+        if(!quizRepository.existsByIdAndDeletedFalse(quiz.getId())){
+            throw new ResourceNotFoundException("Quiz does not exist");
+        }
+
+
+        float total = 0;
+        float score = 0;
+
+        for (Map.Entry<Long, List<Long>> entry : userAnswers.entrySet()) {
+
+            Long questionId = entry.getKey();
+            List<Long> userAnswerIndices = entry.getValue();
+
+            Question question = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Question not found with ID: " + questionId));
+
+            userAnswerIndices.forEach(a-> answerRepository.findById(a).orElseThrow(() -> new ResourceNotFoundException("Answer not found ")));
+
+            total += question.getValueOfQuestion(); // Aumenta il conteggio delle domande
+
+            // Ottieni le risposte corrette associate alla domanda
+            List<Answer> correctAnswersOfQuestion = question.getAnswers()
+                    .stream()
+                    .filter(Answer::isCorrect)
+                    .toList();
+
+
+            // Conta le risposte corrette date dall'utente
+            long correctUserAnswersCount = correctAnswersOfQuestion
+                    .stream()
+                    .filter(answer -> userAnswerIndices.contains(answer.getId())).count();
+
+
+
+            // Calcola il punteggio parziale in base alle risposte corrette date dall'utente e le risposte corrette totali
+            double partialScore = ((double) correctUserAnswersCount / (double) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
+
+            score +=  partialScore;
+
+        }
+
+        float percentageScore = ( score / total) * 100;
+        QuizResults quizResult = quizResultRepository.findByIdAndDeletedFalse(quizResultsToModify);
+        quizResult.setUser(user);
+        quizResult.setQuiz(quiz);
+        quizResult.setTotalScore( percentageScore);
+        float percentuale =  quizResult.getTotalScore();
+        QuizResults savedEntity= quizResultRepository.save(quizResult);
+        return savedEntity;
+    }
 
 
 }

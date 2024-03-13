@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,6 +97,30 @@ public class QuizResultController {
                     .build());
         }
     }
+
+    @PutMapping(value = "${quiz-result-student.redo}")
+    public ResponseEntity<ApiResponse<QuizResultsDto>> reDoQuiz(
+            @RequestParam("quizToRedo") long quizToRedo,
+            @RequestBody Map<String, Object> requestBody) {
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
+
+        try {
+            QuizResultsDto results = quizResultMapper
+                    .mapQuizResultsEntityToDto(iQuizResultService.redoQuiz(quizToRedo, answersMap)) ;
+
+            return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
+                    .data(results)
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.badRequest().body(ApiResponse.<QuizResultsDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
+
 
 
 

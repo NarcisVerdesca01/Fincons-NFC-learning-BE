@@ -155,38 +155,24 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN","TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
 
-                        //Associazione
+
                         .requestMatchers(HttpMethod.POST, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
 
-                                                //TODO -  Tutor CRUD on Quiz
                          .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
 
                         .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-
-            /*
-                                                               //TODO - Associate Quiz to Student
-                                       .requestMatchers(HttpMethod.GET, applicationContext +  + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-                                       .requestMatchers(HttpMethod.POST, applicationContext +  + "/**").hasAnyRole("TUTOR")
-                                       .requestMatchers(HttpMethod.PUT, applicationContext +  + "/**").hasAnyRole("TUTOR")
-                                       .requestMatchers(HttpMethod.DELETE, applicationContext +  + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
 
 
-                        /*
-
-
-
-                        //TODO STUDENT Read on Courses, Lessons, Quiz related to its technical profile
-                        //TODO STUDENT CRUD on associated Quiz Answers
-
-                        */
 
                         .anyRequest().authenticated()
         ).httpBasic(Customizer.withDefaults());

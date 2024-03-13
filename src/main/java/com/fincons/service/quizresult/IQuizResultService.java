@@ -14,5 +14,8 @@ public interface IQuizResultService {
 
     QuizResults calculateAndSave(long quizId,  Map<Long,List<Long>> answersMap) throws DuplicateException;
 
+    QuizResults redoQuiz(long quizResultsToRedo, Map<Long, List<Long>> answersMap);
+
+
     //QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers);
 }
