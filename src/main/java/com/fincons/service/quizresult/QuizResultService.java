@@ -165,23 +165,18 @@ public class QuizResultService implements IQuizResultService{
 
             userAnswerIndices.forEach(a-> answerRepository.findById(a).orElseThrow(() -> new ResourceNotFoundException("Answer not found ")));
 
-            total += question.getValueOfQuestion(); // Aumenta il conteggio delle domande
+            total += question.getValueOfQuestion();
 
-            // Ottieni le risposte corrette associate alla domanda
             List<Answer> correctAnswersOfQuestion = question.getAnswers()
                     .stream()
                     .filter(Answer::isCorrect)
                     .toList();
 
 
-            // Conta le risposte corrette date dall'utente
             long correctUserAnswersCount = correctAnswersOfQuestion
                     .stream()
                     .filter(answer -> userAnswerIndices.contains(answer.getId())).count();
 
-
-
-            // Calcola il punteggio parziale in base alle risposte corrette date dall'utente e le risposte corrette totali
             double partialScore = ((double) correctUserAnswersCount / (double) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
 
             score +=  partialScore;

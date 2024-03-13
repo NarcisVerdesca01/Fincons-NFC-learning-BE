@@ -49,8 +49,8 @@ public class LessonControllerTest {
 
     @Test
     public void testGetAllLessons_Success() {
-        Lesson lesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
-        Lesson lesson2 = new Lesson(1L, "randomTitle2", null, null, null, "randomSecondImage", null, null, null, null);
+        Lesson lesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
+        Lesson lesson2 = new Lesson(1L, "randomTitle2", null, null, null, "randomSecondImage",false, null, null, null, null);
         List<Lesson> lessonList = Arrays.asList(lesson, lesson2);
         when(iLessonService.findAllLessons()).thenReturn(lessonList);
         List<LessonDto> lessonDtoList = lessonList.stream().map(l -> lessonMapper.mapLessonToLessonDto(l)).toList();
@@ -65,7 +65,7 @@ public class LessonControllerTest {
 
     @Test
     public void testGetLessonById_Success(){
-        Lesson lesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
+        Lesson lesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         when(iLessonService.findLessonById(1L)).thenReturn(lesson);
         ResponseEntity<ApiResponse<LessonDto>> responseEntity = lessonController.getLessonById(lessonMapper.mapLessonToLessonDto(lesson).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -87,7 +87,7 @@ public class LessonControllerTest {
 
     @Test
     public void testCreateLesson_Success() throws DuplicateException {
-        LessonDto inputLessonDto = new LessonDto(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
+        LessonDto inputLessonDto = new LessonDto(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         when(iLessonService.createLesson(inputLessonDto)).thenReturn(lessonMapper.mapDtoToLessonEntity(inputLessonDto));
         ResponseEntity<ApiResponse<LessonDto>> responseEntity = lessonController.createLesson(inputLessonDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -109,8 +109,8 @@ public class LessonControllerTest {
     @Test
     public void testUpdateLesson_Success() throws DuplicateException {
         long lessonId = 1L;
-        LessonDto inputLessonDto = new LessonDto(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
-        Lesson updatedLesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
+        LessonDto inputLessonDto = new LessonDto(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
+        Lesson updatedLesson = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         when(iLessonService.updateLesson(lessonId, inputLessonDto)).thenReturn(updatedLesson);
         ResponseEntity<ApiResponse<LessonDto>> responseEntity = lessonController.updateLesson(lessonId, inputLessonDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -148,8 +148,8 @@ public class LessonControllerTest {
 
     @Test
     public void testAssociateContentToLesson_Success() throws DuplicateException {
-        Lesson lessonToAssociate = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage", null, null, null, null);
-        Content contentToAssociate = new Content(1L, "video", "randomVideo",null);
+        Lesson lessonToAssociate = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
+        Content contentToAssociate = new Content(1L, "video", "randomVideo",null,false);
         when(iLessonService.associateContentToLesson(1L,1L)).thenReturn(lessonToAssociate);
         Lesson result = iLessonService.associateContentToLesson(1L, 1L);
         assertEquals(lessonToAssociate, result);

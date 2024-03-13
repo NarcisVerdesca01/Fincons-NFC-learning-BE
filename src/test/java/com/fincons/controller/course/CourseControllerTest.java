@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -47,8 +48,8 @@ public class CourseControllerTest {
      //ctrl-shift-7
     @Test
     public void testGetAllCourses_Success(){
-        Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",null,null,null,null);
-        Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null,"random second image",null,null,null,null);
+        Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",false,null,null,null,null);
+        Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null,"random second image",false,null,null,null,null);
         List<Course> courseList = Arrays.asList(course1, course2);
         when(iCourseService.findAllCourses()).thenReturn(courseList);
         List<CourseDto> courseDtoList = courseList.stream().map(c -> courseMapper.mapCourseToCourseDto(c)).toList();
@@ -59,16 +60,19 @@ public class CourseControllerTest {
         assertEquals(2, responseCourses.size());
         assertEquals("randomNameOfCourse", responseCourses.get(0).getName());
         assertEquals("randomNameOfCourse2",responseCourses.get(1).getName());
+        assertFalse( responseCourses.get(0).isDeleted());
+        assertFalse(responseCourses.get(1).isDeleted());
     }
 
     @Test
     public void testCreateCourse_Success() throws DuplicateException {
-        CourseDto inputCourseDto = new CourseDto(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,null,null,null,"randomImage");
+        CourseDto inputCourseDto = new CourseDto(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
         when(iCourseService.createCourse(inputCourseDto)).thenReturn(courseMapper.mapDtoToCourse(inputCourseDto));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(inputCourseDto.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
         verify(iCourseService).createCourse(inputCourseDto);
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
@@ -91,7 +95,7 @@ public class CourseControllerTest {
 
     @Test
     public void testGetCourseById_Success(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,null,null,null,"randomImage");
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
         when(iCourseService.findCourseById(1L)).thenReturn(course);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseById(courseMapper.mapCourseToCourseDto(course).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -100,6 +104,7 @@ public class CourseControllerTest {
         assertEquals(1, courseDto.getId());
         assertEquals(course.getId(), courseDto.getId());
         assertEquals(course.getDescription(), courseDto.getDescription());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
@@ -113,7 +118,7 @@ public class CourseControllerTest {
 
     @Test
     public void testGetCourseByName_Success(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,null,null,null,"randomImage");
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
         when(iCourseService.findCourseByName("randomNameOfCourse")).thenReturn(course);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseByName("randomNameOfCourse");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -122,11 +127,12 @@ public class CourseControllerTest {
         assertEquals(1, courseDto.getId());
         assertEquals(course.getId(), courseDto.getId());
         assertEquals(course.getName(), courseDto.getName());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
     public void testGetCourseByName_NotFound(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,null,null,null,"randomImage");
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
         String nonExistingCourseName = "RandomNonExistingName";
         doThrow(new ResourceNotFoundException("The Course does not exist")).when(iCourseService).findCourseByName(nonExistingCourseName);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseByName(nonExistingCourseName);
@@ -158,11 +164,11 @@ public class CourseControllerTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
         List<Course> courses = Arrays.asList(
-                new Course(1L, "Course 1", "image1", "Description 1", null, null, null, null, null, null, null),
-                new Course(2L, "Course 2", "image2", "Description 2", null, null, null, null, null, null, null)
+                new Course(1L, "Course 1", "image1", "Description 1", null, null, null,false, null, null, null, null),
+                new Course(2L, "Course 2", "image2", "Description 2", null, null, null,false, null, null, null, null)
         );
-        when(iCourseService.findDedicatedCourses("test@example.com")).thenReturn(courses);
-        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses(request);
+        when(iCourseService.findDedicatedCourses()).thenReturn(courses);
+        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<CourseDto> responseCourses = Objects.requireNonNull(responseEntity.getBody()).getData();
         assertNotNull(responseCourses);
@@ -176,8 +182,8 @@ public class CourseControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
-        doThrow(new ResourceNotFoundException("The User does not exist") ).when(iCourseService).findDedicatedCourses("test@example.com");
-        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses(request);
+        doThrow(new ResourceNotFoundException("The User does not exist") ).when(iCourseService).findDedicatedCourses();
+        ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses();
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         String errorMessage = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         assertNotNull(errorMessage);
@@ -187,8 +193,8 @@ public class CourseControllerTest {
     @Test
     public void testUpdateCourse_Success() throws ResourceNotFoundException, DuplicateException {
         long courseId = 1L;
-        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
-        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null,false, null, null, null, "updatedBackgroundImage");
+        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         when(iCourseService.updateCourse(courseId, inputCourseDto)).thenReturn(updatedCourse);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -200,8 +206,8 @@ public class CourseControllerTest {
     @Test
     public void testUpdateCourse_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
         long courseId = 1L;
-        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
-        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, null, null, null, "updatedBackgroundImage");
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
+        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         when(iCourseService.updateCourse(courseId, inputCourseDto)).thenThrow(new ResourceNotFoundException("The Course does not exists"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());

@@ -42,13 +42,13 @@ public class QuestionControllerTest {
     public void testGetAllQuestion_Success() {
         // Mock data
         List<Question> questions = Arrays.asList(
-                new Question(1L, "Question1", null, null,3),
-                new Question(2L, "Question2", null, null,3)
+                new Question(1L, "Question1", null, null,3,false),
+                new Question(2L, "Question2", null, null,3,false)
         );
         when(iQuestionService.findAllQuestion()).thenReturn(questions);
         List<QuestionDto> questionDtos = Arrays.asList(
-                new QuestionDto(1L, "Question1", null, null,3),
-                new QuestionDto(2L, "Question2", null, null,3)
+                new QuestionDto(1L, "Question1", null, null,3,false),
+                new QuestionDto(2L, "Question2", null, null,3,false)
         );
         ResponseEntity<ApiResponse<List<QuestionDto>>> responseEntity = questionController.getAllQuestion();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -61,7 +61,7 @@ public class QuestionControllerTest {
 
     @Test
     public void testGetQuestionById_Success() {
-        Question question = new Question(1L, "What is Spring Boot?", null, null,3);
+        Question question = new Question(1L, "What is Spring Boot?", null, null,3,false);
         when(iQuestionService.findById(1L)).thenReturn(question);
         ResponseEntity<ApiResponse<QuestionDto>> responseEntity = questionController.getById(1L);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -81,7 +81,7 @@ public class QuestionControllerTest {
 
     @Test
     public void testCreateQuestion_Success() {
-        QuestionDto inputQuestionDto = new QuestionDto(1L, "What is Spring Boot?", null, null,3);
+        QuestionDto inputQuestionDto = new QuestionDto(1L, "What is Spring Boot?", null, null,3,false);
         when(iQuestionService.createQuestion(inputQuestionDto)).thenReturn(questionMapper.mapQuestionDtoToQuestionEntity(inputQuestionDto));
         ResponseEntity<ApiResponse<QuestionDto>> responseEntity = questionController.createQuestion(inputQuestionDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +40,7 @@ public class AbilityControllerTest {
 
     @Test
     public void testGetAbilityByName_Success(){
-        Ability ability = new Ability(1L,"Informatica",null,null);
+        Ability ability = new Ability(1L,"Informatica",null,null,false);
         when(iAbilityService.findAbilityByName("Informatica")).thenReturn(ability);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityByName("Informatica");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -48,15 +49,20 @@ public class AbilityControllerTest {
         assertEquals(1, abilityDto.getId());
         assertEquals(ability.getId(), abilityDto.getId());
         assertEquals(ability.getName(), abilityDto.getName());
+        assertEquals(ability.isDeleted(),abilityDto.isDeleted());
     }
 
     @Test
     public void testGetAllAbilities_Success() {
-        List<Ability> abilities = Arrays.asList(new Ability(1L, "Ability1", null, null),
-                new Ability(2L, "Ability2", null, null));
-        when(iAbilityService.findAllAbilities()).thenReturn(abilities);
-        List<AbilityDto> abilityDtos = Arrays.asList(new AbilityDto(1L, "Ability1",null,null),
-                new AbilityDto(2L, "Ability2",null,null));
+        List<Ability> abilities = Arrays.asList(new Ability(1L, "Ability1", null, null,false),
+                new Ability(2L, "Ability2", null, null,false),
+                new Ability(3L, "Ability2", null, null,true)
+        );
+        when(iAbilityService.findAllAbilities()).thenReturn(abilities
+                        .stream()
+                        .filter(a-> !a.isDeleted())
+                        .toList()
+                        );
         ResponseEntity<ApiResponse<List<AbilityDto>>> responseEntity = abilityController.getAllAbilities();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<AbilityDto> responseAbilities = Objects.requireNonNull(responseEntity.getBody()).getData();
@@ -64,27 +70,31 @@ public class AbilityControllerTest {
         assertEquals(2, responseAbilities.size());
         assertEquals("Ability1", responseAbilities.get(0).getName());
         assertEquals("Ability2", responseAbilities.get(1).getName());
+        assertFalse( responseAbilities.get(0).isDeleted());
+        assertFalse(responseAbilities.get(1).isDeleted());
     }
 
 
     @Test
     public void testGetAbilityById_Success() throws DuplicateException {
-        Ability ability = new Ability(1L, "Informatica",null,null);
+        Ability ability = new Ability(1L, "Informatica",null,null,false);
         when(iAbilityService.findAbilityById(1L)).thenReturn(ability);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityById(abilityMapper.mapAbilityToAbilityDto(ability).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(Objects.requireNonNull(responseEntity.getBody()).getData());
         assertEquals(ability.getId(), responseEntity.getBody().getData().getId());
         assertEquals(ability.getName(), responseEntity.getBody().getData().getName());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
     public void testCreateAbility_Success() throws DuplicateException {
-        AbilityDto inputAbilityDto = new AbilityDto(1L,"Informatica",null,null);
+        AbilityDto inputAbilityDto = new AbilityDto(1L,"Informatica",null,null,false);
         when(iAbilityService.createAbility(inputAbilityDto)).thenReturn(abilityMapper.mapDtoToAbility(inputAbilityDto));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(inputAbilityDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(inputAbilityDto.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
@@ -108,12 +118,13 @@ public class AbilityControllerTest {
     @Test
     public void testUpdateAbility_Success() throws DuplicateException {
         long abilityId = 1L;
-        AbilityDto inputAbilityDto = new AbilityDto(1L,"Programmazione",null,null);
-        Ability updatedAbility = new Ability(1L,"Programmazione",null,null);
+        AbilityDto inputAbilityDto = new AbilityDto(1L,"Programmazione",null,null,false);
+        Ability updatedAbility = new Ability(1L,"Programmazione",null,null,false);
         when(iAbilityService.updateAbility(abilityId, inputAbilityDto)).thenReturn(updatedAbility);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.updateAbility(abilityId, inputAbilityDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(updatedAbility.getName(), Objects.requireNonNull(responseEntity.getBody()).getData().getName());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
@@ -140,11 +151,11 @@ public class AbilityControllerTest {
 
     @Test
     public void testDeleteAbility_Success() {
-        long abilityId = 1L;
-        ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(abilityId);
+        Ability abilityToDelete = new Ability(1L,"randomName",null,null,false);
+        ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(abilityToDelete.getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("The ability has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
-        verify(iAbilityService).deleteAbility(abilityId); // Verify that the service method was called
+        verify(iAbilityService).deleteAbility(abilityToDelete.getId()); // Verify that the service method was called
     }
 
     @Test

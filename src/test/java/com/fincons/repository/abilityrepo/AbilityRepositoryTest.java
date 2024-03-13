@@ -41,7 +41,7 @@ public class AbilityRepositoryTest {
     @Test
     public void RetrieeveAbility_findByName(){
 
-        Ability ability1 = new Ability(1L,"Informatica",null,null);
+        Ability ability1 = new Ability(1L,"Informatica",null,null,false);
         Ability ability1Saved = abilityRepository.save(ability1);
         Ability response = abilityRepository.findByName("Informatica");
         List<Ability> listOfAbilities = abilityRepository.findAll();

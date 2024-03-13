@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -41,11 +42,11 @@ public class ContentControllerTest {
 
     @Test
     public void testGetAllAbilities_Success() {
-        List<Content> contents = Arrays.asList(new Content(1L, "video", "randomContent", null),
-                new Content(2L, "video", "randomContent2", null));
+        List<Content> contents = Arrays.asList(new Content(1L, "video", "randomContent", null,false),
+                new Content(2L, "video", "randomContent2", null,false));
         when(iContentService.findAllContent()).thenReturn(contents);
-        List<ContentDto> contentDtoList = Arrays.asList(new ContentDto(1L, "video","randomContent",null),
-                new ContentDto(2L, "video","randomContent2",null));
+        List<ContentDto> contentDtoList = Arrays.asList(new ContentDto(1L, "video","randomContent",null,false),
+                new ContentDto(2L, "video","randomContent2",null,false));
         ResponseEntity<ApiResponse<List<ContentDto>>> responseEntity = contentController.getAllContent();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<ContentDto> responseContents = Objects.requireNonNull(responseEntity.getBody()).getData();
@@ -53,11 +54,13 @@ public class ContentControllerTest {
         assertEquals(2, responseContents.size());
         assertEquals("randomContent", responseContents.get(0).getContent());
         assertEquals("randomContent2", responseContents.get(1).getContent());
+        assertFalse( responseContents.get(0).isDeleted());
+        assertFalse(responseContents.get(1).isDeleted());
     }
 
     @Test
     public void testGetContentById_Success(){
-        Content content = new Content(1L,"video","randomContent",null);
+        Content content = new Content(1L,"video","randomContent",null,false);
         when(iContentService.findById(1L)).thenReturn(content);
         ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.getById(contentMapper.mapContentToContentDto(content).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -66,23 +69,26 @@ public class ContentControllerTest {
         assertEquals(1, contentDto.getId());
         assertEquals(content.getId(), contentDto.getId());
         assertEquals(content.getContent(), contentDto.getContent());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
     public void testCreateContent_Success() throws DuplicateException {
-        ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null);
+        ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null,false);
         when(iContentService.createContent(inputContentDto)).thenReturn(contentMapper.mapContentDtoToContentEntity(inputContentDto));
         ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.createContent(inputContentDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(inputContentDto.getContent(),responseEntity.getBody().getData().getContent());
+        assertEquals(inputContentDto.getContent(), Objects.requireNonNull(responseEntity.getBody()).getData().getContent());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
+
     }
 
 
     @Test
     public void testUpdateContent_Success() throws DuplicateException {
         long contentId = 1L;
-        ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null);
-        Content updatedContent = new Content(1L,"video","randomContent",null);
+        ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null,false);
+        Content updatedContent = new Content(1L,"video","randomContent",null,false);
         when(iContentService.updateContent(contentId, inputContentDto)).thenReturn(updatedContent);
         ResponseEntity<ApiResponse<String>> responseEntity = contentController.updateContent(contentId, inputContentDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

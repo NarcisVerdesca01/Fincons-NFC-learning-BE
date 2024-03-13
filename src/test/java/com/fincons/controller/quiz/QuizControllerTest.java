@@ -41,11 +41,11 @@ public class QuizControllerTest {
 
     @Test
     public void testGetAllQuizzes_Success() {
-        List<Quiz> quizzes = Arrays.asList(new Quiz(1L, "quizTitle", null, null, null, null, null, null, null),
-                new Quiz(2L, "quizTitle2", null, null, null, null, null, null, null));
+        List<Quiz> quizzes = Arrays.asList(new Quiz(1L, "quizTitle", null, null, null,false, null, null, null, null),
+                new Quiz(2L, "quizTitle2", null, null, null,false, null, null, null, null));
         when(iQuizService.findAllQuiz()).thenReturn(quizzes);
-        List<QuizDto> quizDtos = Arrays.asList(new QuizDto(1L, "quizTitle", null, null, null, null, null, null, null),
-                new QuizDto(2L, "quizTitle2", null, null, null, null, null, null, null));
+        List<QuizDto> quizDtos = Arrays.asList(new QuizDto(1L, "quizTitle", null, null, null,false, null, null, null, null),
+                new QuizDto(2L, "quizTitle2", null, null, null,false, null, null, null, null));
         ResponseEntity<ApiResponse<List<QuizDto>>> responseEntity = quizController.getAllQuiz();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         List<QuizDto> responseQuiz = Objects.requireNonNull(responseEntity.getBody()).getData();
@@ -58,7 +58,7 @@ public class QuizControllerTest {
 
     @Test
     public void testGetQuizById_Success() throws DuplicateException {
-        Quiz quiz = new Quiz(1L, "quizTitle", null, null, null, null, null, null, null);
+        Quiz quiz = new Quiz(1L, "quizTitle", null, null, null,false, null, null, null, null);
         when(iQuizService.findById(1L)).thenReturn(quiz);
         ResponseEntity<ApiResponse<QuizDto>> responseEntity = quizController.getById(quizMapper.mapQuizToQuizDto(quiz).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -78,7 +78,7 @@ public class QuizControllerTest {
 
     @Test
     public void testCreateQuiz_Success() throws DuplicateException {
-        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, null, null, null, null);
+        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null,false, null, null, null, null);
         when(iQuizService.createQuiz(inputQuizDto)).thenReturn(quizMapper.mapQuizDtoToQuizEntity(inputQuizDto));
         ResponseEntity<ApiResponse<QuizDto>> responseEntity = quizController.createQuiz(inputQuizDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -87,7 +87,7 @@ public class QuizControllerTest {
 
     @Test
     public void testCreateQuiz_Duplicate() throws DuplicateException {
-        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, null, null, null, null);
+        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, false, null, null, null, null);
         when(iQuizService.createQuiz(inputQuizDto)).thenThrow(new DuplicateException("The name of quiz already exist"));
         ResponseEntity<ApiResponse<QuizDto>> responseEntity = quizController.createQuiz(inputQuizDto);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -98,8 +98,8 @@ public class QuizControllerTest {
     @Test
     public void testUpdateQuiz_Success() throws DuplicateException {
         long quizId = 1L;
-        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, null, null, null, null);
-        Quiz updatedQuiz = new Quiz(1L, "quizTitle", null, null, null, null, null, null, null);
+        QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, false, null, null, null, null);
+        Quiz updatedQuiz = new Quiz(1L, "quizTitle", null, null, null, false, null, null, null, null);
         when(iQuizService.updateQuiz(quizId, inputQuizDto)).thenReturn(updatedQuiz);
         ResponseEntity<ApiResponse<String>> responseEntity = quizController.updateQuiz(quizId, inputQuizDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

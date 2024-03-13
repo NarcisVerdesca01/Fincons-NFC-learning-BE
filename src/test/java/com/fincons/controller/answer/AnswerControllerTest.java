@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -42,42 +43,47 @@ public class AnswerControllerTest {
 
     @Test
     public void testGetAllAnswers_Success(){
-        List<Answer> answersList = Arrays.asList(new Answer(1L,"JEE: Java Enterprise Edition",null,true),
-                new Answer(2L,"JEE: Java Enterprise Enter",null,false));
+        List<Answer> answersList = Arrays.asList(new Answer(1L,"JEE: Java Enterprise Edition",null,true,false),
+                new Answer(2L,"JEE: Java Enterprise Enter",null,true,false));
         when(iAnswerService.findAllAnswer()).thenReturn(answersList);
         List<AnswerDto> answerDtoList = answersList.stream().map(a -> answerMapper.mapAnswerToAnswerDto(a)).toList();
         ResponseEntity<ApiResponse<List<AnswerDto>>> responseEntity = answerController.getAllAnswer();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        List<AnswerDto> responseAbilities = Objects.requireNonNull(responseEntity.getBody()).getData();
-        assertNotNull(responseAbilities);
-        assertEquals(2, responseAbilities.size());
-        assertEquals("JEE: Java Enterprise Edition", responseAbilities.get(0).getText());
-        assertEquals("JEE: Java Enterprise Enter", responseAbilities.get(1).getText());
+        List<AnswerDto> responseAnswers = Objects.requireNonNull(responseEntity.getBody()).getData();
+        assertNotNull(responseAnswers);
+        assertEquals(2, responseAnswers.size());
+        assertEquals("JEE: Java Enterprise Edition", responseAnswers.get(0).getText());
+        assertEquals("JEE: Java Enterprise Enter", responseAnswers.get(1).getText());
+        assertFalse( responseAnswers.get(0).isDeleted());
+        assertFalse(responseAnswers.get(1).isDeleted());
     }
 
     @Test
     public void testGetAnswerById_Success() throws DuplicateException {
-        Answer answer = new Answer(1L, "JEE: Java Enterprise Edition",null,true);
+        Answer answer = new Answer(1L, "JEE: Java Enterprise Edition",null,true,false);
         when(iAnswerService.findById(1L)).thenReturn(answer);
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.getById(answerMapper.mapAnswerToAnswerDto(answer).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(Objects.requireNonNull(responseEntity.getBody()).getData());
         assertEquals(answer.getId(), responseEntity.getBody().getData().getId());
         assertEquals(answer.getText(), responseEntity.getBody().getData().getText());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
+
     }
 
     @Test
     public void testCreateAnswer_Success() throws DuplicateException {
-        AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true);
+        AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true,false);
         when(iAnswerService.createAnswer(inputAnswerDto)).thenReturn(answerMapper.mapAnswerDtoToAnswerEntity(inputAnswerDto));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(inputAnswerDto.getText(), Objects.requireNonNull(responseEntity.getBody()).getData().getText());
+        assertFalse(responseEntity.getBody().getData().isDeleted());
     }
 
     @Test
     public void testCreateAnswer_BadRequest() throws DuplicateException {
-        AnswerDto inputAnswerDto = new AnswerDto(1L,null,null,true);
+        AnswerDto inputAnswerDto = new AnswerDto(1L,null,null,true,false);
         when(iAnswerService.createAnswer(inputAnswerDto)).thenThrow(new IllegalArgumentException("User must enter the text of answer!"));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -87,8 +93,8 @@ public class AnswerControllerTest {
     @Test
     public void testUpdateAnswer_Success() throws DuplicateException {
         long answerId = 1L;
-        AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true);
-        Answer updatedAnswer = new Answer(1L,"JEE: Java Enterprise Edition",null,true);
+        AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true,false);
+        Answer updatedAnswer = new Answer(1L,"JEE: Java Enterprise Edition",null,true,false);
         when(iAnswerService.updateAnswer(answerId, inputAnswerDto)).thenReturn(updatedAnswer);
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.updateAnswer(answerId, inputAnswerDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -134,6 +140,9 @@ public class AnswerControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals("The answer does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
+
+
+
 
 
 
