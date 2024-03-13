@@ -102,6 +102,7 @@ public class SecurityConfiguration {
 
     @Value("${detail.userdto}")
     private String getUserDtoByEmail;
+
     @Value("${quiz.base.uri}")
     private String quizBaseUri;
 
@@ -110,20 +111,22 @@ public class SecurityConfiguration {
 
     @Value("${question.base.uri}")
     private String questionBaseUri;
+
     @Value("${quiz-result-student.base.uri}")
     private String quizResultStudentBaseUri;
+
+    @Value("${quiz-result-student.list.singleStudent}")
+    private String quizResultStudentListSingleStudent;
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-
         http.csrf(AbstractHttpConfigurer::disable);
 
-
-        //requests
         http.authorizeHttpRequests(auth  ->
                 auth
-
                         .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
@@ -155,28 +158,24 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN","TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
 
-
                         .requestMatchers(HttpMethod.POST, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-
 
                          .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentListSingleStudent ).hasAnyRole("ADMIN","TUTOR","STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
-                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
-
-
-
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN")
                         .anyRequest().authenticated()
-        ).httpBasic(Customizer.withDefaults());
 
+        ).httpBasic(Customizer.withDefaults());
 
         http
                 .exceptionHandling(exception -> exception
@@ -186,46 +185,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
-
-    /*
-     .antMatchers("/api/authenticate").permitAll() // Endpoint di autenticazione accessibile a tutti
-                .antMatchers(HttpMethod.GET, "/api/corsi/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")   FATTO
-                .antMatchers(HttpMethod.POST, "/api/corsi").hasRole("ADMIN")                            FATTO
-                .antMatchers(HttpMethod.PUT, "/api/corsi/**").hasRole("ADMIN")                          FATTO
-                .antMatchers(HttpMethod.DELETE, "/api/corsi/**").hasRole("ADMIN")                       FATTO
-
-                .antMatchers(HttpMethod.GET, "/api/lezioni/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT") FATTO
-                .antMatchers(HttpMethod.POST, "/api/lezioni").hasRole("TUTOR")                          FATTO
-                .antMatchers(HttpMethod.PUT, "/api/lezioni/**").hasRole("TUTOR")                        FATTO
-                .antMatchers(HttpMethod.DELETE, "/api/lezioni/**").hasRole("TUTOR")                     FATTO
-
-                .antMatchers(HttpMethod.GET, "/api/quiz/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")    FATTO
-                .antMatchers(HttpMethod.POST, "/api/quiz").hasRole("TUTOR")                             FATTO
-                .antMatchers(HttpMethod.PUT, "/api/quiz/**").hasRole("TUTOR")                           FATTO
-                .antMatchers(HttpMethod.DELETE, "/api/quiz/**").hasRole("TUTOR")                        FATTO
-
-                .antMatchers(HttpMethod.GET, "/api/risposte-quiz/**").hasRole("STUDENT")
-                .antMatchers(HttpMethod.POST, "/api/risposte-quiz").hasRole("STUDENT")
-                .antMatchers(HttpMethod.PUT, "/api/risposte-quiz/**").hasRole("STUDENT")
-                .antMatchers(HttpMethod.DELETE, "/api/risposte-quiz/**").hasRole("STUDENT")
-                                .anyRequest().authenticated()
-     */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

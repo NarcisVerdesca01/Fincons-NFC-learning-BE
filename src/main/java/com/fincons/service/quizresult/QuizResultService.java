@@ -41,7 +41,29 @@ public class QuizResultService implements IQuizResultService{
 
     @Override
     public List<QuizResults> findAllResultsQuiz() {
-        return quizResultRepository.findAll();
+        return quizResultRepository.findAllByDeletedFalse();
+    }
+
+    @Override
+    public List<QuizResults> findQuizResultAboutSingleStudent() {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        if (!userRepository.existsByEmail(loggedUser)) {
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        User user = userRepository.findByEmail(loggedUser);
+
+        List<QuizResults> quizResultsList = quizResultRepository.findAll();
+
+        return quizResultsList
+                .stream()
+                .filter(qr -> qr.getUser().getEmail().equals(user.getEmail()))
+                .toList();
     }
 
     @Override
@@ -192,6 +214,8 @@ public class QuizResultService implements IQuizResultService{
         QuizResults savedEntity= quizResultRepository.save(quizResult);
         return savedEntity;
     }
+
+
 
 
 }

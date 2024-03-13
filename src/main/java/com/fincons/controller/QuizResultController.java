@@ -53,8 +53,20 @@ public class QuizResultController {
                 .build());
     }
 
+    @GetMapping("${quiz-result-student.list.singleStudent}")
+    public ResponseEntity<ApiResponse<List<QuizResultsDto>>> getQuizResultAboutSingleStudent() {
+        List<QuizResultsDto> quizResultsDtosList= iQuizResultService.findQuizResultAboutSingleStudent()
+                .stream()
+                .map(a->quizResultMapper.mapQuizResultsEntityToDto(a))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<QuizResultsDto>>builder()
+                .data(quizResultsDtosList)
+                .build());
 
-    @GetMapping("${quiz-result-student.find-by-id}/{id}")
+    }
+
+
+        @GetMapping("${quiz-result-student.find-by-id}/{id}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> getQuizResultsStudentDtoById(@PathVariable long id){
         try{
             QuizResultsDto quizResultsDto = quizResultMapper
