@@ -58,7 +58,7 @@ public class QuizResultService implements IQuizResultService{
 
         User user = userRepository.findByEmail(loggedUser);
 
-        List<QuizResults> quizResultsList = quizResultRepository.findAll();
+        List<QuizResults> quizResultsList = quizResultRepository.findAllByDeletedFalse();
 
         return quizResultsList
                 .stream()
@@ -142,7 +142,6 @@ public class QuizResultService implements IQuizResultService{
         quizResult.setQuiz(quiz);
         quizResult.setTotalScore( percentageScore);
        float percentuale =  quizResult.getTotalScore();
-        percentageScore=percentageScore;
           QuizResults savedEntity= quizResultRepository.save(quizResult);
         return savedEntity;
     }
