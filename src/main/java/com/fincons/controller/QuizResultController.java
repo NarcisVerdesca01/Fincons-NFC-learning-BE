@@ -81,7 +81,22 @@ public class QuizResultController {
         }
     }
 
+    @GetMapping(value = "${quiz-result-student.check}")
+    public ResponseEntity<ApiResponse<Boolean>> checkDoneQuiz(
+            @RequestParam("quizId") long quizId) {
 
+        try {
+            boolean results = iQuizResultService.checkIfAlreadyDone(quizId);
+
+            return ResponseEntity.ok().body(ApiResponse.<Boolean>builder()
+                    .data(results)
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.badRequest().body(ApiResponse.<Boolean>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
     @PostMapping(value = "${quiz-result-student.calculate}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> calculateAndSave(

@@ -119,6 +119,11 @@ public class SecurityConfiguration {
     private String quizResultStudentListSingleStudent;
 
 
+    @Value("${quiz-result-student.check}")
+    private String quizResultStudentCheck;
+
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -169,6 +174,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
 
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentListSingleStudent ).hasAnyRole("ADMIN","TUTOR","STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentCheck ).hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")

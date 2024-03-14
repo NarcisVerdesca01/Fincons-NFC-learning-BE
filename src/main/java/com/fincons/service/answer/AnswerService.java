@@ -4,7 +4,6 @@ import com.fincons.dto.AnswerDto;
 import com.fincons.dto.QuestionDto;
 import com.fincons.entity.Answer;
 import com.fincons.entity.Question;
-import com.fincons.entity.Quiz;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuestionMapper;
@@ -48,7 +47,7 @@ public class AnswerService implements IAnswerService{
             throw new IllegalArgumentException("User must enter the text of answer!");
         }
         if (answerRepository.existsByTextAndDeletedFalse(answerDto.getText())) {
-            throw new DuplicateException("The name of ability already exists");
+            throw new DuplicateException("The answer already exists");
         }
         Answer newAnswer= new Answer();
         newAnswer.setText(answerDto.getText());

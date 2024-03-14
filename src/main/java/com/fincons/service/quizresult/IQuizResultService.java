@@ -19,6 +19,8 @@ public interface IQuizResultService {
 
     List<QuizResults>  findQuizResultAboutSingleStudent();
 
+     boolean checkIfAlreadyDone(long quizId);
+
 
     //QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers);
 }

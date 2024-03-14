@@ -76,6 +76,22 @@ public class QuizResultService implements IQuizResultService{
         return quizResultRepository.findByIdAndDeletedFalse(id);
 
     }
+    @Override
+    public boolean checkIfAlreadyDone(long quizId){
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(loggedUser);
+        Quiz quiz = quizRepository.findByIdAndDeletedFalse(quizId);
+
+        if(quiz==null){
+            throw new ResourceNotFoundException("Quiz does not exist");
+        }
+
+
+        if(quizResultRepository.existsByUserAndQuizAndDeletedFalse(user,quiz)){
+           return true;
+        }
+        return false;
+    }
 
     @Override
     public QuizResults calculateAndSave(long quizId, Map<Long, List<Long>> userAnswers) throws DuplicateException {
@@ -100,6 +116,7 @@ public class QuizResultService implements IQuizResultService{
         if(quizResultRepository.existsByUserAndQuizAndDeletedFalse(user,quiz)){
             throw new DuplicateException("The user has already completed the Quiz! Go To Update quiz-results page");
         }
+
         float total = 0;
         float score = 0;
 
@@ -147,7 +164,7 @@ public class QuizResultService implements IQuizResultService{
     }
 
     @Override
-    public QuizResults redoQuiz(long quizResultsToModify, Map<Long, List<Long>> userAnswers) {
+    public QuizResults redoQuiz(long quizIdToModify, Map<Long, List<Long>> userAnswers) {
 
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -168,7 +185,8 @@ public class QuizResultService implements IQuizResultService{
 
         User user = userRepository.findByEmail(loggedUser);
 
-        Quiz quiz = quizResultRepository.findByIdAndDeletedFalse(quizResultsToModify).getQuiz();
+        Quiz quiz = quizRepository.findByIdAndDeletedFalse(quizIdToModify);
+
 
         //appena agigunto
         if(quizResultRepository.findByUserAndQuizAndDeletedFalse(user,quiz)==null){
@@ -213,12 +231,12 @@ public class QuizResultService implements IQuizResultService{
         }
 
         float percentageScore = ( score / total) * 100;
-        QuizResults quizResult = quizResultRepository.findByIdAndDeletedFalse(quizResultsToModify);
-        quizResult.setUser(user);
-        quizResult.setQuiz(quiz);
-        quizResult.setTotalScore( percentageScore);
-        float percentuale =  quizResult.getTotalScore();
-        QuizResults savedEntity= quizResultRepository.save(quizResult);
+        QuizResults quizResultsToModify =  quizResultRepository.findByUserAndQuizAndDeletedFalse(user,quiz);
+        quizResultsToModify.setUser(user);
+        quizResultsToModify.setQuiz(quiz);
+        quizResultsToModify.setTotalScore( percentageScore);
+        float percentuale =  quizResultsToModify.getTotalScore();
+        QuizResults savedEntity= quizResultRepository.save(quizResultsToModify);
         return savedEntity;
     }
 
