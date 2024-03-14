@@ -99,7 +99,7 @@ public class AnswerService implements IAnswerService{
         }
 
 
-        if(answerToAssociateQuestion.getQuestion().getId() == idQuestion){
+        if(answerToAssociateQuestion.getQuestion() != null && answerToAssociateQuestion.getQuestion().getId() == idQuestion){
             throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
         }
 
