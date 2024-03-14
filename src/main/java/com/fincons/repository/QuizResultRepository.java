@@ -18,4 +18,6 @@ public interface QuizResultRepository extends JpaRepository<QuizResults, Long> {
     boolean existsByUserAndQuizAndDeletedFalse(User user, Quiz quiz);
 
     List<QuizResults> findAllByDeletedFalse();
+
+    QuizResults findByUserAndQuizAndDeletedFalse(User user, Quiz quiz); //appena aggiunto
 }

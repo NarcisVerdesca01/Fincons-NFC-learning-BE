@@ -151,9 +151,12 @@ public class QuizResultService implements IQuizResultService{
 
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if(!quizResultRepository.existsByIdAndDeletedFalse(quizResultsToModify)){
+        /*
+                if(!quizResultRepository.existsByIdAndDeletedFalse(quizResultsToModify)){
             throw new ResourceNotFoundException("The user has never complete the quiz before please go to do quiz for the first time");
         }
+         */
+
 
         if (loggedUser.isEmpty()) {
             throw new ResourceNotFoundException("User with this email doesn't exist");
@@ -166,6 +169,11 @@ public class QuizResultService implements IQuizResultService{
         User user = userRepository.findByEmail(loggedUser);
 
         Quiz quiz = quizResultRepository.findByIdAndDeletedFalse(quizResultsToModify).getQuiz();
+
+        //appena agigunto
+        if(quizResultRepository.findByUserAndQuizAndDeletedFalse(user,quiz)==null){
+            throw new ResourceNotFoundException("User-Quiz association does not exist");
+        }
 
 
         if(!quizRepository.existsByIdAndDeletedFalse(quiz.getId())){
