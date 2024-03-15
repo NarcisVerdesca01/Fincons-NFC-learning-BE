@@ -54,25 +54,21 @@ public class ContentService implements IContentService {
 
     @Override
     public void deleteContent(long id) {
-
         if (!contentRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The content does not exist");
         }
 
-        Content content = contentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Content does not exist"));
-        Lesson lesson = lessonRepository.findByContent(content);
-
         Content contentToDelete = contentRepository.findByIdAndDeletedFalse(id);
         contentToDelete.setDeleted(true);
         contentRepository.save(contentToDelete);
-        if(lesson != null){
-            if(content.isDeleted()){
-                lesson.setContent(null);
-                lessonRepository.save(lesson);
-            }
-        }
 
+        Lesson lesson = lessonRepository.findByContent(contentToDelete);
+        if (lesson != null) {
+            lesson.setContent(null);
+            lessonRepository.save(lesson);
+        }
     }
+
 
     @Override
     public Content updateContent(long id, ContentDto contentDto) {

@@ -113,7 +113,6 @@ public class LessonService implements ILessonService{
                 .forEach(cl -> courseLessonRepository.save(cl));
 
 
-
         Lesson lessonToDelete = lessonRepository.findByIdAndDeletedFalse(id);
         lessonToDelete.setDeleted(true);
         lessonRepository.save(lessonToDelete);

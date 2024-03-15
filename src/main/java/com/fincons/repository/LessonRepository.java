@@ -2,6 +2,7 @@ package com.fincons.repository;
 
 import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
+import com.fincons.entity.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     boolean existsByContent(Content content);
 
     Lesson findByContent(Content content);
+
+    Lesson findByQuiz(Quiz quizToDelete);
 }

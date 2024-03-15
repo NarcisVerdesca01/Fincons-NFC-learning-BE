@@ -62,9 +62,28 @@ public class QuizService implements IQuizService{
         if (!quizRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The quiz does not exist");
         }
+
         Quiz quizToDelete = quizRepository.findByIdAndDeletedFalse(id);
         quizToDelete.setDeleted(true);
         quizRepository.save(quizToDelete);
+
+        Lesson lesson = lessonRepository.findByQuiz(quizToDelete);
+        if (lesson != null) {
+            lesson.setQuiz(null);
+            lessonRepository.save(lesson);
+        }
+
+        List<Question> questionsToSetQuizNull = questionRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(question->question.getQuiz().getId()==id)
+                .toList();
+
+        questionsToSetQuizNull
+                .forEach(question->question.setQuiz(null));
+
+        questionsToSetQuizNull
+                .forEach(question -> questionRepository.save(question));
+
     }
 
     @Override

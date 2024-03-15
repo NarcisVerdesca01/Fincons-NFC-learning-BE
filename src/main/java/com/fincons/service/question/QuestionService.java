@@ -1,9 +1,11 @@
 package com.fincons.service.question;
 
 import com.fincons.dto.QuestionDto;
+import com.fincons.entity.Answer;
 import com.fincons.entity.Content;
 import com.fincons.entity.Question;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,10 @@ import java.util.List;
 public class QuestionService implements  IQuestionService{
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AnswerRepository answerRepository;
+
+
     @Override
     public Question findById(long id) {
         if (!questionRepository.existsByIdAndDeletedFalse(id)) {
@@ -43,6 +49,18 @@ public class QuestionService implements  IQuestionService{
         Question questionToDelete = questionRepository.findByIdAndDeletedFalse(id);
         questionToDelete.setDeleted(true);
         questionRepository.save(questionToDelete);
+
+        List<Answer> answersToSetQuestionNull = answerRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(answer->answer.getQuestion().getId()==id)
+                .toList();
+
+        answersToSetQuestionNull
+                .forEach(answer->answer.setQuestion(null));
+
+        answersToSetQuestionNull
+                .forEach(answer -> answerRepository.save(answer));
+
     }
 
     @Override
