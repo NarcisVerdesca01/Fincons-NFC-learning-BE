@@ -1,5 +1,6 @@
 package com.fincons.service.course;
 
+import com.fincons.controller.AuthController;
 import com.fincons.dto.CourseDto;
 import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
@@ -17,13 +18,22 @@ import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class CourseService implements ICourseService {
+
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(CourseService.class);
 
     @Autowired
     private CourseRepository courseRepository;
@@ -85,7 +95,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public void deleteCourse(long id) {
+    public void     deleteCourse(long id) {
         validateCourseById(id);
 
         List<CourseLesson> courseLessonAssociationsToDelete = courseLessonRepository.findAllByDeletedFalse()
@@ -112,6 +122,7 @@ public class CourseService implements ICourseService {
         Course courseToDelete = courseRepository.findByIdAndDeletedFalse(id);
         courseToDelete.setDeleted(true);
         courseRepository.save(courseToDelete);
+        LOG.info("{} successfully deleted course  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), courseToDelete.getName(), LocalDateTime.now());
     }
 
     private void validateCourseById(long id) {
@@ -191,6 +202,7 @@ public class CourseService implements ICourseService {
             courseToModify.setDescription(courseDto.getDescription());
         }
 
+        LOG.info("{} update course  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), courseToModify.getName(), LocalDateTime.now());
         return courseRepository.save(courseToModify);
     }
 

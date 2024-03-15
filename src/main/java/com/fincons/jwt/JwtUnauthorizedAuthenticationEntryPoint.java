@@ -31,7 +31,5 @@ public class JwtUnauthorizedAuthenticationEntryPoint implements AuthenticationEn
         data.put("Success","false");
         response.getOutputStream()
                 .println(objectMapper.writeValueAsString(data));
-
-        logger.info(data.toString());
     }
 }

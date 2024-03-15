@@ -1,5 +1,6 @@
 package com.fincons.service.lesson;
 
+import com.fincons.controller.AuthController;
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Content;
@@ -13,10 +14,14 @@ import com.fincons.repository.ContentRepository;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.LessonRepository;
 import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,6 +41,9 @@ public class LessonService implements ILessonService{
 
     @Autowired
     private CourseLessonRepository courseLessonRepository;
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+
 
     @Override
     public List<Lesson> findAllLessons() {
@@ -116,6 +124,8 @@ public class LessonService implements ILessonService{
         Lesson lessonToDelete = lessonRepository.findByIdAndDeletedFalse(id);
         lessonToDelete.setDeleted(true);
         lessonRepository.save(lessonToDelete);
+        LOG.info("{} successfully deleted lesson  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), lessonToDelete.getTitle(), LocalDateTime.now());
+
     }
 
 
@@ -147,7 +157,7 @@ public class LessonService implements ILessonService{
 
         Lesson updatedLesson = lessonRepository.save(existingLesson);
         Content updatedContent = contentRepository.save(existingContent);
-
+        LOG.info("{} successfully associate content: ' {} '  - lesson  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), updatedContent.getContent(),updatedLesson.getTitle(), LocalDateTime.now());
         return updatedLesson;
     }
 

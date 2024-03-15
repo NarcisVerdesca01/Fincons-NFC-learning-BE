@@ -10,6 +10,8 @@ import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,10 @@ public class CourseController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+
+    private static final Logger LOG = LoggerFactory.getLogger(CourseController.class);
+
+
     @GetMapping("${course.get-all-courses}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getAllCourses(){
        List<CourseDto> coursesDtoList= iCourseService.findAllCourses()
@@ -56,14 +62,18 @@ public class CourseController {
     public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody CourseDto courseDto) {
         try {
             CourseDto courseDtoToShow = courseMapper.mapCourseToCourseDto(iCourseService.createCourse(courseDto));
+
+            LOG.info("{} successfully registered new course  ' {} ' , When: {} ", courseDtoToShow.getCreatedBy(), courseDtoToShow.getName(), courseDtoToShow.getCreateDate());
             return ResponseEntity.ok().body(ApiResponse.<CourseDto>builder()
                             .data(courseDtoToShow)
                     .build());
         } catch (IllegalArgumentException illegalArgumentException) {
+            LOG.info("IllegalArgumentException - createCourse() -> CourseController");
             return ResponseEntity.badRequest().body(ApiResponse.<CourseDto>builder()
                             .message(illegalArgumentException.getMessage())
                     .build());
         }catch(DuplicateException duplicateException){
+            LOG.info("DuplicateException - createCourse() -> CourseController");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseDto>builder()
                     .message(duplicateException.getMessage())
                     .build());

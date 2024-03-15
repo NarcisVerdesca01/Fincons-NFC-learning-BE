@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     private IAuthService iAuthService;
 
@@ -56,8 +55,10 @@ public class AuthController {
 
         try{
             String response = iAuthService.registerTutor(userDto);
+            LOG.info("Tutor successfully registered: {}", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(UserDataException userDataException){
+            LOG.info("Error while registering Tutor: {}", userDataException.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
 
@@ -70,8 +71,10 @@ public class AuthController {
 
         try{
             String response = iAuthService.registerAdmin(userDto);
+            LOG.info("Admin successfully registered: {}", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(UserDataException userDataException){
+            LOG.info("Admin successfully registered: {}", userDto.getEmail());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
 
@@ -81,20 +84,16 @@ public class AuthController {
 
     @PostMapping("${login.uri}")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
-
             String token = iAuthService.login(loginDto);
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(token);
             return  ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
-
     }
 
     @GetMapping("${detail.userdto}")
     public ResponseEntity<ApiResponse<UserDto>> getUserByEmail() {
         try{
             UserDto userDTO = userAndRoleMapper.userToUserDto(iAuthService.getUserByEmail());
-            LOG.info("User info: " + userDTO.getRoles().get(0).getName());
-
             return ResponseEntity.status(HttpStatus.OK).body(
                     ApiResponse.<UserDto>builder()
                             .data(userDTO)

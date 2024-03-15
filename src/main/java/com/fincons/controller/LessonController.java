@@ -8,9 +8,12 @@ import com.fincons.mapper.LessonMapper;
 import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -30,6 +34,9 @@ import java.util.List;
 @RestController
 @RequestMapping("${application.context}")
 public class LessonController {
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private ILessonService iLessonService;
@@ -70,14 +77,17 @@ public class LessonController {
     public ResponseEntity<ApiResponse<LessonDto>> createLesson(@RequestBody LessonDto lessonDto){
         try {
             LessonDto lessonDtoToShow = lessonMapper.mapLessonToLessonDto(iLessonService.createLesson(lessonDto));
+            LOG.info("{} successfully registered new lesson  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), lessonDtoToShow.getTitle(), lessonDtoToShow.getCreateDate());
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(lessonDtoToShow)
                     .build());
         } catch (IllegalArgumentException illegalArgumentException) {
+            LOG.info("IllegalArgumentException - createLesson() -> LessonController");
             return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
                             .message(illegalArgumentException.getMessage())
                     .build());
         } catch (DuplicateException e) {
+            LOG.info("DuplicateException - createLesson() -> LessonController");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(e.getMessage())
                     .build());
@@ -88,14 +98,17 @@ public class LessonController {
     public ResponseEntity<ApiResponse<LessonDto>> updateLesson(@PathVariable long id, @RequestBody LessonDto lessonDto) {
         try {
             LessonDto updatedLessonDto = lessonMapper.mapLessonToLessonDto(iLessonService.updateLesson(id, lessonDto));
+            LOG.info("{} successfully updated lesson  ' {} ' , When: {} ", updatedLessonDto.getLastModifiedBy(), updatedLessonDto.getTitle(),  LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(updatedLessonDto)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
+            LOG.info("ResourceNotFoundException - updateLesson() -> LessonController");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException) {
+            LOG.info("DuplicateException - updateLesson() -> LessonController");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
