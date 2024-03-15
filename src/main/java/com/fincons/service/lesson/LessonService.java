@@ -13,6 +13,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -100,7 +101,7 @@ public class LessonService implements ILessonService{
 
 
     @Override
-    public Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException {
+    public Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException, SQLIntegrityConstraintViolationException {
 
         Lesson existingLesson = lessonRepository.findByIdAndDeletedFalse(lessonId);
 
@@ -113,7 +114,13 @@ public class LessonService implements ILessonService{
             throw new ResourceNotFoundException("Content does not exist");
         }
         if(existingLesson.getContent() != null && existingLesson.getContent().getId() == contentId){
-            throw new DuplicateException("The content has already been associated with the Lesson '"+ existingLesson.getContent()+ "'.");
+            throw new DuplicateException("The content has already been associated with this Lesson "+ existingLesson.getContent()+ "'.");
+        }
+
+        Content content = contentRepository.findByIdAndDeletedFalse(contentId);
+
+        if (lessonRepository.existsByContent(content)) {
+            throw new SQLIntegrityConstraintViolationException("The content has already been associated with another Lesson");
         }
 
         existingLesson.setContent(existingContent);

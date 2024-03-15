@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -136,6 +138,10 @@ public class LessonController {
         }catch (DuplicateException  duplicateException) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(duplicateException.getMessage())
+                    .build());
+        }catch(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
+                    .message(sqlIntegrityConstraintViolationException.getMessage())
                     .build());
         }
     }

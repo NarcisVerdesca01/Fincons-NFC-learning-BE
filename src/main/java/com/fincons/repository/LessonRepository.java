@@ -1,5 +1,6 @@
 package com.fincons.repository;
 
+import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -19,4 +20,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     boolean existsByTitleAndDeletedFalse(String title);
 
     boolean existsByTitleAndIdNot(String title, long id);
+
+    boolean existsByContent(Content content);
 }
