@@ -100,16 +100,20 @@ public class LessonService implements ILessonService{
 
 
     @Override
-    public Lesson associateContentToLesson(long lessonId, long contentId) {
+    public Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException {
 
         Lesson existingLesson = lessonRepository.findByIdAndDeletedFalse(lessonId);
 
         Content existingContent = contentRepository.findByIdAndDeletedFalse(contentId);
+
         if(existingLesson == null){
             throw new ResourceNotFoundException("Lesson does not exist");
         }
         if(existingContent == null){
             throw new ResourceNotFoundException("Content does not exist");
+        }
+        if(existingLesson.getContent() != null && existingLesson.getContent().getId() == contentId){
+            throw new DuplicateException("The content has already been associated with the Lesson '"+ existingLesson.getContent()+ "'.");
         }
 
         existingLesson.setContent(existingContent);

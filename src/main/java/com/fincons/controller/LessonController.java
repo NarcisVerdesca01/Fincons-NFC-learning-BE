@@ -133,6 +133,10 @@ public class LessonController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<LessonDto>builder()
                     .message(illegalArgumentException.getMessage())
                     .build());
+        }catch (DuplicateException  duplicateException) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
+                    .message(duplicateException.getMessage())
+                    .build());
         }
     }
 

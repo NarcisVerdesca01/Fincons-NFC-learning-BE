@@ -16,5 +16,5 @@ public interface ILessonService {
 
     void deleteLesson(long id);
 
-    Lesson associateContentToLesson(long lessonId, long contentId);
+    Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException;
 }
