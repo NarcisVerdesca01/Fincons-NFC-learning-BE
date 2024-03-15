@@ -77,6 +77,7 @@ public class LessonService implements ILessonService{
         if(lessonDto.getTitle() != null){
             if(!lessonRepository.existsByTitleAndIdNot(lessonDto.getTitle(),lessonToModify.getId())){
                 lessonToModify.setTitle(lessonDto.getTitle());
+                lessonToModify.setBackgroundImage(lessonDto.getBackgroundImage());
             }else{
                 throw new DuplicateException("Lesson already exists");
             }

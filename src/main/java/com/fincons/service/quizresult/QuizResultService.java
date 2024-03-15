@@ -81,12 +81,9 @@ public class QuizResultService implements IQuizResultService{
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(loggedUser);
         Quiz quiz = quizRepository.findByIdAndDeletedFalse(quizId);
-
         if(quiz==null){
             throw new ResourceNotFoundException("Quiz does not exist");
         }
-
-
         if(quizResultRepository.existsByUserAndQuizAndDeletedFalse(user,quiz)){
            return true;
         }
