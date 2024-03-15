@@ -2,6 +2,7 @@ package com.fincons.service.answer;
 
 import com.fincons.dto.AnswerDto;
 import com.fincons.dto.QuestionDto;
+import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Answer;
 import com.fincons.entity.Question;
 import com.fincons.exception.DuplicateException;
@@ -61,9 +62,10 @@ public class AnswerService implements IAnswerService{
         if (!answerRepository.existsById(id)) {
             throw new ResourceNotFoundException("The answer does not exist");
         }
+        Answer answerToDelete = answerRepository.findByIdAndDeletedFalse(id);
+        answerToDelete.setDeleted(true);
+        answerRepository.save(answerToDelete);
 
-        // Elimina la risposta
-        answerRepository.deleteById(id);
     }
 
     @Override

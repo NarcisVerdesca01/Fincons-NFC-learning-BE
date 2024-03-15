@@ -118,9 +118,10 @@ public class SecurityConfiguration {
     @Value("${quiz-result-student.list.singleStudent}")
     private String quizResultStudentListSingleStudent;
 
-
     @Value("${quiz-result-student.check}")
     private String quizResultStudentCheck;
+
+
 
 
 
@@ -167,6 +168,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+
+
+                        .requestMatchers(HttpMethod.POST, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.GET, applicationContext + questionBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+
 
                          .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")

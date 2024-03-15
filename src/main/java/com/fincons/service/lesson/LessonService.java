@@ -1,13 +1,16 @@
 package com.fincons.service.lesson;
 
 import com.fincons.dto.LessonDto;
+import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Content;
+import com.fincons.entity.CourseLesson;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.mapper.LessonMapper;
 import com.fincons.repository.ContentRepository;
+import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.LessonRepository;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class LessonService implements ILessonService{
 
     @Autowired
     private ContentRepository contentRepository;
+
+    @Autowired
+    private CourseLessonRepository courseLessonRepository;
 
     @Override
     public List<Lesson> findAllLessons() {
@@ -91,9 +97,23 @@ public class LessonService implements ILessonService{
 
     @Override
     public void deleteLesson(long id)  {
+
         if (!lessonRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The Lesson does not exist");
         }
+
+        List<CourseLesson> courseLessonAssociationsToDelete = courseLessonRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(cl-> cl.getLesson().getId()==id)
+                .toList();
+
+        courseLessonAssociationsToDelete
+                .forEach(cl -> cl.setDeleted(true));
+        courseLessonAssociationsToDelete
+                .forEach(cl -> courseLessonRepository.save(cl));
+
+
+
         Lesson lessonToDelete = lessonRepository.findByIdAndDeletedFalse(id);
         lessonToDelete.setDeleted(true);
         lessonRepository.save(lessonToDelete);

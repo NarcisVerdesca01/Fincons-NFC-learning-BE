@@ -2,26 +2,37 @@ package com.fincons.service.ability;
 
 import com.fincons.dto.AbilityDto;
 import com.fincons.entity.Ability;
+import com.fincons.entity.AbilityCourse;
+import com.fincons.entity.AbilityUser;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityMapper;
+import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
+import com.fincons.repository.AbilityUserRepository;
+import com.fincons.service.abilitycourse.IAbilityCourseService;
+import com.fincons.service.abilityuser.IAbilityUserService;
 import io.micrometer.common.util.StringUtils;
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class AbilityService implements IAbilityService{
 
-    private AbilityMapper abilityMapper;
 
     private AbilityRepository abilityRepository;
 
-    public AbilityService(AbilityRepository abilityRepository, AbilityMapper abilityMapper) {
-        this.abilityRepository = abilityRepository;
-        this.abilityMapper = abilityMapper;
-    }
+    private AbilityUserRepository abilityUserRepository;
 
+    private AbilityCourseRepository abilityCourseRepository;
+
+    public AbilityService(AbilityRepository abilityRepository, AbilityUserRepository abilityUserRepository, AbilityCourseRepository abilityCourseRepository) {
+        this.abilityRepository = abilityRepository;
+        this.abilityUserRepository = abilityUserRepository;
+        this.abilityCourseRepository = abilityCourseRepository;
+    }
 
     @Override
     public List<Ability> findAllAbilities() {
@@ -76,9 +87,35 @@ public class AbilityService implements IAbilityService{
 
     @Override
     public void deleteAbility(long id) {
+
+
         validateAbilityById(id);
+
+        List<AbilityUser> listOfAbilityUserAssociationsToDelete = abilityUserRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(au-> au.getAbility().getId()==id)
+                .toList();
+
+        List<AbilityCourse> listOfAbilityCourseAssociationToDelete = abilityCourseRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(ac-> ac.getAbility().getId()==id)
+                .toList();
+
+
+
         Ability abilityToDelete = abilityRepository.findByIdAndDeletedFalse(id);
         abilityToDelete.setDeleted(true);
+
+        listOfAbilityUserAssociationsToDelete
+                .forEach(au -> au.setDeleted(true));
+        listOfAbilityUserAssociationsToDelete
+                .forEach(au -> abilityUserRepository.save(au));
+
+        listOfAbilityCourseAssociationToDelete
+                .forEach(ac->ac.setDeleted(true));
+        listOfAbilityCourseAssociationToDelete
+                .forEach(ac->abilityCourseRepository.save(ac));
+
         abilityRepository.save(abilityToDelete);
     }
 

@@ -2,9 +2,11 @@ package com.fincons.service.content;
 
 import com.fincons.dto.ContentDto;
 import com.fincons.entity.Content;
+import com.fincons.entity.Lesson;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.repository.ContentRepository;
+import com.fincons.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,6 +18,9 @@ public class ContentService implements IContentService {
 
     @Autowired
     private ContentRepository contentRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
 
 
     @Override
@@ -54,9 +59,19 @@ public class ContentService implements IContentService {
             throw new ResourceNotFoundException("The content does not exist");
         }
 
+        Content content = contentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Content does not exist"));
+        Lesson lesson = lessonRepository.findByContent(content);
+
         Content contentToDelete = contentRepository.findByIdAndDeletedFalse(id);
         contentToDelete.setDeleted(true);
         contentRepository.save(contentToDelete);
+        if(lesson != null){
+            if(content.isDeleted()){
+                lesson.setContent(null);
+                lessonRepository.save(lesson);
+            }
+        }
+
     }
 
     @Override

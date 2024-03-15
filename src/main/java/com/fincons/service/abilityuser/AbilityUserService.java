@@ -91,7 +91,10 @@ public class AbilityUserService implements IAbilityUserService{
         if (!abilityUserRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The course-lesson association does not exist") ;
         }
-        abilityUserRepository.deleteById(id);
+
+        AbilityUser abilityUserToDelete = abilityUserRepository.findByIdAndDeletedFalse(id);
+        abilityUserToDelete.setDeleted(true);
+        abilityUserRepository.save(abilityUserToDelete);
     }
 
 

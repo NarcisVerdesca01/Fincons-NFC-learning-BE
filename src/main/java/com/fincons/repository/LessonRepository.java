@@ -22,4 +22,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     boolean existsByTitleAndIdNot(String title, long id);
 
     boolean existsByContent(Content content);
+
+    Lesson findByContent(Content content);
 }
