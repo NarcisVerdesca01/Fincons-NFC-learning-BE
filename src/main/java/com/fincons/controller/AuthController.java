@@ -6,7 +6,6 @@ import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
-import com.fincons.service.authorization.AuthService;
 import com.fincons.service.authorization.IAuthService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +41,12 @@ public class AuthController {
 
         try{
             String response = iAuthService.registerStudent(userDto);
+
+            LOG.info("Student successfully registered: {}", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(UserDataException userDataException){
+
+            LOG.error("Error while registering Student: {}", userDataException.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
 
@@ -58,7 +62,7 @@ public class AuthController {
             LOG.info("Tutor successfully registered: {}", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(UserDataException userDataException){
-            LOG.info("Error while registering Tutor: {}", userDataException.getMessage());
+            LOG.error("Error while registering Tutor: {}", userDataException.getMessage());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
 
@@ -74,7 +78,7 @@ public class AuthController {
             LOG.info("Admin successfully registered: {}", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(UserDataException userDataException){
-            LOG.info("Admin successfully registered: {}", userDto.getEmail());
+            LOG.error("Admin successfully registered: {}", userDto.getEmail());
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
 
@@ -83,12 +87,15 @@ public class AuthController {
 
 
     @PostMapping("${login.uri}")
-    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+
             String token = iAuthService.login(loginDto);
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(token);
-            return  ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
+            LOG.info("User logged in successfully: {}", loginDto.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
     }
+
 
     @GetMapping("${detail.userdto}")
     public ResponseEntity<ApiResponse<UserDto>> getUserByEmail() {
@@ -99,7 +106,7 @@ public class AuthController {
                             .data(userDTO)
                             .build());
         }catch (ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     ApiResponse.<UserDto>builder()
                             .message(resourceNotFoundException.getMessage())
                             .build());

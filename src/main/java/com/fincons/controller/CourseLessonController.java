@@ -7,8 +7,11 @@ import com.fincons.mapper.CourseLessonMapper;
 import com.fincons.service.courselesson.ICourseLessonService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -29,6 +34,9 @@ public class CourseLessonController {
     private ICourseLessonService iCourseLessonService;
 
     private CourseLessonMapper courseLessonMapper;
+
+    private static final Logger LOG = LoggerFactory.getLogger(CourseLessonController.class);
+
 
     @GetMapping("${course-lesson.list}")
     public ResponseEntity<ApiResponse<List<CourseLessonDto>>> getAllCourseLesson(){
@@ -45,14 +53,20 @@ public class CourseLessonController {
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
                     .mapCourseLessonEntityToDto(iCourseLessonService.addCourseLesson(courseLessonDto));
+
+            LOG.info("Course lesson relationship added successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), courseLessonDtoToShow.getId(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
+
+            LOG.error("ResourceNotFoundException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.badRequest().body(ApiResponse.<CourseLessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){
+
+            LOG.error("DuplicateException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(),LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
@@ -65,15 +79,20 @@ public class CourseLessonController {
             CourseLessonDto courseLessonDtoToShow =
                     courseLessonMapper.mapCourseLessonEntityToDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
 
+            LOG.info("Course lesson relationship updated successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), courseLessonDtoToShow.getId(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
 
         }catch(ResourceNotFoundException resourceNotFoundException ){
+
+            LOG.error("ResourceNotFoundException - updateCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         } catch (DuplicateException duplicateException) {
+
+            LOG.error("DuplicateException - updateCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
@@ -84,10 +103,14 @@ public class CourseLessonController {
     public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) {
         try{
             iCourseLessonService.deleteCourseLesson(id);
+
+            LOG.info("Course lesson relationship deleted successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), id, LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .message("Deleted relationship between course and lesson chosen")
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
+
+            LOG.error("ResourceNotFoundException - deleteCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());

@@ -11,9 +11,12 @@ import com.fincons.service.quizresult.IQuizResultService;
 import com.fincons.utility.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +44,9 @@ public class QuizResultController {
 
     private QuizResultMapper quizResultMapper;
 
-    private JwtTokenProvider jwtTokenProvider;
+
+    private static final Logger LOG = LoggerFactory.getLogger(QuizResultController.class);
+
 
     @GetMapping("${quiz-result-student.list}")
     public ResponseEntity<ApiResponse<List<QuizResultsDto>>> getAllQuizResults(){
@@ -88,10 +94,13 @@ public class QuizResultController {
         try {
             boolean results = iQuizResultService.checkIfAlreadyDone(quizId);
 
+            LOG.info("Done quiz checked successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(),LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<Boolean>builder()
                     .data(results)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
+
+            LOG.error("ResourceNotFoundException - checkDoneQuiz() -> QuizResultController: {}. Date: {}", resourceNotFoundException.getMessage(), LocalDateTime.now());
             return ResponseEntity.badRequest().body(ApiResponse.<Boolean>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
@@ -111,14 +120,19 @@ public class QuizResultController {
             QuizResultsDto results = quizResultMapper
                     .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, answersMap)) ;
 
+            LOG.info("Quiz results calculated and saved successfully by: {}. Date: {}",SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
                     .data(results)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
+
+            LOG.error("ResourceNotFoundException - calculateAndSave() -> QuizResultController: {}. Date: {}", resourceNotFoundException.getMessage(), LocalDateTime.now());
             return ResponseEntity.badRequest().body(ApiResponse.<QuizResultsDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException) {
+
+            LOG.error("DuplicateException - calculateAndSave() -> QuizResultController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<QuizResultsDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
@@ -138,10 +152,13 @@ public class QuizResultController {
             QuizResultsDto results = quizResultMapper
                     .mapQuizResultsEntityToDto(iQuizResultService.redoQuiz(quizToRedo, answersMap)) ;
 
+            LOG.info("Quiz redone successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<QuizResultsDto>builder()
                     .data(results)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
+
+            LOG.error("ResourceNotFoundException - reDoQuiz() -> QuizResultController: {}. Date: {}", resourceNotFoundException.getMessage(), LocalDateTime.now());
             return ResponseEntity.badRequest().body(ApiResponse.<QuizResultsDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());

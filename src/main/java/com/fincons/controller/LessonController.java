@@ -77,17 +77,17 @@ public class LessonController {
     public ResponseEntity<ApiResponse<LessonDto>> createLesson(@RequestBody LessonDto lessonDto){
         try {
             LessonDto lessonDtoToShow = lessonMapper.mapLessonToLessonDto(iLessonService.createLesson(lessonDto));
-            LOG.info("{} successfully registered new lesson  ' {} ' , When: {} ", SecurityContextHolder.getContext().getAuthentication().getName(), lessonDtoToShow.getTitle(), lessonDtoToShow.getCreateDate());
+            LOG.info("{} successfully registered new lesson '{}' , Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), lessonDtoToShow.getTitle(), lessonDtoToShow.getCreateDate());
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(lessonDtoToShow)
                     .build());
         } catch (IllegalArgumentException illegalArgumentException) {
-            LOG.info("IllegalArgumentException - createLesson() -> LessonController");
+            LOG.error("IllegalArgumentException - createLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.badRequest().body(ApiResponse.<LessonDto>builder()
                             .message(illegalArgumentException.getMessage())
                     .build());
         } catch (DuplicateException e) {
-            LOG.info("DuplicateException - createLesson() -> LessonController");
+            LOG.error("DuplicateException - createLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(e.getMessage())
                     .build());
@@ -98,17 +98,17 @@ public class LessonController {
     public ResponseEntity<ApiResponse<LessonDto>> updateLesson(@PathVariable long id, @RequestBody LessonDto lessonDto) {
         try {
             LessonDto updatedLessonDto = lessonMapper.mapLessonToLessonDto(iLessonService.updateLesson(id, lessonDto));
-            LOG.info("{} successfully updated lesson  ' {} ' , When: {} ", updatedLessonDto.getLastModifiedBy(), updatedLessonDto.getTitle(),  LocalDateTime.now());
+            LOG.info("{} successfully updated lesson '{}' , Date: {}", updatedLessonDto.getLastModifiedBy(), updatedLessonDto.getTitle(),  LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(updatedLessonDto)
                     .build());
         } catch (ResourceNotFoundException resourceNotFoundException) {
-            LOG.info("ResourceNotFoundException - updateLesson() -> LessonController");
+            LOG.error("ResourceNotFoundException - updateLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException) {
-            LOG.info("DuplicateException - updateLesson() -> LessonController");
+            LOG.error("DuplicateException - updateLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
@@ -119,10 +119,12 @@ public class LessonController {
     public ResponseEntity<ApiResponse<String>> deleteLesson(@PathVariable long id) {
         try {
             iLessonService.deleteLesson(id);
+            LOG.info("Lesson deleted successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .data("The lesson has been successfully deleted!")
                     .build());
         } catch (ResourceNotFoundException  resourceNotFoundException) {
+            LOG.error("ResourceNotFoundException - deleteLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
@@ -137,22 +139,31 @@ public class LessonController {
             LessonDto updatedLessonDto = lessonMapper.mapLessonToLessonDto(
                     iLessonService.associateContentToLesson(lessonId,contentId));
 
+            LOG.info("Content associated with lesson successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<LessonDto>builder()
                     .data(updatedLessonDto)
                     .build());
         } catch (ResourceNotFoundException  resourceNotFoundException) {
+
+            LOG.error("ResourceNotFoundException - associateContentToLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<LessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (IllegalArgumentException  illegalArgumentException) {
+
+            LOG.info("IllegalArgumentException - associateContentToLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<LessonDto>builder()
                     .message(illegalArgumentException.getMessage())
                     .build());
         }catch (DuplicateException  duplicateException) {
+
+            LOG.error("DuplicateException - associateContentToLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
         }catch(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException){
+
+            LOG.error("SQLIntegrityConstraintViolationException - associateContentToLesson() -> LessonController. Failed for: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<LessonDto>builder()
                     .message(sqlIntegrityConstraintViolationException.getMessage())
                     .build());
