@@ -23,12 +23,23 @@ public class JwtUnauthorizedAuthenticationEntryPoint implements AuthenticationEn
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        int statusCode;
+        String errorMessage;
+
+        if (authException.getMessage() != null && authException.getMessage().contains("Access Denied")) {
+            statusCode = HttpStatus.FORBIDDEN.value();
+            errorMessage = "Access denied!";
+        } else {
+            statusCode = HttpStatus.UNAUTHORIZED.value();
+            errorMessage = "Unauthorized!";
+        }
+
+        response.setStatus(statusCode);
         response.setContentType("application/json");
         Map<String, Object> data = new HashMap<>();
-        data.put("Status","UNAUTHORIZED");
-        data.put("Message",authException.getMessage());
-        data.put("Success","false");
+        data.put("Status","ERROR");
+        data.put("Message",errorMessage);
+        data.put("Success",false);
         response.getOutputStream()
                 .println(objectMapper.writeValueAsString(data));
     }

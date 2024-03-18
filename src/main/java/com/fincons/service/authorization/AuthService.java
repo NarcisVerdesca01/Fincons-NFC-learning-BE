@@ -6,6 +6,7 @@ import com.fincons.entity.User;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
+import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
@@ -14,8 +15,10 @@ import com.fincons.utility.EmailValidator;
 import com.fincons.utility.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -54,7 +57,7 @@ public class AuthService implements IAuthService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userAndRoleMapper = userAndRoleMapper;
     }
-    
+
     @Override
     public String registerStudent(UserDto userDto) throws UserDataException {
 
@@ -79,14 +82,13 @@ public class AuthService implements IAuthService {
         userToSave.setRoles(List.of(role));
 
 
-       User userSaved = userRepository.save(userToSave);
-        if(userRepository.findByEmail(userSaved.getEmail()) == null){
+        User userSaved = userRepository.save(userToSave);
+        if (userRepository.findByEmail(userSaved.getEmail()) == null) {
             throw new UserDataException(UserDataException.somethingGoesWrong());
         }
         LOG.info("Student registered: " + userSaved.getEmail());
         return "Student registered successfully";
     }
-
 
 
     @Override
@@ -155,24 +157,28 @@ public class AuthService implements IAuthService {
             throw new ResourceNotFoundException("User with this email doesn't exist");
         }
 
-        LOG.info("User info: " +  loggedUser);
+        LOG.info("User info: " + loggedUser);
+
 
         return userRepository.findByEmail(loggedUser);
     }
 
 
-
-    @Override
-    public String login(LoginDto loginDto)  {
+    public String login(LoginDto loginDto) {
+        try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDto.getEmail(),
                     loginDto.getPassword()
             ));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             return jwtTokenProvider.generateToken(authentication);
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            if (e instanceof org.springframework.security.authentication.BadCredentialsException) {
+                throw new BadCredentialsException("Credenziali non valide", e);
+            }
+            throw new AccessDeniedException("Accesso vietato", e);
+        }
     }
-
 
 
 
