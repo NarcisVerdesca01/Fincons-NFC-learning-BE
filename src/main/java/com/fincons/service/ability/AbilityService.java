@@ -6,14 +6,11 @@ import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.AbilityUserRepository;
-import com.fincons.service.abilitycourse.IAbilityCourseService;
-import com.fincons.service.abilityuser.IAbilityUserService;
+import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
-import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -51,21 +48,20 @@ public class AbilityService implements IAbilityService{
     @Override
     public Ability createAbility(AbilityDto abilityDto) throws DuplicateException {
 
-        if (StringUtils.isBlank(abilityDto.getName())) {
-            throw new IllegalArgumentException("The name of ability can't be blank");
-        }
+        checkBlank(abilityDto);
+        checkTitleValidity(abilityDto);
+        checkNameExistence(abilityDto);
 
-        if (abilityRepository.existsByNameAndDeletedFalse(abilityDto.getName())) {
-            throw new DuplicateException("The name of ability already exists");
-        }
         Ability ability = new Ability();
         ability.setName(abilityDto.getName());
         return abilityRepository.save(ability);
     }
 
 
+
     @Override
     public Ability updateAbility(long id, AbilityDto abilityDto) throws DuplicateException {
+
 
         Ability abilityToModify = abilityRepository.findByIdAndDeletedFalse(id);
         if(abilityToModify == null){
@@ -73,11 +69,14 @@ public class AbilityService implements IAbilityService{
         }
 
         if(abilityDto.getName() != null){
+            checkTitleValidity(abilityDto);
+
             if(!abilityRepository.existsByNameAndIdNot(abilityDto.getName(),abilityToModify.getId())){
                 abilityToModify.setName(abilityDto.getName());
             }else{
                 throw new DuplicateException("Ability already exists");
             }
+
         } else {
             throw new IllegalArgumentException("Ability name cannot be null");
         }
@@ -132,4 +131,23 @@ public class AbilityService implements IAbilityService{
         }
         return abilityRepository.findByIdAndDeletedFalse(id);
     }
+
+    private static void checkTitleValidity(AbilityDto abilityDto) {
+        if (TitleOrDescriptionValidator.isValidTitle(abilityDto.getName())) {
+            throw new IllegalArgumentException("The name of ability doesn't respect rules");
+        }
+    }
+
+    private static void checkBlank(AbilityDto abilityDto) {
+        if (StringUtils.isBlank(abilityDto.getName())) {
+            throw new IllegalArgumentException("The name of ability can't be blank");
+        }
+    }
+
+    private void checkNameExistence(AbilityDto abilityDto) throws DuplicateException {
+        if (abilityRepository.existsByNameAndDeletedFalse(abilityDto.getName())) {
+            throw new DuplicateException("The name of ability already exists");
+        }
+    }
+
 }
