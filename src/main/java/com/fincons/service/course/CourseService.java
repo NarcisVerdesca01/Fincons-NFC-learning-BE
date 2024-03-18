@@ -5,6 +5,7 @@ import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
+import com.fincons.entity.CourseLesson;
 import com.fincons.entity.User;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import com.fincons.mapper.AbilityMapper;
 import com.fincons.repository.AbilityCourseRepository;
 import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.AbilityUserRepository;
+import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -37,6 +39,9 @@ public class CourseService implements ICourseService {
 
     @Autowired
     private AbilityCourseRepository abilityCourseRepository;
+
+    @Autowired
+    private CourseLessonRepository courseLessonRepository;
 
     @Autowired
     private AbilityMapper abilityMapper;
@@ -82,6 +87,28 @@ public class CourseService implements ICourseService {
     @Override
     public void deleteCourse(long id) {
         validateCourseById(id);
+
+        List<CourseLesson> courseLessonAssociationsToDelete = courseLessonRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(cl-> cl.getCourse().getId()==id)
+                .toList();
+
+        courseLessonAssociationsToDelete
+                .forEach(cl->cl.setDeleted(true));
+        courseLessonAssociationsToDelete
+                .forEach(cl->courseLessonRepository.save(cl));
+
+        List<AbilityCourse> abilityCoursesListAssociationToDelete = abilityCourseRepository.findAllByDeletedFalse()
+                .stream()
+                .filter(cl-> cl.getCourse().getId()==id)
+                .toList();
+
+        abilityCoursesListAssociationToDelete
+                .forEach(cl->cl.setDeleted(true));
+        abilityCoursesListAssociationToDelete
+                .forEach(cl->abilityCourseRepository.save(cl));
+
+
         Course courseToDelete = courseRepository.findByIdAndDeletedFalse(id);
         courseToDelete.setDeleted(true);
         courseRepository.save(courseToDelete);

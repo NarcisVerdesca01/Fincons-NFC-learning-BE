@@ -72,10 +72,13 @@ public class AbilityCourseService implements IAbilityCourseService{
 
     @Override
     public void deleteAbilityCourse(long id) throws ResourceNotFoundException {
+
         if (!abilityCourseRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The course-ability association does not exist") ;
         }
-        abilityCourseRepository.deleteById(id);
+        AbilityCourse abilityCourseToDelete = abilityCourseRepository.findByIdAndDeletedFalse(id);
+        abilityCourseToDelete.setDeleted(true);
+        abilityCourseRepository.save(abilityCourseToDelete);
     }
 
     @Override
