@@ -17,6 +17,7 @@ import com.fincons.repository.AbilityUserRepository;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.UserRepository;
+import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,12 +65,10 @@ public class CourseService implements ICourseService {
     @Override
     public Course createCourse(CourseDto courseDto) throws  DuplicateException {
 
-        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
-            throw new IllegalArgumentException("Name, description or background image not present");
-        }
-        if (courseRepository.existsByNameAndDeletedFalse(courseDto.getName())) {
-            throw new DuplicateException("The name of course already exist");
-        }
+        checkBlank(courseDto);
+        checkNameExistence(courseDto);
+        checkNameValidity(courseDto);
+        checkDescriptionValidity(courseDto);
 
         Course course = new Course();
         course.setName(courseDto.getName());
@@ -81,6 +80,30 @@ public class CourseService implements ICourseService {
         }
 
         return courseRepository.save(course);
+    }
+
+    private static void checkDescriptionValidity(CourseDto courseDto) {
+        if (TitleOrDescriptionValidator.isValidDescription(courseDto.getDescription())) {
+            throw new IllegalArgumentException("The description doesn't respect rules");
+        }
+    }
+
+    private static void checkNameValidity(CourseDto courseDto) {
+        if (TitleOrDescriptionValidator.isValidTitle(courseDto.getName())) {
+            throw new IllegalArgumentException("The name of ability doesn't respect rules");
+        }
+    }
+
+    private void checkNameExistence(CourseDto courseDto) throws DuplicateException {
+        if (courseRepository.existsByNameAndDeletedFalse(courseDto.getName())) {
+            throw new DuplicateException("The name of course already exist");
+        }
+    }
+
+    private static void checkBlank(CourseDto courseDto) {
+        if (StringUtils.isBlank(courseDto.getName()) || StringUtils.isBlank(courseDto.getDescription()) || StringUtils.isBlank(courseDto.getBackgroundImage())) {
+            throw new IllegalArgumentException("Name, description or background image not present");
+        }
     }
 
 
@@ -95,7 +118,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public void     deleteCourse(long id) {
+    public void deleteCourse(long id) {
         validateCourseById(id);
 
         List<CourseLesson> courseLessonAssociationsToDelete = courseLessonRepository.findAllByDeletedFalse()

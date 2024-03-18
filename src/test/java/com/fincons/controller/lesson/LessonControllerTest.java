@@ -19,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -151,7 +153,7 @@ public class LessonControllerTest {
     }
 
     @Test
-    public void testAssociateContentToLesson_Success() throws DuplicateException {
+    public void testAssociateContentToLesson_Success() throws DuplicateException, SQLIntegrityConstraintViolationException {
         Lesson lessonToAssociate = new Lesson(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         Content contentToAssociate = new Content(1L, "video", "randomVideo",null,false);
         when(iLessonService.associateContentToLesson(1L,1L)).thenReturn(lessonToAssociate);

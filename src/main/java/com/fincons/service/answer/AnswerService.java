@@ -10,6 +10,7 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuestionMapper;
 import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
+import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,18 +45,35 @@ public class AnswerService implements IAnswerService{
     @Override
     public Answer createAnswer(AnswerDto answerDto) throws DuplicateException {
 
-        if(StringUtils.isBlank(answerDto.getText())){
-            throw new IllegalArgumentException("User must enter the text of answer!");
-        }
-        if (answerRepository.existsByTextAndDeletedFalse(answerDto.getText())) {
-            throw new DuplicateException("The answer already exists");
-        }
+        checkBlank(answerDto);
+        checkNameExistence(answerDto);
+        checkTitleValidity(answerDto);
+
         Answer newAnswer= new Answer();
         newAnswer.setText(answerDto.getText());
         newAnswer.setCorrect(answerDto.isCorrect());
         Answer savedAnswer= answerRepository.save(newAnswer);
         return savedAnswer;
     }
+
+    private static void checkTitleValidity(AnswerDto answerDto) {
+        if (TitleOrDescriptionValidator.isValidTitle(answerDto.getText())) {
+            throw new IllegalArgumentException("The name of ability doesn't respect rules");
+        }
+    }
+
+    private void checkNameExistence(AnswerDto answerDto) throws DuplicateException {
+        if (answerRepository.existsByTextAndDeletedFalse(answerDto.getText())) {
+            throw new DuplicateException("The answer already exists");
+        }
+    }
+
+    private static void checkBlank(AnswerDto answerDto) {
+        if(StringUtils.isBlank(answerDto.getText())){
+            throw new IllegalArgumentException("User must enter the text of answer!");
+        }
+    }
+
 
     @Override
     public void deleteAnswer(long id) {

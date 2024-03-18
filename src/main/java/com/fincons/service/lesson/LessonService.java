@@ -13,6 +13,7 @@ import com.fincons.mapper.LessonMapper;
 import com.fincons.repository.ContentRepository;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.LessonRepository;
+import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +62,12 @@ public class LessonService implements ILessonService{
     @Override
     public Lesson createLesson(LessonDto lessonDto) throws DuplicateException {
 
-        if(StringUtils.isBlank(lessonDto.getTitle())){
-            throw new IllegalArgumentException("Title required");
-        }
+        checkBlank(lessonDto);
 
-        if (lessonRepository.existsByTitleAndDeletedFalse(lessonDto.getTitle())) {
-            throw new DuplicateException("The name of ability already exists");
-        }
+        checkNameExistence(lessonDto);
+
+        checkTitleValidity(lessonDto);
+
 
         Lesson lesson = new Lesson();
         if(lessonDto.getTitle() != null){
@@ -79,6 +79,7 @@ public class LessonService implements ILessonService{
 
         return lessonRepository.save(lesson);
     }
+
 
     @Override
     public Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException {
@@ -161,5 +162,22 @@ public class LessonService implements ILessonService{
         return updatedLesson;
     }
 
+    private static void checkTitleValidity(LessonDto lessonDto) {
+        if (TitleOrDescriptionValidator.isValidTitle(lessonDto.getTitle())) {
+            throw new IllegalArgumentException("The title of lesson doesn't respect rules");
+        }
+    }
+
+    private void checkNameExistence(LessonDto lessonDto) throws DuplicateException {
+        if (lessonRepository.existsByTitleAndDeletedFalse(lessonDto.getTitle())) {
+            throw new DuplicateException("The name of ability already exists");
+        }
+    }
+
+    private static void checkBlank(LessonDto lessonDto) {
+        if(StringUtils.isBlank(lessonDto.getTitle())){
+            throw new IllegalArgumentException("Title required");
+        }
+    }
 
 }
