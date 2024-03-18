@@ -51,6 +51,16 @@ public class LessonController {
                 .build());
     }
 
+    @GetMapping("${lesson.get-all-lessons-noassociation}")
+    public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessonsWithout() {
+        List<LessonDto> lessonDtoList = iLessonService.findAllNotAssociatedLessons()
+                .stream()
+                .map(s -> lessonMapper.mapLessonToLessonDto(s))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<LessonDto>>builder()
+                .data(lessonDtoList)
+                .build());
+    }
 
     @GetMapping("${lesson.getById}/{id}")
     public ResponseEntity<ApiResponse<LessonDto>> getLessonById(@PathVariable long id){
