@@ -165,11 +165,11 @@ public class QuizResultService implements IQuizResultService{
 
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        /*
-                if(!quizResultRepository.existsByIdAndDeletedFalse(quizResultsToModify)){
-            throw new ResourceNotFoundException("The user has never complete the quiz before please go to do quiz for the first time");
-        }
-         */
+    /*
+            if(!quizResultRepository.existsByIdAndDeletedFalse(quizResultsToModify)){
+        throw new ResourceNotFoundException("The user has never complete the quiz before please go to do quiz for the first time");
+    }
+     */
 
 
         if (loggedUser.isEmpty()) {

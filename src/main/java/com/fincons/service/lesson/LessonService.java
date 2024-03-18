@@ -66,7 +66,7 @@ public class LessonService implements ILessonService{
         }
 
         if (lessonRepository.existsByTitleAndDeletedFalse(lessonDto.getTitle())) {
-            throw new DuplicateException("The name of ability already exists");
+            throw new DuplicateException("The name of lesson already exists");
         }
 
         Lesson lesson = new Lesson();
