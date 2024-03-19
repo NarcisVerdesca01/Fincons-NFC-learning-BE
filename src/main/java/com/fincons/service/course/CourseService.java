@@ -83,14 +83,14 @@ public class CourseService implements ICourseService {
     }
 
     private static void checkDescriptionValidity(CourseDto courseDto) {
-        if (TitleOrDescriptionValidator.isValidDescription(courseDto.getDescription())) {
+        if (!TitleOrDescriptionValidator.isValidDescription(courseDto.getDescription())) {
             throw new IllegalArgumentException("The description doesn't respect rules");
         }
     }
 
     private static void checkNameValidity(CourseDto courseDto) {
-        if (TitleOrDescriptionValidator.isValidTitle(courseDto.getName())) {
-            throw new IllegalArgumentException("The name of ability doesn't respect rules");
+        if (!TitleOrDescriptionValidator.isValidTitle(courseDto.getName())) {
+            throw new IllegalArgumentException("The name of course doesn't respect rules");
         }
     }
 

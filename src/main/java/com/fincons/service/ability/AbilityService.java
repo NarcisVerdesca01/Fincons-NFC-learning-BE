@@ -133,7 +133,7 @@ public class AbilityService implements IAbilityService{
     }
 
     private static void checkTitleValidity(AbilityDto abilityDto) {
-        if (TitleOrDescriptionValidator.isValidTitle(abilityDto.getName())) {
+        if (!TitleOrDescriptionValidator.isValidTitle(abilityDto.getName())) {
             throw new IllegalArgumentException("The name of ability doesn't respect rules");
         }
     }

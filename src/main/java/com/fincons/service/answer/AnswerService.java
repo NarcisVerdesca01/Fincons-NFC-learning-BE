@@ -57,8 +57,8 @@ public class AnswerService implements IAnswerService{
     }
 
     private static void checkTitleValidity(AnswerDto answerDto) {
-        if (TitleOrDescriptionValidator.isValidTitle(answerDto.getText())) {
-            throw new IllegalArgumentException("The name of ability doesn't respect rules");
+        if (!TitleOrDescriptionValidator.isValidTitle(answerDto.getText())) {
+            throw new IllegalArgumentException("The name of answer doesn't respect rules");
         }
     }
 

@@ -163,14 +163,14 @@ public class LessonService implements ILessonService{
     }
 
     private static void checkTitleValidity(LessonDto lessonDto) {
-        if (TitleOrDescriptionValidator.isValidTitle(lessonDto.getTitle())) {
+        if (!TitleOrDescriptionValidator.isValidTitle(lessonDto.getTitle())) {
             throw new IllegalArgumentException("The title of lesson doesn't respect rules");
         }
     }
 
     private void checkNameExistence(LessonDto lessonDto) throws DuplicateException {
         if (lessonRepository.existsByTitleAndDeletedFalse(lessonDto.getTitle())) {
-            throw new DuplicateException("The name of ability already exists");
+            throw new DuplicateException("The name of lesson already exists");
         }
     }
 
