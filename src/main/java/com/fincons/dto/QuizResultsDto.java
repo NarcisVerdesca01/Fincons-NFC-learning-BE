@@ -23,6 +23,4 @@ public class QuizResultsDto {
     private boolean deleted;
 
 
-    // TODO List<Integer> lista di indici delle risposte date
-
 }

@@ -83,8 +83,8 @@ public class AnswerController {
                     .build());
         }
     }
-    @PutMapping("${answer.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAnswer(@PathVariable long id) {
+    @PutMapping("${answer.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteAnswer(@RequestParam long id) {
         try {
             iAnswerService.deleteAnswer(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -99,8 +100,8 @@ public class CourseLessonController {
         }
     }
 
-    @PutMapping("${course-lesson.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) {
+    @PutMapping("${course-lesson.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@RequestParam long id) {
         try{
             iCourseLessonService.deleteCourseLesson(id);
 

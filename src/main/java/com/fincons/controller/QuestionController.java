@@ -72,8 +72,8 @@ public class QuestionController {
                     .build());
         }
     }
-    @PutMapping("${question.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteQuestion(@PathVariable long id) {
+    @PutMapping("${question.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteQuestion(@RequestParam long id) {
         try {
             iQuestionService.deleteQuestion(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

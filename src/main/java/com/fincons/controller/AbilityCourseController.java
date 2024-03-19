@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -101,8 +102,8 @@ public class AbilityCourseController {
         }
     }
 
-    @PutMapping("${ability-course.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAbilityCourse(@PathVariable long id)  {
+    @PutMapping("${ability-course.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteAbilityCourse(@RequestParam long id)  {
         try{
             iAbilityCourseService.deleteAbilityCourse(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

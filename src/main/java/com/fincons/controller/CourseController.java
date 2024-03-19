@@ -111,8 +111,8 @@ public class CourseController {
         }
     }
 
-    @PutMapping("${course.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCourse(@PathVariable long id) {
+    @PutMapping("${course.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteCourse(@RequestParam long id) {
         try {
             iCourseService.deleteCourse(id);
             LOG.info("Course deleted successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());

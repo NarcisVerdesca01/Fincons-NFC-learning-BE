@@ -1,6 +1,8 @@
 package com.fincons.entity;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,14 +16,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "quiz_result_student")
-public class QuizResults {
-
+@Table(name = "quiz_response")
+public class QuizResponse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,18 +32,19 @@ public class QuizResults {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "quiz_result_id")
+    private QuizResults quizResult;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "quizId")
-    private Quiz quiz;
+    @JoinColumn(name = "question_id")
+    private Question question;
 
-    @Column(name = "totalScore")
-    private float totalScore;
+    @ElementCollection
+    @CollectionTable(name = "chosen_answers", joinColumns = @JoinColumn(name = "quiz_response_id"))
+    @Column(name = "chosen_answer")
+    private List<String> chosenAnswers;
 
-    @Column(name  = "deleted")
-    private boolean deleted;
-
+    @Column(name = "score_student_single_question")
+    private float scoreOfStudentForQuestion;
 
 }

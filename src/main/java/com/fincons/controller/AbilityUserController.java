@@ -109,8 +109,8 @@ public class AbilityUserController {
         }
     }
 
-    @PutMapping("${ability-user.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAbilityUser(@PathVariable long id) {
+    @PutMapping("${ability-user.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteAbilityUser(@RequestParam long id) {
         try{
             iAbilityUserService.deleteAbilityUser(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

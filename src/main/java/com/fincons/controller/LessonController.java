@@ -115,8 +115,8 @@ public class LessonController {
         }
     }
 
-    @PutMapping("${lesson.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteLesson(@PathVariable long id) {
+    @PutMapping("${lesson.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteLesson(@RequestParam long id) {
         try {
             iLessonService.deleteLesson(id);
             LOG.info("Lesson deleted successfully by: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
