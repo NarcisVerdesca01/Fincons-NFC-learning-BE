@@ -2,8 +2,6 @@ package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fincons.entity.Question;
-import com.fincons.entity.QuizResults;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +16,12 @@ import java.util.List;
 public class QuizResponseDto {
 
     private long id;
-    private QuizResults quizResult;
-    private Question question;
+    private QuizDto quiz;
+    private QuestionDto question;
+    private UserDto user;
     private List<String> chosenAnswers;
     private float scoreOfStudentForQuestion;
+    private boolean deleted;
+
 
 }

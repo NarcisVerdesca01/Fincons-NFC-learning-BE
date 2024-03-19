@@ -32,8 +32,12 @@ public class QuizResponse {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "quiz_result_id")
-    private QuizResults quizResult;
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
@@ -46,5 +50,9 @@ public class QuizResponse {
 
     @Column(name = "score_student_single_question")
     private float scoreOfStudentForQuestion;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
 }

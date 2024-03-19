@@ -121,9 +121,11 @@ public class SecurityConfiguration {
     @Value("${quiz-result-student.check}")
     private String quizResultStudentCheck;
 
+    @Value("${quiz-response.base.uri}")
+    private String quizResponseBaseUri;
 
-
-
+    @Value("${quiz.get-all-quiz-response}")
+    private String quizGetAllQuizResponse;
 
 
     @Bean
@@ -136,7 +138,6 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
-                        .requestMatchers(applicationContext + registerAdminUri).authenticated()  // TODO To remove
                         .requestMatchers(applicationContext + getUserDtoByEmail).permitAll()
 
                         .requestMatchers(HttpMethod.GET, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
@@ -187,6 +188,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizGetAllQuizResponse + "/**").hasAnyRole("ADMIN", "TUTOR")
+
                         .anyRequest().authenticated()
 
         ).httpBasic(Customizer.withDefaults());

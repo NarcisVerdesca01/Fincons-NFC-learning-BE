@@ -54,7 +54,6 @@ public class Quiz {
     @Column(name  = "deleted")
     private boolean deleted;
 
-
     //AUDITING
     @CreatedDate
     @Column(

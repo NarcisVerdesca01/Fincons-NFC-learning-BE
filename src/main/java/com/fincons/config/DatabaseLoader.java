@@ -35,6 +35,7 @@ public class DatabaseLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         populateAdmin();
+        populateTutor();
         populateAbility();
     }
 
@@ -76,6 +77,26 @@ public class DatabaseLoader implements CommandLineRunner {
             abilityRepository.save(ability3);
         }
     }
+
+    private void populateTutor() {
+
+        if (
+                userRepository.findByEmail("tutor@gmail.com") == null
+                        &&
+                        roleRepository.findByName("ROLE_TUTOR") == null
+        ) {
+            User tutor = new User();
+            tutor.setFirstName("tutor");
+            tutor.setLastName("tutor");
+            tutor.setEmail("tutor@gmail.com");
+            tutor.setPassword(passwordEncoder.encode("Password!"));
+            Role role = authService.roleToAssign("ROLE_TUTOR");
+            tutor.setRoles(List.of(role));
+            User admnSaved = userRepository.save(tutor);
+        }
+    }
+
+
 
 
 
