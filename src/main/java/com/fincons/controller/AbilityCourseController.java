@@ -70,7 +70,7 @@ public class AbilityCourseController {
                     .data(abilityCourseDtoToShow)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.badRequest().body(ApiResponse.<AbilityCourseDto>builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityCourseDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){

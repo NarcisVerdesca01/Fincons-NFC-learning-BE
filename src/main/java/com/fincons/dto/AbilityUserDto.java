@@ -20,4 +20,6 @@ public class AbilityUserDto {
     private boolean deleted;
 
 
+
+
 }

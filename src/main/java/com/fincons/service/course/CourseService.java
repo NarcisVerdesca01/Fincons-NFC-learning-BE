@@ -169,9 +169,7 @@ public class CourseService implements ICourseService {
         boolean isUserAdmin = user.getRoles()
                 .stream()
                 .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
-        if(isUserAdmin){
-            return courseRepository.findAll();
-        }
+
         List<AbilityCourse> abilityCourses = abilityCourseRepository.findAllByDeletedFalse();
 
         List<AbilityUser> abilityUsers = abilityUserRepository.findAllByDeletedFalse();

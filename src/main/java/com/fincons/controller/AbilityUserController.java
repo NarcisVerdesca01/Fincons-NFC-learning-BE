@@ -79,7 +79,7 @@ public class AbilityUserController {
                     .data(abilityUserDtoToShow)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.badRequest().body(ApiResponse.<AbilityUserDto>builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityUserDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){

@@ -37,6 +37,7 @@ public class Role {
     @Column(name  = "deleted")
     private boolean deleted;
 
+
     @PreRemove
     public void removeUsersAssociations() {
         for (User user: this.users) {

@@ -52,7 +52,7 @@ public class CourseControllerTest {
         Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null,"random second image",false,null,null,null,null);
         Course course3 = new Course(3L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",true,null,null,null,null);
 
-        List<Course> courseList = Arrays.asList(course1, course2,course3);
+        List<Course> courseList = Arrays.asList(course1,course2,course3);
         when(iCourseService.findAllCourses()).thenReturn(courseList
                 .stream()
                 .filter(c->!c.isDeleted())

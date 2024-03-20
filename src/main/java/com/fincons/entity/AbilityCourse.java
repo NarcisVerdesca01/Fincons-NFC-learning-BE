@@ -41,4 +41,6 @@ public class AbilityCourse {
         this.course = course;
         this.ability = ability;
     }
+
+
 }
