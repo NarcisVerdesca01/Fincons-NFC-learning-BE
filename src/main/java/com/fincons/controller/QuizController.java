@@ -150,7 +150,7 @@ public class QuizController {
         } catch (DuplicateException duplicateException){
 
             LOG.error("DuplicateException - associateQuizQuestion() -> QuizController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
                     .message(duplicateException.getMessage())
                     .build());
         }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,11 +17,10 @@ import lombok.Setter;
 public class QuizResultsDto {
 
     private long id;
-
     private UserDto user;
     private QuizDto quiz;
     private float totalScore;
-
+    private LocalDate whenDone;
     private boolean deleted;
 
 

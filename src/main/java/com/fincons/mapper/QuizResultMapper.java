@@ -24,6 +24,7 @@ public class QuizResultMapper {
         quizResultsDto.setQuiz(quizMapper.mapQuizToQuizDto(quizResults.getQuiz()));
         quizResultsDto.setUser(userAndRoleMapper.userToUserDto(quizResults.getUser()));
         quizResultsDto.setTotalScore(quizResults.getTotalScore());
+        quizResultsDto.setWhenDone(quizResults.getWhenDone());
         return quizResultsDto;
     }
     public QuizResults mapQuizResultsDtoToEntity(QuizResultsDto quizResultsDto) {
@@ -32,6 +33,7 @@ public class QuizResultMapper {
         quizResults.setQuiz(quizMapper.mapQuizDtoToQuizEntity(quizResultsDto.getQuiz()));
         quizResults.setUser(userAndRoleMapper.dtoToUser(quizResultsDto.getUser()));
         quizResults.setTotalScore(quizResultsDto.getTotalScore());
+        quizResults.setWhenDone(quizResultsDto.getWhenDone());
 
         return quizResults;
     }

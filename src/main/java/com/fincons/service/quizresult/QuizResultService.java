@@ -17,6 +17,8 @@ import com.fincons.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +114,7 @@ public class QuizResultService implements IQuizResultService{
         QuizResults quizResult = new QuizResults();
         quizResult.setUser(user);
         quizResult.setQuiz(quiz);
+        quizResult.setWhenDone(LocalDate.now());
         quizResult.setTotalScore( percentageScore);
         return quizResultRepository.save(quizResult);
     }
@@ -141,6 +144,7 @@ public class QuizResultService implements IQuizResultService{
         quizResultsToModify.setUser(user);
         quizResultsToModify.setQuiz(quiz);
         quizResultsToModify.setTotalScore(percentageScore);
+        quizResultsToModify.setWhenDone(LocalDate.now());
 
         return quizResultRepository.save(quizResultsToModify);
     }
