@@ -4,12 +4,16 @@ import com.fincons.controller.LessonController;
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
+import com.fincons.entity.Role;
+import com.fincons.entity.User;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.LessonMapper;
+import com.fincons.service.authorization.AuthService;
 import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -27,6 +35,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +56,13 @@ public class LessonControllerTest {
 
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
 
 
     @Test
@@ -93,6 +109,18 @@ public class LessonControllerTest {
 
     @Test
     public void testCreateLesson_Success() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         LessonDto inputLessonDto = new LessonDto(1L, "randomTitle", null, null, null, "randomSecondImage",false, null, null, null, null);
         when(iLessonService.createLesson(inputLessonDto)).thenReturn(lessonMapper.mapDtoToLessonEntity(inputLessonDto));
         ResponseEntity<ApiResponse<LessonDto>> responseEntity = lessonController.createLesson(inputLessonDto);
@@ -103,6 +131,18 @@ public class LessonControllerTest {
 
     @Test
     public void testCreateLesson_InvalidInput() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         LessonDto invalidLessonDto = new LessonDto();
         when(iLessonService.createLesson(invalidLessonDto)).thenThrow(new IllegalArgumentException("Title not present"));
         ResponseEntity<ApiResponse<LessonDto>> responseEntity = lessonController.createLesson(invalidLessonDto);
@@ -125,6 +165,18 @@ public class LessonControllerTest {
 
     @Test
     public void testUpdateLesson_ResourceNotFound() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long nonExistingLessonId = 999L;
         LessonDto inputLessonDto = new LessonDto();
         when(iLessonService.updateLesson(nonExistingLessonId, inputLessonDto))
@@ -136,6 +188,18 @@ public class LessonControllerTest {
 
     @Test
     public void testDeleteLesson_Success() {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long lessonId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = lessonController.deleteLesson(lessonId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -145,6 +209,18 @@ public class LessonControllerTest {
 
     @Test
     public void testDeleteAbility_ResourceNotFound() {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long nonExistingLessonId = 999L;
         doThrow(new ResourceNotFoundException("The lesson does not exist")).when(iLessonService).deleteLesson(nonExistingLessonId);
         ResponseEntity<ApiResponse<String>> responseEntity = lessonController.deleteLesson(nonExistingLessonId);

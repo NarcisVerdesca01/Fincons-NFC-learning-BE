@@ -3,11 +3,16 @@ package com.fincons.controller.quiz;
 import com.fincons.controller.QuizController;
 import com.fincons.dto.QuizDto;
 import com.fincons.entity.Quiz;
+import com.fincons.entity.Role;
+import com.fincons.entity.User;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.QuizMapper;
+import com.fincons.service.authorization.AuthService;
 import com.fincons.service.quiz.IQuizService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +32,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +48,14 @@ public class QuizControllerTest {
     private IQuizService iQuizService;
     @Autowired
     private QuizMapper quizMapper;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void testGetAllQuizzes_Success() {
@@ -82,6 +100,18 @@ public class QuizControllerTest {
 
     @Test
     public void testCreateQuiz_Success() throws DuplicateException {
+        User tutor = new User();
+        tutor.setFirstName("tutor");
+        tutor.setLastName("tutor");
+        tutor.setEmail("tutor@gmail.com");
+        tutor.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_TUTOR",null,false);
+        tutor.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null,false, null, null, null, null);
         when(iQuizService.createQuiz(inputQuizDto)).thenReturn(quizMapper.mapQuizDtoToQuizEntity(inputQuizDto));
         ResponseEntity<ApiResponse<QuizDto>> responseEntity = quizController.createQuiz(inputQuizDto);
@@ -101,6 +131,18 @@ public class QuizControllerTest {
 
     @Test
     public void testUpdateQuiz_Success() throws DuplicateException {
+        User tutor = new User();
+        tutor.setFirstName("tutor");
+        tutor.setLastName("tutor");
+        tutor.setEmail("tutor@gmail.com");
+        tutor.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_TUTOR",null,false);
+        tutor.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         long quizId = 1L;
         QuizDto inputQuizDto = new QuizDto(1L, "quizTitle", null, null, null, false, null, null, null, null);
         Quiz updatedQuiz = new Quiz(1L, "quizTitle", null, null, null, false, null, null, null, null);
@@ -123,6 +165,18 @@ public class QuizControllerTest {
 
     @Test
     public void testDeleteQuiz_Success() {
+        User tutor = new User();
+        tutor.setFirstName("tutor");
+        tutor.setLastName("tutor");
+        tutor.setEmail("tutor@gmail.com");
+        tutor.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_TUTOR",null,false);
+        tutor.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         long quizId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = quizController.deleteQuiz(quizId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

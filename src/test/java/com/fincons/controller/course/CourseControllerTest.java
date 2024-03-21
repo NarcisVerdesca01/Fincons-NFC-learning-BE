@@ -3,11 +3,14 @@ package com.fincons.controller.course;
 import com.fincons.controller.CourseController;
 import com.fincons.dto.CourseDto;
 import com.fincons.entity.Course;
+import com.fincons.entity.Role;
+import com.fincons.entity.User;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.CourseMapper;
+import com.fincons.service.authorization.AuthService;
 import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +51,15 @@ public class CourseControllerTest {
     private CourseMapper courseMapper;
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private AuthService authService;
 
-     //ctrl-shift-7
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+
+
+    //ctrl-shift-7
     @Test
     public void testGetAllCourses_Success(){
         Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",false,null,null,null,null);
@@ -82,6 +96,18 @@ public class CourseControllerTest {
 
     @Test
     public void testCreateCourse_InvalidInput() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         CourseDto invalidCourseDto = new CourseDto();
         when(iCourseService.createCourse(invalidCourseDto)).thenThrow(new IllegalArgumentException("Name, description or background image not present"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(invalidCourseDto);
@@ -91,6 +117,18 @@ public class CourseControllerTest {
 
     @Test
     public void testCreateCourse_Duplicate() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         CourseDto inputCourseDto = new CourseDto();
         when(iCourseService.createCourse(inputCourseDto)).thenThrow(new DuplicateException("The name of course already exist"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
@@ -147,6 +185,18 @@ public class CourseControllerTest {
 
     @Test
     public void testDeleteCourse_Success() {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long courseId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = courseController.deleteCourse(courseId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -197,6 +247,18 @@ public class CourseControllerTest {
 
     @Test
     public void testUpdateCourse_Success() throws ResourceNotFoundException, DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long courseId = 1L;
         CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null,false, null, null, null, "updatedBackgroundImage");
         Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
@@ -210,6 +272,18 @@ public class CourseControllerTest {
 
     @Test
     public void testUpdateCourse_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long courseId = 1L;
         CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
@@ -221,6 +295,18 @@ public class CourseControllerTest {
 
     @Test
     public void testCreateAbility_Duplicate() throws DuplicateException {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L,"ROLE_ADMIN",null,false);
+        admin.setRoles(List.of(role));
+        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         CourseDto inputCourseDto = new CourseDto();
         when(iCourseService.createCourse(inputCourseDto)).thenThrow(new DuplicateException("The name of course already exists"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
