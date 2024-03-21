@@ -10,6 +10,8 @@ import java.util.List;
 public interface ILessonService {
     List<Lesson> findAllLessons();
 
+    List<Lesson> findAllNotAssociatedLessons();
+
     Lesson findLessonById(long id);
 
     Lesson createLesson(LessonDto lessonDto) throws DuplicateException;

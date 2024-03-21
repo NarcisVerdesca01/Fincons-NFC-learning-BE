@@ -31,6 +31,18 @@ public class ContentController {
                 .data(contentDtoList)
                 .build());
     }
+
+    @GetMapping("${content.get-all-content-noassociation}")
+    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContentWithoutAssociation(){
+        List<ContentDto> contentDtoList= iContentService.findAllNotAssociatedContent()
+                .stream()
+                .map(s->contentMapper.mapContentToContentDto(s))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<ContentDto>>builder()
+                .data(contentDtoList)
+                .build());
+    }
+
     @GetMapping("${content.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable long id){
         try{

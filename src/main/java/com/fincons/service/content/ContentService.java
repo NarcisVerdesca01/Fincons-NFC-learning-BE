@@ -38,6 +38,12 @@ public class ContentService implements IContentService {
     }
 
     @Override
+    public List<Content> findAllNotAssociatedContent() {
+        return contentRepository.findAllByDeletedFalseAndLessonIsNull();
+    }
+
+
+    @Override
     public Content createContent(ContentDto contentDto) {
         try{
             Content newContent= new Content();
