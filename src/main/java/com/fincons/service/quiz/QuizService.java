@@ -40,6 +40,11 @@ public class QuizService implements IQuizService{
     }
 
     @Override
+    public List<Quiz> findAllQuizWithoutLesson() {
+        return quizRepository.findAllByDeletedFalseAndLessonIsNull();
+    }
+
+    @Override
     public Quiz createQuiz(QuizDto quizDto) throws DuplicateException {
 
         if (StringUtils.isBlank(quizDto.getTitle())) {

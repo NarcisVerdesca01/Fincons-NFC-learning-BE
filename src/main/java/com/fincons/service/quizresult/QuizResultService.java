@@ -221,7 +221,7 @@ public class QuizResultService implements IQuizResultService{
                     .stream()
                     .filter(answer -> userAnswerIndices.contains(answer.getId())).count();
 
-            double partialScore = ((double) correctUserAnswersCount / (double) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
+            float partialScore = ((float) correctUserAnswersCount / (float) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
 
             score +=  partialScore;
 

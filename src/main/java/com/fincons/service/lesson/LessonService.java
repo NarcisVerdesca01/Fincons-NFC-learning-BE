@@ -51,8 +51,13 @@ public class LessonService implements ILessonService{
     }
 
     @Override
-    public List<Lesson> findAllNotAssociatedLessons() {
+    public List<Lesson> findAllNotAssociatedLessonsWithContent() {
         return lessonRepository.findAllByContentIsNullAndDeletedFalse();
+    }
+
+    @Override
+    public List<Lesson> findAllNotAssociatedLessonsWithQuiz() {
+        return lessonRepository.findAllByQuizIsNullAndDeletedFalse();
     }
 
     @Override
