@@ -60,6 +60,16 @@ public class CourseController {
                     .build());
     }
 
+    @GetMapping("${course.get-all-courses-noassociatedlesson}")
+    public ResponseEntity<ApiResponse<List<CourseDto>>> getAllCoursesWithoutLesson(){
+        List<CourseDto> coursesDtoList= iCourseService.findAllCoursesWithoutLesson()
+                .stream()
+                .map(c->courseMapper.mapCourseToCourseDto(c))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<CourseDto>>builder()
+                .data(coursesDtoList)
+                .build());
+    }
 
     @PostMapping("${course.create}")
     public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody CourseDto courseDto) {

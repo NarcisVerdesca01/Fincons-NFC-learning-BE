@@ -10,6 +10,9 @@ import java.util.List;
 public interface IQuestionService {
     Question findById(long id);
     List<Question> findAllQuestion();
+
+    List<Question> findAllQuestionWithoutQuiz();
+    List<Question> findAllQuestionWithoutAnswers();
     Question createQuestion(QuestionDto questionDto);
     void deleteQuestion(long id);
     Question updateQuestion(long id, QuestionDto questionDto);

@@ -53,6 +53,17 @@ public class QuizController {
                 .build());
     }
 
+    @GetMapping("${quiz.get-all-quiz-noassociationquestion}")
+    public ResponseEntity<ApiResponse<List<QuizDto>>> getAllQuizWithoutAssociationWithQuestions(){
+        List<QuizDto> questionDtoList= iQuizService.findAllQuizWithoutQuestions()
+                .stream()
+                .map(s->quizMapper.mapQuizToQuizDto(s))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<QuizDto>>builder()
+                .data(questionDtoList)
+                .build());
+    }
+
     @GetMapping("${quiz.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<QuizDto>> getById(@PathVariable long id){
         try{
