@@ -67,7 +67,7 @@ public class User {
     @Column(name  = "deleted")
     private boolean deleted;
 
-    @Column(name = "background_image")
+    @Column(name = "background_image",length = 20971520)
     private String backgroundImage;
 
 
