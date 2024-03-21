@@ -10,7 +10,9 @@ import java.util.List;
 public interface ILessonService {
     List<Lesson> findAllLessons();
 
-    List<Lesson> findAllNotAssociatedLessons();
+    List<Lesson> findAllNotAssociatedLessonsWithContent();
+
+    List<Lesson> findAllNotAssociatedLessonsWithQuiz();
 
     Lesson findLessonById(long id);
 

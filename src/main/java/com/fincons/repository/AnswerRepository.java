@@ -12,5 +12,7 @@ public interface AnswerRepository extends JpaRepository<Answer,Long> {
 
     List<Answer> findAllByDeletedFalse();
 
+    List<Answer> findAllByDeletedFalseAndQuestionIsNull();
+
     boolean existsByTextAndDeletedFalse(String text);
 }

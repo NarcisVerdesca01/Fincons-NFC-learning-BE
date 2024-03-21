@@ -168,6 +168,7 @@ public class QuizResultService implements IQuizResultService{
                     .filter(Answer::isCorrect)
                     .toList();
 
+
             long correctUserAnswersCount = correctAnswersOfQuestion
                     .stream()
                     .filter(answer -> userAnswerIndices.contains(answer.getId())).count();

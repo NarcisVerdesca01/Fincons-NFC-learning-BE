@@ -35,6 +35,17 @@ public class AnswerController {
                 .data(answerDtoList)
                 .build());
     }
+
+    @GetMapping("${answer.get-all-answer-noassociationquestion}")
+    public ResponseEntity<ApiResponse<List<AnswerDto>>> getAllAnswerWithoutAssociationWithQuestion(){
+        List<AnswerDto> answerDtoList= iAnswerService.findAllAnswerWithoutQuestion()
+                .stream()
+                .map(s->answerMapper.mapAnswerToAnswerDto(s))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<AnswerDto>>builder()
+                .data(answerDtoList)
+                .build());
+    }
     @GetMapping("${answer.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<AnswerDto>> getById(@PathVariable long id){
         try{

@@ -18,5 +18,8 @@ public interface QuizRepository extends JpaRepository<Quiz,Long> {
 
     List<Quiz> findAllByDeletedFalse();
 
+    List<Quiz> findAllByDeletedFalseAndLessonIsNull();
+
+    List<Quiz> findAllByDeletedFalseAndQuestionsIsNull();
     boolean existsByTitleAndDeletedFalse(String title);
 }

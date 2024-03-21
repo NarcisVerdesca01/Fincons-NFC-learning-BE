@@ -33,6 +33,16 @@ public class QuestionService implements  IQuestionService{
     }
 
     @Override
+    public List<Question> findAllQuestionWithoutQuiz() {
+        return questionRepository.findAllByDeletedFalseAndQuizIsNull();
+    }
+
+    @Override
+    public List<Question> findAllQuestionWithoutAnswers() {
+        return questionRepository.findAllByDeletedFalseAndAnswersIsNull();
+    }
+
+    @Override
     public Question createQuestion(QuestionDto questionDto) {
            Question newQuestion= new Question();
            newQuestion.setTextQuestion(questionDto.getTextQuestion());
