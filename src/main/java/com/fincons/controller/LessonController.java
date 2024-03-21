@@ -80,10 +80,6 @@ public class LessonController {
                 .stream()
                 .map(s -> lessonMapper.mapLessonToLessonDto(s))
                 .toList();
-        if (lessonDtoList.isEmpty()) {
-            // Nessuna lezione senza associazione trovata, restituisci una risposta 404 (non trovato)
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok().body(ApiResponse.<List<LessonDto>>builder()
                 .data(lessonDtoList)
                 .build());
