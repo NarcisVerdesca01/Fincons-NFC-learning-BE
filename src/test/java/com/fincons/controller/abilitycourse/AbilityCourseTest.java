@@ -49,6 +49,10 @@ public class AbilityCourseTest {
     @Test
     public void testGetAllAbilityCourse_Success() {
         List<AbilityCourse> abilityCourseList = getAbilityCourseListData();
+        when(iAbilityCourseService.getAllAbilityCourse()).thenReturn(abilityCourseList
+                .stream()
+                .filter(ac->!ac.isDeleted())
+                .toList());
         ResponseEntity<ApiResponse<List<AbilityCourseDto>>> responseEntity = abilityCourseController.getAllAbilityCourse();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(Objects.requireNonNull(responseEntity.getBody()).getData());
@@ -182,10 +186,6 @@ public class AbilityCourseTest {
         AbilityCourse abilityCourse1 = new AbilityCourse(1L, course1, ability1,false);
         AbilityCourse abilityCourse2 =  new AbilityCourse(2L, course2, ability2,false);
         List<AbilityCourse> abilityCourseList = java.util.Arrays.asList(abilityCourse1,abilityCourse2);
-        when(iAbilityCourseService.getAllAbilityCourse()).thenReturn(abilityCourseList
-                .stream()
-                .filter(ac->!ac.isDeleted())
-                .toList());
         return abilityCourseList;
     }
 

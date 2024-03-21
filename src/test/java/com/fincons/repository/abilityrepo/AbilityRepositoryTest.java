@@ -47,6 +47,5 @@ public class AbilityRepositoryTest {
         List<Ability> listOfAbilities = abilityRepository.findAll();
 
         when(abilityRepository.findByName("Informatica")).thenReturn(ability1Saved);
-
     }
 }

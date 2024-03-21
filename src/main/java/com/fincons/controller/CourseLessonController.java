@@ -62,7 +62,7 @@ public class CourseLessonController {
         }catch(ResourceNotFoundException resourceNotFoundException){
 
             LOG.error("ResourceNotFoundException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
-            return ResponseEntity.badRequest().body(ApiResponse.<CourseLessonDto>builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){

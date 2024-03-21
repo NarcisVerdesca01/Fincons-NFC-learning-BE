@@ -92,7 +92,7 @@ public class DatabaseLoader implements CommandLineRunner {
             tutor.setPassword(passwordEncoder.encode("Password!"));
             Role role = authService.roleToAssign("ROLE_TUTOR");
             tutor.setRoles(List.of(role));
-            User admnSaved = userRepository.save(tutor);
+            User tutorSaved = userRepository.save(tutor);
         }
     }
 
