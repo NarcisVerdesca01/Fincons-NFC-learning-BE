@@ -58,16 +58,37 @@ public class LessonController {
                 .build());
     }
 
-    @GetMapping("${lesson.get-all-lessons-noassociation}")
-    public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessonsWithout() {
-        List<LessonDto> lessonDtoList = iLessonService.findAllNotAssociatedLessons()
+    @GetMapping("${lesson.get-all-lessons-noassociationcontent}")
+    public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessonsWithoutAssociationWithContent() {
+        List<LessonDto> lessonDtoList = iLessonService.findAllNotAssociatedLessonsWithContent()
                 .stream()
                 .map(s -> lessonMapper.mapLessonToLessonDto(s))
                 .toList();
+        if (lessonDtoList.isEmpty()) {
+            // Nessuna lezione senza associazione trovata, restituisci una risposta 404 (non trovato)
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok().body(ApiResponse.<List<LessonDto>>builder()
                 .data(lessonDtoList)
                 .build());
     }
+
+
+    @GetMapping("${lesson.get-all-lessons-noassociationquiz}")
+    public ResponseEntity<ApiResponse<List<LessonDto>>> getAllLessonsWithoutAssociationWithQuiz() {
+        List<LessonDto> lessonDtoList = iLessonService.findAllNotAssociatedLessonsWithQuiz()
+                .stream()
+                .map(s -> lessonMapper.mapLessonToLessonDto(s))
+                .toList();
+        if (lessonDtoList.isEmpty()) {
+            // Nessuna lezione senza associazione trovata, restituisci una risposta 404 (non trovato)
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(ApiResponse.<List<LessonDto>>builder()
+                .data(lessonDtoList)
+                .build());
+    }
+
 
     @GetMapping("${lesson.getById}/{id}")
     public ResponseEntity<ApiResponse<LessonDto>> getLessonById(@PathVariable long id){

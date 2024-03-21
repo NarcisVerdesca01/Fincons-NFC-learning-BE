@@ -9,7 +9,7 @@ import java.util.List;
 public interface ICourseService {
 
     List<Course> findAllCourses();
-
+    List<Course> findAllCoursesWithoutLesson();
     Course createCourse(CourseDto courseDto) throws  DuplicateException;
 
     Course findCourseById(long id);

@@ -38,7 +38,7 @@ public class ContentService implements IContentService {
     }
 
     @Override
-    public List<Content> findAllNotAssociatedContent() {
+    public List<Content> findAllNotAssociatedContentWithLesson() {
         return contentRepository.findAllByDeletedFalseAndLessonIsNull();
     }
 

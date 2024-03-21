@@ -18,6 +18,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByContentIsNullAndDeletedFalse();
 
+    List<Lesson> findAllByQuizIsNullAndDeletedFalse();
+
     boolean existsByIdAndDeletedFalse(long id);
 
     Lesson findByIdAndDeletedFalse(long id);

@@ -63,6 +63,11 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    public List<Course> findAllCoursesWithoutLesson() {
+        return courseRepository.findAllByDeletedFalseAndLessonsIsNull();
+    }
+
+    @Override
     public Course createCourse(CourseDto courseDto) throws  DuplicateException {
 
         checkBlank(courseDto);

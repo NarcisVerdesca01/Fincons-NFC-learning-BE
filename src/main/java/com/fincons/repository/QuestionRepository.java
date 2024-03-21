@@ -11,4 +11,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     boolean existsByIdAndDeletedFalse(long id);
 
     List<Question> findAllByDeletedFalse();
+
+    List<Question> findAllByDeletedFalseAndQuizIsNull();
+
+    List<Question> findAllByDeletedFalseAndAnswersIsNull();
+
 }

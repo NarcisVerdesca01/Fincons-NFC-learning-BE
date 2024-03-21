@@ -32,9 +32,9 @@ public class ContentController {
                 .build());
     }
 
-    @GetMapping("${content.get-all-content-noassociation}")
-    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContentWithoutAssociation(){
-        List<ContentDto> contentDtoList= iContentService.findAllNotAssociatedContent()
+    @GetMapping("${content.get-all-content-noassociationlesson}")
+    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContentWithoutAssociationWithLesson(){
+        List<ContentDto> contentDtoList= iContentService.findAllNotAssociatedContentWithLesson()
                 .stream()
                 .map(s->contentMapper.mapContentToContentDto(s))
                 .toList();

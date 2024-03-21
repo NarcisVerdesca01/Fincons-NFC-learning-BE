@@ -43,6 +43,11 @@ public class AnswerService implements IAnswerService{
     }
 
     @Override
+    public List<Answer> findAllAnswerWithoutQuestion() {
+        return answerRepository.findAllByDeletedFalseAndQuestionIsNull();
+    }
+
+    @Override
     public Answer createAnswer(AnswerDto answerDto) throws DuplicateException {
 
         checkBlank(answerDto);
