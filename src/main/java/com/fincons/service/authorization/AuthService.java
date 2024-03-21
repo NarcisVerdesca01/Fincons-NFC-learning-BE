@@ -76,7 +76,7 @@ public class AuthService implements IAuthService {
         userToSave.setEmail(emailDto);
         userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userToSave.setBirthDate(userDto.getBirthDate());
-
+        userToSave.setBackgroundImage(userDto.getBackgroundImage());
 
         Role role = roleToAssign("ROLE_STUDENT");
         userToSave.setRoles(List.of(role));
@@ -111,7 +111,9 @@ public class AuthService implements IAuthService {
         userToSave.setLastName(userDto.getLastName());
         userToSave.setEmail(userDto.getEmail().toLowerCase().replace(" ", ""));
         userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userToSave.setBirthDate(userDto.getBirthDate());//Controllo dell'età ?
+        userToSave.setBirthDate(userDto.getBirthDate());
+        userToSave.setBackgroundImage(userDto.getBackgroundImage());
+
 
         Role role = roleToAssign("ROLE_TUTOR");
         userToSave.setRoles(List.of(role));

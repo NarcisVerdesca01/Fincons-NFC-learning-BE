@@ -28,5 +28,5 @@ public class UserDto {
     private List<AbilityUserDto> abilities;
     private List<QuizResultsDto> quizzes;
     private boolean deleted;
-
+    private String backgroundImage;
 }

@@ -51,9 +51,6 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-
-
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -69,6 +66,9 @@ public class User {
 
     @Column(name  = "deleted")
     private boolean deleted;
+
+    @Column(name = "background_image")
+    private String backgroundImage;
 
 
 }
