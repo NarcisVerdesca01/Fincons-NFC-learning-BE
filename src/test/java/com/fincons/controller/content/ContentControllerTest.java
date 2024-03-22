@@ -23,6 +23,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class ContentControllerTest {
+class ContentControllerTest {
 
     @Autowired
     private ContentController contentController;
@@ -41,7 +42,7 @@ public class ContentControllerTest {
 
 
     @Test
-    public void testGetAllContents_Success() {
+    void testGetAllContents_Success() {
         List<Content> contents = Arrays.asList(new Content(1L, "video", "randomContent", null,false),
                 new Content(3L, "video", "randomContent2", null,true),
         new Content(2L, "video", "randomContent2", null,false));
@@ -61,7 +62,7 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testGetContentById_Success(){
+    void testGetContentById_Success(){
         Content content = new Content(1L,"video","randomContent",null,false);
         when(iContentService.findById(1L)).thenReturn(content);
         ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.getById(contentMapper.mapContentToContentDto(content).getId());
@@ -75,19 +76,37 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testCreateContent_Success() throws DuplicateException {
+    void testGetContentById_ResourceNotFound() {
+        long nonExistingContentId = 999L;
+        doThrow(new ResourceNotFoundException("The content does not exist")).when(iContentService).findById(nonExistingContentId);
+        ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.getById(nonExistingContentId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The content does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testCreateContent_Success() throws DuplicateException {
         ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null,false);
         when(iContentService.createContent(inputContentDto)).thenReturn(contentMapper.mapContentDtoToContentEntity(inputContentDto));
         ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.createContent(inputContentDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(inputContentDto.getContent(), Objects.requireNonNull(responseEntity.getBody()).getData().getContent());
         assertFalse(responseEntity.getBody().getData().isDeleted());
-
     }
 
+    @Test
+    void testCreateContent_RuntimeException() throws DuplicateException {
+        when(iContentService.createContent(any(ContentDto.class)))
+                .thenThrow(new RuntimeException("Something went wrong"));
+        ResponseEntity<ApiResponse<ContentDto>> responseEntity = contentController.createContent(new ContentDto());
+        assert responseEntity != null;
+        assert responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST;
+        assert responseEntity.getBody() != null;
+        assert responseEntity.getBody().getMessage().equals("Something went wrong");
+    }
 
     @Test
-    public void testUpdateContent_Success() throws DuplicateException {
+    void testUpdateContent_Success() throws DuplicateException {
         long contentId = 1L;
         ContentDto inputContentDto = new ContentDto(1L,"video","randomContent",null,false);
         Content updatedContent = new Content(1L,"video","randomContent",null,false);
@@ -98,7 +117,7 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testUpdateContent_ResourceNotFoundException(){
+    void testUpdateContent_ResourceNotFoundException(){
         long nonExistingContentId = 999L;
         ContentDto inputContentDto = new ContentDto();
         when(iContentService.updateContent(nonExistingContentId,inputContentDto))
@@ -109,7 +128,7 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testUpdateContent_IllegalArgumentException() {
+    void testUpdateContent_IllegalArgumentException() {
         long nonExistingContentId = 999L;
         ContentDto inputContentDto = new ContentDto();
         when(iContentService.updateContent(nonExistingContentId,inputContentDto))
@@ -120,7 +139,7 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testDeleteAnswer_Success() {
+    void testDeleteAnswer_Success() {
       long contentId = 1L;
     ResponseEntity<ApiResponse<String>> responseEntity = contentController.deleteContent(contentId);
     assertEquals("The content has been successfully deleted!", Objects.requireNonNull(responseEntity.getBody()).getData());
@@ -129,7 +148,7 @@ public class ContentControllerTest {
     }
 
     @Test
-    public void testDeleteAnswer_ResourceNotFoundException() {
+    void testDeleteAnswer_ResourceNotFoundException() {
         long nonExistingContentId = 1L;
         doThrow(new ResourceNotFoundException("The content does not exist")).when(iContentService).deleteContent(nonExistingContentId);
         ResponseEntity<ApiResponse<String>> responseEntity = contentController.deleteContent(nonExistingContentId);

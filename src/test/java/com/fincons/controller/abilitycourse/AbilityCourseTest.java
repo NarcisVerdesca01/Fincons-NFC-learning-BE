@@ -33,21 +33,21 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AbilityCourseTest {
+class AbilityCourseTest {
 
 
     @Autowired
-    private AbilityCourseController abilityCourseController;
+    private  AbilityCourseController abilityCourseController;
 
     @MockBean
-    private IAbilityCourseService iAbilityCourseService;
+    private  IAbilityCourseService iAbilityCourseService;
 
     @Autowired
-    private AbilityCourseMapper abilityCourseMapper;
+    private  AbilityCourseMapper abilityCourseMapper;
 
 
     @Test
-    public void testGetAllAbilityCourse_Success() {
+    void testGetAllAbilityCourse_Success() {
         List<AbilityCourse> abilityCourseList = getAbilityCourseListData();
         when(iAbilityCourseService.getAllAbilityCourse()).thenReturn(abilityCourseList
                 .stream()
@@ -62,7 +62,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testGetAbilityCourseById_Success() {
+    void testGetAbilityCourseById_Success() {
         Ability ability1 = new Ability(1L, "Ability1", null, null,false);
         Course course1 = new Course(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
@@ -77,7 +77,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testGetAbilityCourseById_ResourceNotFound(){
+    void testGetAbilityCourseById_ResourceNotFound(){
         long nonExistingAbilityCourseId = 1L;
         doThrow(new ResourceNotFoundException("The ability-course association does not exist")).when(iAbilityCourseService).getAbilityCourseById(nonExistingAbilityCourseId);
         ResponseEntity<ApiResponse<AbilityCourseDto>> responseEntity = abilityCourseController.getAbilityCourseById(nonExistingAbilityCourseId);
@@ -86,7 +86,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testCreateAbilityCourse_Success() throws DuplicateException {
+    void testCreateAbilityCourse_Success() throws DuplicateException {
         AbilityDto abilityDto = new AbilityDto(1L, "Ability1", null, null,false);
         CourseDto courseDto = new CourseDto(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
@@ -101,7 +101,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testCreateAbilityCourse_ResourceNotFoundException() throws DuplicateException {
+    void testCreateAbilityCourse_ResourceNotFoundException() throws DuplicateException {
         AbilityCourseDto invalidAbilityCourseDto = new AbilityCourseDto();
         doThrow(new ResourceNotFoundException("The ability does not exist")).when(iAbilityCourseService).addAbilityCourse(invalidAbilityCourseDto);
         ResponseEntity<ApiResponse<AbilityCourseDto>> responseEntity = abilityCourseController.addAbilityCourse(invalidAbilityCourseDto);
@@ -110,7 +110,16 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testUpdateAbilityCourse_Success() throws DuplicateException {
+    void testCreateAbilityCourse_DuplicateException() throws DuplicateException {
+        AbilityCourseDto invalidAbilityCourseDto = new AbilityCourseDto();
+        doThrow(new DuplicateException("The ability already exist")).when(iAbilityCourseService).addAbilityCourse(invalidAbilityCourseDto);
+        ResponseEntity<ApiResponse<AbilityCourseDto>> responseEntity = abilityCourseController.addAbilityCourse(invalidAbilityCourseDto);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("The ability already exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testUpdateAbilityCourse_Success() throws DuplicateException {
         Ability ability = new Ability(1L, "Ability1", null, null,false);
         Course course = new Course(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
@@ -130,7 +139,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testUpdateAbilityCourse_ResourceNotFound() throws DuplicateException {
+    void testUpdateAbilityCourse_ResourceNotFound() throws DuplicateException {
         long nonExistingAbilityCourseId = 999L;
         AbilityCourseDto inputAbilityCourseDto = new AbilityCourseDto();
         when(iAbilityCourseService.updateAbilityCourse(nonExistingAbilityCourseId, inputAbilityCourseDto))
@@ -141,7 +150,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testUpdateAbilityCourse_Duplicate() throws DuplicateException {
+    void testUpdateAbilityCourse_Duplicate() throws DuplicateException {
         long abilityCourseId = 1L;
         AbilityCourseDto inputAbilityCourseDto = new AbilityCourseDto();
         when(iAbilityCourseService.updateAbilityCourse(abilityCourseId, inputAbilityCourseDto))
@@ -152,7 +161,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testDeleteAbilityCourseAssociation_Success() {
+    void testDeleteAbilityCourseAssociation_Success() {
         Ability ability = new Ability(1L, "Ability1", null, null,false);
         Course course = new Course(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
@@ -166,7 +175,7 @@ public class AbilityCourseTest {
     }
 
     @Test
-    public void testDeleteAbilityCourse_ResourceNotFound() {
+    void testDeleteAbilityCourse_ResourceNotFound() {
         long nonExistingAbilityCourseId = 999L;
         doThrow(new ResourceNotFoundException("The ability course association does not exist")).when(iAbilityCourseService).deleteAbilityCourse(nonExistingAbilityCourseId);
         ResponseEntity<ApiResponse<String>> responseEntity = abilityCourseController.deleteAbilityCourse(nonExistingAbilityCourseId);
@@ -185,8 +194,7 @@ public class AbilityCourseTest {
                 null,false,null,null,null,"randomImage");
         AbilityCourse abilityCourse1 = new AbilityCourse(1L, course1, ability1,false);
         AbilityCourse abilityCourse2 =  new AbilityCourse(2L, course2, ability2,false);
-        List<AbilityCourse> abilityCourseList = java.util.Arrays.asList(abilityCourse1,abilityCourse2);
-        return abilityCourseList;
+        return java.util.Arrays.asList(abilityCourse1,abilityCourse2);
     }
 
 

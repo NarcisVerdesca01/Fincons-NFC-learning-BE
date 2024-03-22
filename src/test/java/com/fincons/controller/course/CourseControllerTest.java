@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class CourseControllerTest {
+class CourseControllerTest {
 
     @Autowired
     private CourseController courseController;
@@ -53,23 +53,16 @@ public class CourseControllerTest {
     private JwtTokenProvider jwtTokenProvider;
     @MockBean
     private AuthService authService;
-
     @MockBean
     private PasswordEncoder passwordEncoder;
 
 
-
-    //ctrl-shift-7
     @Test
-    public void testGetAllCourses_Success(){
-        Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",false,null,null,null,null);
-        Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null,"random second image",false,null,null,null,null);
-        Course course3 = new Course(3L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,"randomSecondImage",true,null,null,null,null);
-
-        List<Course> courseList = Arrays.asList(course1,course2,course3);
+    void testGetAllCourses_Success() {
+        List<Course> courseList = getCourseList();
         when(iCourseService.findAllCourses()).thenReturn(courseList
                 .stream()
-                .filter(c->!c.isDeleted())
+                .filter(c -> !c.isDeleted())
                 .toList());
 
         ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getAllCourses();
@@ -78,14 +71,14 @@ public class CourseControllerTest {
         assertNotNull(responseCourses);
         assertEquals(2, responseCourses.size());
         assertEquals("randomNameOfCourse", responseCourses.get(0).getName());
-        assertEquals("randomNameOfCourse2",responseCourses.get(1).getName());
-        assertFalse( responseCourses.get(0).isDeleted());
+        assertEquals("randomNameOfCourse2", responseCourses.get(1).getName());
+        assertFalse(responseCourses.get(0).isDeleted());
         assertFalse(responseCourses.get(1).isDeleted());
     }
 
     @Test
-    public void testCreateCourse_Success() throws DuplicateException {
-        CourseDto inputCourseDto = new CourseDto(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
+    void testCreateCourse_Success() throws DuplicateException {
+        CourseDto inputCourseDto = new CourseDto(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null, null, false, null, null, null, "randomImage");
         when(iCourseService.createCourse(inputCourseDto)).thenReturn(courseMapper.mapDtoToCourse(inputCourseDto));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -95,19 +88,9 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testCreateCourse_InvalidInput() throws DuplicateException {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
-        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
+    void testCreateCourse_InvalidInput() throws DuplicateException {
+        User admin = getAdmin();
+        getAuthentication(admin);
         CourseDto invalidCourseDto = new CourseDto();
         when(iCourseService.createCourse(invalidCourseDto)).thenThrow(new IllegalArgumentException("Name, description or background image not present"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(invalidCourseDto);
@@ -115,30 +98,10 @@ public class CourseControllerTest {
         assertEquals("Name, description or background image not present", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
-    @Test
-    public void testCreateCourse_Duplicate() throws DuplicateException {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
-        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
-        CourseDto inputCourseDto = new CourseDto();
-        when(iCourseService.createCourse(inputCourseDto)).thenThrow(new DuplicateException("The name of course already exist"));
-        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
-        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals("The name of course already exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
-    }
 
     @Test
-    public void testGetCourseById_Success(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
+    void testGetCourseById_Success() {
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null, null, false, null, null, null, "randomImage");
         when(iCourseService.findCourseById(1L)).thenReturn(course);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseById(courseMapper.mapCourseToCourseDto(course).getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -151,17 +114,17 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testGetCourseById_NotFound(){
-            long nonExistingCoursetId = 1L;
-            doThrow(new ResourceNotFoundException("The course does not exist")).when(iCourseService).findCourseById(nonExistingCoursetId);
-            ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseById(nonExistingCoursetId);
-            assertEquals("The course does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
-            assertEquals(HttpStatus.NOT_FOUND,responseEntity.getStatusCode());
+    void testGetCourseById_NotFound() {
+        long nonExistingCoursetId = 1L;
+        doThrow(new ResourceNotFoundException("The course does not exist")).when(iCourseService).findCourseById(nonExistingCoursetId);
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseById(nonExistingCoursetId);
+        assertEquals("The course does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
-    public void testGetCourseByName_Success(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
+    void testGetCourseByName_Success() {
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null, null, false, null, null, null, "randomImage");
         when(iCourseService.findCourseByName("randomNameOfCourse")).thenReturn(course);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseByName("randomNameOfCourse");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -174,8 +137,8 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testGetCourseByName_NotFound(){
-        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,null,false,null,null,null,"randomImage");
+    void testGetCourseByName_NotFound() {
+        Course course = new Course(1L, "randomNameOfCourse", "randomImage", "randomDescription", null, null, null, false, null, null, null, "randomImage");
         String nonExistingCourseName = "RandomNonExistingName";
         doThrow(new ResourceNotFoundException("The Course does not exist")).when(iCourseService).findCourseByName(nonExistingCourseName);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.getCourseByName(nonExistingCourseName);
@@ -184,19 +147,9 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testDeleteCourse_Success() {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
-        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
+    void testDeleteCourse_Success() {
+        User admin = getAdmin();
+        getAuthentication(admin);
         long courseId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = courseController.deleteCourse(courseId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -205,7 +158,7 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testDeleteCourse_ResourceNotFound() {
+    void testDeleteCourse_ResourceNotFound() {
         long nonExistingAbilityId = 999L;
         doThrow(new ResourceNotFoundException("The course does not exist")).when(iCourseService).deleteCourse(nonExistingAbilityId);
         ResponseEntity<ApiResponse<String>> responseEntity = courseController.deleteCourse(nonExistingAbilityId);
@@ -214,13 +167,13 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testGetDedicatedCourses_Success() throws UserDataException {
+    void testGetDedicatedCourses_Success() throws UserDataException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
         List<Course> courses = Arrays.asList(
-                new Course(1L, "Course 1", "image1", "Description 1", null, null, null,false, null, null, null, null),
-                new Course(2L, "Course 2", "image2", "Description 2", null, null, null,false, null, null, null, null)
+                new Course(1L, "Course 1", "image1", "Description 1", null, null, null, false, null, null, null, null),
+                new Course(2L, "Course 2", "image2", "Description 2", null, null, null, false, null, null, null, null)
         );
         when(iCourseService.findDedicatedCourses()).thenReturn(courses);
         ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses();
@@ -233,11 +186,11 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testGetDedicatedCourses_ResourceNotFoundException() throws UserDataException {
+    void testGetDedicatedCourses_ResourceNotFoundException() throws UserDataException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn("test@example.com");
-        doThrow(new ResourceNotFoundException("The User does not exist") ).when(iCourseService).findDedicatedCourses();
+        doThrow(new ResourceNotFoundException("The User does not exist")).when(iCourseService).findDedicatedCourses();
         ResponseEntity<ApiResponse<List<CourseDto>>> responseEntity = courseController.getDedicatedCourses();
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         String errorMessage = Objects.requireNonNull(responseEntity.getBody()).getMessage();
@@ -246,21 +199,11 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testUpdateCourse_Success() throws ResourceNotFoundException, DuplicateException {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
-        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
+    void testUpdateCourse_Success() throws ResourceNotFoundException, DuplicateException {
+        User admin = getAdmin();
+        getAuthentication(admin);
         long courseId = 1L;
-        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null,false, null, null, null, "updatedBackgroundImage");
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         when(iCourseService.updateCourse(courseId, inputCourseDto)).thenReturn(updatedCourse);
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
@@ -271,42 +214,43 @@ public class CourseControllerTest {
     }
 
     @Test
-    public void testUpdateCourse_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
-        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
+    void testUpdateCourse_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
+        User admin = getAdmin();
+        getAuthentication(admin);
         long courseId = 1L;
         CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
         when(iCourseService.updateCourse(courseId, inputCourseDto)).thenThrow(new ResourceNotFoundException("The Course does not exists"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        assertEquals("The Course does not exists", responseEntity.getBody().getMessage());
+        assertEquals("The Course does not exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
     @Test
-    public void testCreateAbility_Duplicate() throws DuplicateException {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
+    void testUpdateCourse_DuplicateException() throws ResourceNotFoundException, DuplicateException {
+        User admin = getAdmin();
+        getAuthentication(admin);
+        long courseId = 1L;
+        CourseDto inputCourseDto = new CourseDto(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
+        Course updatedCourse = new Course(1L, "Updated Course", "updatedImage", "Updated Description", null, null, null, false, null, null, null, "updatedBackgroundImage");
+        when(iCourseService.updateCourse(courseId, inputCourseDto)).thenThrow(new DuplicateException("The Course already exist exists"));
+        ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.updateCourse(courseId, inputCourseDto);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("The Course already exist exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    private void getAuthentication(User admin) {
         Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
         SecurityContextHolder.getContext().setAuthentication(auth);
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
+    }
+
+    @Test
+    void testCreateCourse_Duplicate() throws DuplicateException {
+        User admin = getAdmin();
+        getAuthentication(admin);
         CourseDto inputCourseDto = new CourseDto();
         when(iCourseService.createCourse(inputCourseDto)).thenThrow(new DuplicateException("The name of course already exists"));
         ResponseEntity<ApiResponse<CourseDto>> responseEntity = courseController.createCourse(inputCourseDto);
@@ -314,5 +258,24 @@ public class CourseControllerTest {
         assertEquals("The name of course already exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
+    private static List<Course> getCourseList() {
+        Course course1 = new Course(1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null, "randomSecondImage", false, null, null, null, null);
+        Course course2 = new Course(2L, "randomNameOfCourse2", "randomImage2", "randmDescription2", null, null, "random second image", false, null, null, null, null);
+        Course course3 = new Course(3L, "randomNameOfCourse", "randomImage", "randmDescription", null, null, "randomSecondImage", true, null, null, null, null);
+
+        return Arrays.asList(course1, course2, course3);
+    }
+
+
+    private User getAdmin() {
+        User admin = new User();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L, "ROLE_ADMIN", null, false);
+        admin.setRoles(List.of(role));
+        return admin;
+    }
 
 }

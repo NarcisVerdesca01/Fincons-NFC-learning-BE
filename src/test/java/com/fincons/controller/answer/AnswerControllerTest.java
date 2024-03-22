@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AnswerControllerTest {
+class AnswerControllerTest {
 
 
     @Autowired
@@ -42,7 +42,7 @@ public class AnswerControllerTest {
 
 
     @Test
-    public void testGetAllAnswers_Success(){
+    void testGetAllAnswers_Success(){
         List<Answer> answersList = Arrays.asList(new Answer(1L,"JEE: Java Enterprise Edition",null,true,false),
                 new Answer(1L,"JEE: Java Enterprise Edition",null,true,true),
                 new Answer(2L,"JEE: Java Enterprise Enter",null,true,false));
@@ -62,7 +62,7 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testGetAnswerById_Success() throws DuplicateException {
+    void testGetAnswerById_Success() throws DuplicateException {
         Answer answer = new Answer(1L, "JEE: Java Enterprise Edition",null,true,false);
         when(iAnswerService.findById(1L)).thenReturn(answer);
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.getById(answerMapper.mapAnswerToAnswerDto(answer).getId());
@@ -71,11 +71,19 @@ public class AnswerControllerTest {
         assertEquals(answer.getId(), responseEntity.getBody().getData().getId());
         assertEquals(answer.getText(), responseEntity.getBody().getData().getText());
         assertFalse(responseEntity.getBody().getData().isDeleted());
-
     }
 
     @Test
-    public void testCreateAnswer_Success() throws DuplicateException {
+    void testGetAnswerById_ResourceNotFoundSuccess(){
+        long nonExistingAnswerId = 999L;
+        doThrow(new ResourceNotFoundException("The answer does not exist")).when(iAnswerService).findById(nonExistingAnswerId);
+        ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.getById(nonExistingAnswerId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The answer does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testCreateAnswer_Success() throws DuplicateException {
         AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true,false);
         when(iAnswerService.createAnswer(inputAnswerDto)).thenReturn(answerMapper.mapAnswerDtoToAnswerEntity(inputAnswerDto));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
@@ -85,7 +93,7 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testCreateAnswer_BadRequest() throws DuplicateException {
+    void testCreateAnswer_BadRequest() throws DuplicateException {
         AnswerDto inputAnswerDto = new AnswerDto(1L,null,null,true,false);
         when(iAnswerService.createAnswer(inputAnswerDto)).thenThrow(new IllegalArgumentException("User must enter the text of answer!"));
         ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
@@ -94,7 +102,17 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testUpdateAnswer_Success() throws DuplicateException {
+    void testCreateAnswer_Duplicate() throws DuplicateException {
+        AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true,false);
+        when(iAnswerService.createAnswer(inputAnswerDto))
+                .thenThrow(new DuplicateException("Answer already exists!"));
+        ResponseEntity<ApiResponse<AnswerDto>> responseEntity = answerController.createAnswer(inputAnswerDto);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("Answer already exists!", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testUpdateAnswer_Success() throws DuplicateException {
         long answerId = 1L;
         AnswerDto inputAnswerDto = new AnswerDto(1L,"JEE: Java Enterprise Edition",null,true,false);
         Answer updatedAnswer = new Answer(1L,"JEE: Java Enterprise Edition",null,true,false);
@@ -105,7 +123,7 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testUpdateAnswer_ResourceNotFound() throws DuplicateException {
+    void testUpdateAnswer_ResourceNotFound() throws DuplicateException {
         long nonExistingAnswerId = 999L;
         AnswerDto inputAnswerDto = new AnswerDto();
         when(iAnswerService.updateAnswer(nonExistingAnswerId, inputAnswerDto))
@@ -116,7 +134,7 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testUpdateAnswer_IllegalArgumentException() throws DuplicateException {
+    void testUpdateAnswer_IllegalArgumentException() throws DuplicateException {
         long nonExistingAnswerId = 999L;
         AnswerDto inputAnswerDto = new AnswerDto();
         when(iAnswerService.updateAnswer(nonExistingAnswerId, inputAnswerDto))
@@ -127,7 +145,7 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testDeleteAnswer_Success() {
+    void testDeleteAnswer_Success() {
         long answerId = 1L;
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.deleteAnswer(answerId);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -136,13 +154,52 @@ public class AnswerControllerTest {
     }
 
     @Test
-    public void testDeleteAnswer_ResourceNotFound() {
+    void testDeleteAnswer_ResourceNotFound() {
         long nonExistingAnswerId = 999L;
         doThrow(new ResourceNotFoundException("The answer does not exist")).when(iAnswerService).deleteAnswer(nonExistingAnswerId);
         ResponseEntity<ApiResponse<String>> responseEntity = answerController.deleteAnswer(nonExistingAnswerId);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals("The answer does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
+
+    @Test
+    void testAssociateQuestionToAnswer_Success() {
+        long idAnswer = 1L;
+        long idQuestion = 2L;
+
+        ResponseEntity<ApiResponse<String>> responseEntity = answerController.associateQuestionToAnswer(idAnswer, idQuestion);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("The question has been successfully associated with answer!", Objects.requireNonNull(responseEntity.getBody()).getData());
+    }
+
+    @Test
+    void testAssociateQuestionToAnswer_ResourceNotFound() throws ResourceNotFoundException, DuplicateException {
+        long idAnswer = 1L;
+        long idQuestion = 2L;
+
+        doThrow(new ResourceNotFoundException("The answer does not exist")).when(iAnswerService).associateQuestionToAnswer(idAnswer, idQuestion);
+
+        ResponseEntity<ApiResponse<String>> responseEntity = answerController.associateQuestionToAnswer(idAnswer, idQuestion);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The answer does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testAssociateQuestionToAnswer_Duplicate() throws ResourceNotFoundException, DuplicateException {
+        long idAnswer = 1L;
+        long idQuestion = 2L;
+
+        doThrow(new DuplicateException("Association already exists")).when(iAnswerService).associateQuestionToAnswer(idAnswer, idQuestion);
+
+        ResponseEntity<ApiResponse<String>> responseEntity = answerController.associateQuestionToAnswer(idAnswer, idQuestion);
+
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("Association already exists", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+
+
 
 
 

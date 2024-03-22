@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AbilityUserControllerTest {
+class AbilityUserControllerTest {
 
 
     @Autowired
@@ -47,7 +47,7 @@ public class AbilityUserControllerTest {
 
 
     @Test
-    public void testGetAllAbilityUser_Success() {
+    void testGetAllAbilityUser_Success() {
         List<AbilityUser> abilityCourseList = getAbilityUserListData();
         when(iAbilityUserService.getAllAbilityUser()).thenReturn(abilityCourseList
                 .stream()
@@ -62,7 +62,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testGetAbilityUserById_Success() {
+    void testGetAbilityUserById_Success() {
         Ability ability1 = new Ability();
         User user1 = new User();
         AbilityUser abilityUser = new AbilityUser(1L,user1,ability1,false);
@@ -74,7 +74,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testGetAbilityUserById_ResourceNotFound(){
+    void testGetAbilityUserById_ResourceNotFound(){
         long nonExistingAbilityUserId = 1L;
         doThrow(new ResourceNotFoundException("The ability-user association does not exist")).when(iAbilityUserService).getAbilityUserById(nonExistingAbilityUserId);
         ResponseEntity<ApiResponse<AbilityUserDto>> responseEntity = abilityUserController.getAbilityUserById(nonExistingAbilityUserId);
@@ -83,7 +83,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testCreateAbilityUser_Success() throws DuplicateException {
+    void testCreateAbilityUser_Success() throws DuplicateException {
         AbilityDto abilityDto = new AbilityDto();
         UserDto userDto = new UserDto();
         AbilityUserDto abilityUserDto = new AbilityUserDto(1L,userDto,abilityDto,false);
@@ -96,7 +96,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testCreateAbilityUser_ResourceNotFoundException() throws DuplicateException {
+    void testCreateAbilityUser_ResourceNotFoundException() throws DuplicateException {
         AbilityDto abilityDto = new AbilityDto();
         UserDto userDto = new UserDto();
         AbilityUserDto abilityUserDto = new AbilityUserDto(1L,userDto,abilityDto,false);
@@ -106,8 +106,20 @@ public class AbilityUserControllerTest {
         assertEquals("The ability-user association does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
     }
 
+
     @Test
-    public void testUpdateAbilityUser_Success() throws DuplicateException {
+    void testCreateAbilityUser_Duplicate() throws DuplicateException {
+        long abilityIdToAddToUser = 5L;
+        when(iAbilityUserService.addAbilityUser(abilityIdToAddToUser))
+                .thenThrow(new DuplicateException("Ability-User association already exists!"));
+        ResponseEntity<ApiResponse<AbilityUserDto>> responseEntity = abilityUserController.addAbilityUser(abilityIdToAddToUser);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("Ability-User association already exists!", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+
+    @Test
+    void testUpdateAbilityUser_Success() throws DuplicateException {
         AbilityDto abilityDto = new AbilityDto();
         UserDto userDto = new UserDto();
         AbilityUserDto inputAbilityUserDto = new AbilityUserDto(1L,userDto,abilityDto,false);
@@ -121,7 +133,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testUpdateAbilityUser_ResourceNotFound() throws DuplicateException {
+    void testUpdateAbilityUser_ResourceNotFound() throws DuplicateException {
         long nonExistingAbilityUserId = 999L;
         AbilityUserDto inputAbilityUserDto = new AbilityUserDto();
         when(iAbilityUserService.updateAbilityUser(nonExistingAbilityUserId, inputAbilityUserDto))
@@ -132,7 +144,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testUpdateAbilityUser_Duplicate() throws DuplicateException {
+    void testUpdateAbilityUser_Duplicate() throws DuplicateException {
         long abilityUserId = 1L;
         AbilityUserDto inputAbilityUserDto = new AbilityUserDto();
         when(iAbilityUserService.updateAbilityUser(abilityUserId, inputAbilityUserDto))
@@ -143,7 +155,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testDeleteAbilityUserAssociation_Success() {
+    void testDeleteAbilityUserAssociation_Success() {
         Ability ability1 = new Ability();
         User user1 = new User();
         AbilityUser abilityUserToDelete = new AbilityUser(1L, user1, ability1,false);
@@ -154,7 +166,7 @@ public class AbilityUserControllerTest {
     }
 
     @Test
-    public void testDeleteAbilityUser_ResourceNotFound() {
+    void testDeleteAbilityUser_ResourceNotFound() {
         long nonExistingAbilityUserId = 999L;
         doThrow(new ResourceNotFoundException("The ability user association does not exist")).when(iAbilityUserService).deleteAbilityUser(nonExistingAbilityUserId);
         ResponseEntity<ApiResponse<String>> responseEntity = abilityUserController.deleteAbilityUser(nonExistingAbilityUserId);

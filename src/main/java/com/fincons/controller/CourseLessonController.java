@@ -66,7 +66,6 @@ public class CourseLessonController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){
-
             LOG.error("DuplicateException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(),LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
                     .message(duplicateException.getMessage())

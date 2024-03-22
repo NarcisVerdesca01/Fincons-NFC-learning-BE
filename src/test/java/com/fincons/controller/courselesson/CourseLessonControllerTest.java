@@ -14,14 +14,11 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.CourseLessonMapper;
 import com.fincons.service.authorization.AuthService;
-import com.fincons.service.authorization.IAuthService;
 import com.fincons.service.courselesson.ICourseLessonService;
 import com.fincons.utility.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +43,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class CourseLessonControllerTest {
+ class CourseLessonControllerTest {
 
     @Autowired
     private CourseLessonController courseLessonController;
@@ -69,7 +66,7 @@ public class CourseLessonControllerTest {
 
 
     @Test
-    public void testGetAllCourseLesson_Success(){
+    void testGetAllCourseLesson_Success(){
         List<CourseLesson> courseLessonList = getCourseLessonListData();
         when(iCourseLessonService.getCourseLessonList()).thenReturn(courseLessonList
                 .stream()
@@ -84,17 +81,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testCreateCourseLesson_Success() throws DuplicateException{
-        User tutor = new User();
-        tutor.setFirstName("tutor");
-        tutor.setLastName("tutor");
-        tutor.setEmail("tutor@gmail.com");
-        tutor.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_TUTOR",null,false);
-        tutor.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testCreateCourseLesson_Success() throws DuplicateException{
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         CourseDto courseDto = new CourseDto(
@@ -114,17 +103,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testCreateCourseLesson_ResourceNotFoundException() throws DuplicateException {
-        User tutor = new User();
-        tutor.setFirstName("tutor");
-        tutor.setLastName("tutor");
-        tutor.setEmail("tutor@gmail.com");
-        tutor.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_TUTOR",null,false);
-        tutor.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testCreateCourseLesson_ResourceNotFoundException() throws DuplicateException {
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         CourseLessonDto invalidCourseLessonDto = new CourseLessonDto();
@@ -135,17 +116,22 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testUpdateCourseLesson_Success() throws DuplicateException {
-        User tutor = new User();
-        tutor.setFirstName("tutor");
-        tutor.setLastName("tutor");
-        tutor.setEmail("tutor@gmail.com");
-        tutor.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_TUTOR",null,false);
-        tutor.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testCreateCourseLesson_DuplicateException() throws DuplicateException {
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
+        when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
+        when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
+        CourseLessonDto invalidCourseLessonDto = new CourseLessonDto();
+        doThrow(new DuplicateException("The course already exist")).when(iCourseLessonService).addCourseLesson(invalidCourseLessonDto);
+        ResponseEntity<ApiResponse<CourseLessonDto>> responseEntity = courseLessonController.addCourseLesson(invalidCourseLessonDto);
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        assertEquals("The course already exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void testUpdateCourseLesson_Success() throws DuplicateException {
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         Course course1 = new Course(
@@ -155,7 +141,6 @@ public class CourseLessonControllerTest {
                 1L,"Lesson 3: Type of data!",null,null,null,"random backgroundimage",
                 false,null,null,null,null
         );
-
         CourseDto courseDto = new CourseDto(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
                 null,false,null,null,null,"randomImage");
@@ -174,17 +159,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testUpdateCourseLesson_ResourceNotFound() throws DuplicateException {
-        User tutor = new User();
-        tutor.setFirstName("tutor");
-        tutor.setLastName("tutor");
-        tutor.setEmail("tutor@gmail.com");
-        tutor.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_TUTOR",null,false);
-        tutor.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testUpdateCourseLesson_ResourceNotFound() throws DuplicateException {
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         long nonExistingCourseLessonId = 999L;
@@ -197,17 +174,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testUpdateAbilityCourse_Duplicate() throws DuplicateException {
-        User tutor = new User();
-        tutor.setFirstName("tutor");
-        tutor.setLastName("tutor");
-        tutor.setEmail("tutor@gmail.com");
-        tutor.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_TUTOR",null,false);
-        tutor.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testUpdateAbilityCourse_Duplicate() throws DuplicateException {
+        User tutor = getTutor("tutor@gmail.com", "ROLE_TUTOR");
+        HttpServletRequest request = getHttpServletRequest(tutor);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(tutor.getEmail());
         long courseLessonId = 1L;
@@ -220,17 +189,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testDeleteCourseLessonAssociation_Success() {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testDeleteCourseLessonAssociation_Success() {
+        User admin = getTutor("admin@gmail.com", "ROLE_ADMIN");
+        HttpServletRequest request = getHttpServletRequest(admin);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         Course course1 = new Course(
@@ -249,17 +210,9 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testDeleteCourseLesson_ResourceNotFound() {
-        User admin = new User();
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
-        admin.setEmail("admin@gmail.com");
-        admin.setPassword(passwordEncoder.encode("Password!"));
-        Role role = new Role(1L,"ROLE_ADMIN",null,false);
-        admin.setRoles(List.of(role));
-        Authentication auth = new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        HttpServletRequest request = mock(HttpServletRequest.class);
+    void testDeleteCourseLesson_ResourceNotFound() {
+        User admin = getTutor("admin@gmail.com", "ROLE_ADMIN");
+        HttpServletRequest request = getHttpServletRequest(admin);
         when(request.getHeader("Authorization")).thenReturn("Bearer mock_token");
         when(jwtTokenProvider.getEmailFromJWT("mock_token")).thenReturn(admin.getEmail());
         long nonExistingCourseLessonId = 999L;
@@ -270,7 +223,7 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testGetCourseLessonById_Success() {
+    void testGetCourseLessonById_Success() {
         Course course1 = new Course(
                 1L, "randomNameOfCourse", "randomImage", "randmDescription", null, null,
                 null,false,null,null,null,"randomImage");
@@ -288,7 +241,7 @@ public class CourseLessonControllerTest {
     }
 
     @Test
-    public void testGetCourseLessonById_ResourceNotFound(){
+    void testGetCourseLessonById_ResourceNotFound(){
         long nonExistingCourseLessonId = 1L;
         doThrow(new ResourceNotFoundException("The course-lesson association does not exist")).when(iCourseLessonService).getCourseLessonById(nonExistingCourseLessonId);
         ResponseEntity<ApiResponse<CourseLessonDto>> responseEntity = courseLessonController.getCourseLessonById(nonExistingCourseLessonId);
@@ -313,8 +266,25 @@ public class CourseLessonControllerTest {
         );
         CourseLesson courseLesson1 = new CourseLesson(1L,course1,lesson1,false);
         CourseLesson courseLesson2 = new CourseLesson(2L,course2,lesson2,false);
-        List<CourseLesson> courseLessonList = java.util.Arrays.asList(courseLesson1,courseLesson2);
-        return courseLessonList;
+        return java.util.Arrays.asList(courseLesson1,courseLesson2);
+    }
+
+    private static HttpServletRequest getHttpServletRequest(User tutor) {
+        Authentication auth = new UsernamePasswordAuthenticationToken(tutor.getEmail(), tutor.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        return request;
+    }
+
+    private User getTutor(String mail, String ROLE_TUTOR) {
+        User tutor = new User();
+        tutor.setFirstName("tutor");
+        tutor.setLastName("tutor");
+        tutor.setEmail(mail);
+        tutor.setPassword(passwordEncoder.encode("Password!"));
+        Role role = new Role(1L, ROLE_TUTOR, null, false);
+        tutor.setRoles(List.of(role));
+        return tutor;
     }
 
 

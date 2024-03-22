@@ -2,6 +2,7 @@ package com.fincons.controller.ability;
 
 import com.fincons.controller.AbilityController;
 import com.fincons.dto.AbilityDto;
+import com.fincons.dto.AnswerDto;
 import com.fincons.entity.Ability;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -23,12 +24,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AbilityControllerTest {
+class AbilityControllerTest {
 
     @Autowired
     private AbilityController abilityController;
@@ -39,7 +41,7 @@ public class AbilityControllerTest {
 
 
     @Test
-    public void testGetAbilityByName_Success(){
+    void testGetAbilityByName_Success(){
         Ability ability = new Ability(1L,"Informatica",null,null,false);
         when(iAbilityService.findAbilityByName("Informatica")).thenReturn(ability);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityByName("Informatica");
@@ -53,7 +55,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testGetAllAbilities_Success() {
+    void testGetAllAbilities_Success() {
         List<Ability> abilities = Arrays.asList(new Ability(1L, "Ability1", null, null,false),
                 new Ability(2L, "Ability2", null, null,false),
                 new Ability(3L, "Ability2", null, null,true)
@@ -76,7 +78,7 @@ public class AbilityControllerTest {
 
 
     @Test
-    public void testGetAbilityById_Success() throws DuplicateException {
+    void testGetAbilityById_Success() throws DuplicateException {
         Ability ability = new Ability(1L, "Informatica",null,null,false);
         when(iAbilityService.findAbilityById(1L)).thenReturn(ability);
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityById(abilityMapper.mapAbilityToAbilityDto(ability).getId());
@@ -88,7 +90,26 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testCreateAbility_Success() throws DuplicateException {
+    void testGetAnswerById_ResourceNotFoundSuccess(){
+        long nonExistingAbilityId = 999L;
+        doThrow(new ResourceNotFoundException("The ability does not exist")).when(iAbilityService).findAbilityById(nonExistingAbilityId);
+        ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityById(nonExistingAbilityId);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("The ability does not exist", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+    }
+
+    @Test
+     void testGetAbilityByName_ResourceNotFoundException() throws DuplicateException {
+        String nonExistingAbilityName = "nonExistingAbilityName";
+        doThrow(new ResourceNotFoundException("The ability does not exist")).when(iAbilityService).findAbilityByName(nonExistingAbilityName);
+        ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.getAbilityByName(nonExistingAbilityName);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertNull(Objects.requireNonNull(responseEntity.getBody()).getData());
+        assertEquals("The ability does not exist", responseEntity.getBody().getMessage());
+    }
+
+    @Test
+    void testCreateAbility_Success() throws DuplicateException {
         AbilityDto inputAbilityDto = new AbilityDto(1L,"Informatica",null,null,false);
         when(iAbilityService.createAbility(inputAbilityDto)).thenReturn(abilityMapper.mapDtoToAbility(inputAbilityDto));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(inputAbilityDto);
@@ -98,7 +119,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testCreateAbility_InvalidInput() throws DuplicateException {
+    void testCreateAbility_InvalidInput() throws DuplicateException {
         AbilityDto invalidAbilityDto = new AbilityDto();
         when(iAbilityService.createAbility(invalidAbilityDto)).thenThrow(new IllegalArgumentException("The name of ability can't be empty"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(invalidAbilityDto);
@@ -107,7 +128,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testCreateAbility_Duplicate() throws DuplicateException {
+    void testCreateAbility_Duplicate() throws DuplicateException {
         AbilityDto inputAbilityDto = new AbilityDto();
         when(iAbilityService.createAbility(inputAbilityDto)).thenThrow(new DuplicateException("The name of ability already exists"));
         ResponseEntity<ApiResponse<AbilityDto>> responseEntity = abilityController.createAbility(inputAbilityDto);
@@ -116,7 +137,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testUpdateAbility_Success() throws DuplicateException {
+    void testUpdateAbility_Success() throws DuplicateException {
         long abilityId = 1L;
         AbilityDto inputAbilityDto = new AbilityDto(1L,"Programmazione",null,null,false);
         Ability updatedAbility = new Ability(1L,"Programmazione",null,null,false);
@@ -128,7 +149,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testUpdateAbility_ResourceNotFound() throws DuplicateException {
+    void testUpdateAbility_ResourceNotFound() throws DuplicateException {
         long nonExistingAbilityId = 999L;
         AbilityDto inputAbilityDto = new AbilityDto();
         when(iAbilityService.updateAbility(nonExistingAbilityId, inputAbilityDto))
@@ -139,7 +160,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testUpdateAbility_Duplicate() throws DuplicateException {
+    void testUpdateAbility_Duplicate() throws DuplicateException {
         long abilityId = 1L;
         AbilityDto inputAbilityDto = new AbilityDto();
         when(iAbilityService.updateAbility(abilityId, inputAbilityDto))
@@ -150,7 +171,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testDeleteAbility_Success() {
+    void testDeleteAbility_Success() {
         Ability abilityToDelete = new Ability(1L,"randomName",null,null,false);
         ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(abilityToDelete.getId());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -159,7 +180,7 @@ public class AbilityControllerTest {
     }
 
     @Test
-    public void testDeleteAbility_ResourceNotFound() {
+    void testDeleteAbility_ResourceNotFound() {
         long nonExistingAbilityId = 999L;
         doThrow(new ResourceNotFoundException("The ability does not exist")).when(iAbilityService).deleteAbility(nonExistingAbilityId);
         ResponseEntity<ApiResponse<String>> responseEntity = abilityController.deleteAbility(nonExistingAbilityId);
