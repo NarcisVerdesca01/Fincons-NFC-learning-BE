@@ -14,6 +14,9 @@ public interface ILessonService {
 
     List<Lesson> findAllNotAssociatedLessonsWithQuiz();
 
+    List<Lesson> findAllNotAssociatedLessonsWithCourse();
+
+
     Lesson findLessonById(long id);
 
     Lesson createLesson(LessonDto lessonDto) throws DuplicateException;
