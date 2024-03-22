@@ -62,6 +62,11 @@ public class LessonService implements ILessonService{
     }
 
     @Override
+    public List<Lesson> findAllNotAssociatedLessonsWithCourse() {
+        return lessonRepository.findAllByCoursesIsNullAndDeletedFalse();
+    }
+
+    @Override
     public Lesson findLessonById(long id) {
         if (!lessonRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The lesson does not exist!");
