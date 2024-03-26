@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,8 +58,6 @@ public class Course {
     @Column(name  = "deleted")
     private boolean deleted;
 
-
-    //AUDITING
     @CreatedDate
     @Column(
             nullable = false,
@@ -69,7 +68,6 @@ public class Course {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModified;
-
 
     @CreatedBy
     @Column(
