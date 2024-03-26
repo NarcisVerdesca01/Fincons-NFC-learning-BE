@@ -112,7 +112,7 @@ public class QuizController {
         }
     }
     @PutMapping("${quiz.delete}")
-    public ResponseEntity<ApiResponse<String>> deleteQuiz(@RequestParam long id) {
+    public ResponseEntity<ApiResponse<String>> deleteQuiz(@RequestParam(name = "idQuiz") long id) {
         try {
             iQuizService.deleteQuiz(id);
 

@@ -157,30 +157,30 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.GET, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + courseBaseUri + "/delete").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseBaseUri+ "/**").hasAnyRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN","TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/delete").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/update").hasAnyRole("ADMIN","TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
 
-
+                        .requestMatchers(HttpMethod.GET, applicationContext + questionBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.GET, applicationContext + questionBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-
 
                          .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentListSingleStudent ).hasAnyRole("ADMIN","TUTOR","STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentCheck ).hasAnyRole("STUDENT")
