@@ -42,7 +42,7 @@ public class Lesson {
     private String title;
 
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
-    private List<CourseLesson> courses;
+    private List<CourseLesson> courseLessons;
 
     //3. LEZIONE - QUIZ 1:1
     @OneToOne
@@ -85,7 +85,7 @@ public class Lesson {
 
     public Lesson(Lesson lesson) {
         this.title= lesson.getTitle();
-        this.courses= lesson.getCourses();
+        this.courseLessons= lesson.getCourseLessons();
         this.quiz= lesson.getQuiz();
         this.content= lesson.getContent();
         this.createDate= lesson.getCreateDate();

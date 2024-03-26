@@ -25,5 +25,5 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
 
     Course findByNameAndDeletedFalse(String name);
 
-    List<Course> findAllByDeletedFalseAndLessonsIsNull();
+    List<Course> findAllByDeletedFalseAndCourseLessonsIsNull();
 }

@@ -49,7 +49,7 @@ public class Quiz {
     private Lesson lesson;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
-    private List<QuizResults> users;
+    private List<QuizResults> quizResults;
 
     @Column(name  = "deleted")
     private boolean deleted;

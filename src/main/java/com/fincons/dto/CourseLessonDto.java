@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,11 +12,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CourseLessonDto {
 
     private long id;
+
+    @JsonIgnoreProperties("courseLessons")
     private CourseDto course;
+
+    @JsonIgnoreProperties("courseLessons")
     private LessonDto lesson;
     private boolean deleted;
 

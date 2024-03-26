@@ -62,7 +62,7 @@ public class User {
     private List<AbilityUser> abilities;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<QuizResults> quizzes;
+    private List<QuizResults> quizResults;
 
     @Column(name  = "deleted")
     private boolean deleted;

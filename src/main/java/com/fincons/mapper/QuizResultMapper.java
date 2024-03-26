@@ -1,6 +1,8 @@
 package com.fincons.mapper;
 
+import com.fincons.dto.QuizDto;
 import com.fincons.dto.QuizResultsDto;
+import com.fincons.entity.Quiz;
 import com.fincons.entity.QuizResults;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import java.util.List;
 public class QuizResultMapper {
 
 
-    private final ModelMapper modelMapperStandard = new ModelMapper();
+    private static final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     private QuizMapper quizMapper;
@@ -25,6 +27,7 @@ public class QuizResultMapper {
         quizResultsDto.setUser(userAndRoleMapper.userToUserDto(quizResults.getUser()));
         quizResultsDto.setTotalScore(quizResults.getTotalScore());
         quizResultsDto.setWhenDone(quizResults.getWhenDone());
+        quizResultsDto.setDeleted(quizResults.isDeleted());
         return quizResultsDto;
     }
     public QuizResults mapQuizResultsDtoToEntity(QuizResultsDto quizResultsDto) {
@@ -34,6 +37,7 @@ public class QuizResultMapper {
         quizResults.setUser(userAndRoleMapper.dtoToUser(quizResultsDto.getUser()));
         quizResults.setTotalScore(quizResultsDto.getTotalScore());
         quizResults.setWhenDone(quizResultsDto.getWhenDone());
+        quizResults.setDeleted(quizResultsDto.isDeleted());
 
         return quizResults;
     }
@@ -41,8 +45,16 @@ public class QuizResultMapper {
     public List<QuizResultsDto> mapQREntityToQRDTOSList(List<QuizResults> quizResultsList){
         return quizResultsList
                 .stream()
-                .map(quizResults -> mapQuizResultsEntityToDto(quizResults))
+                .map(this::mapQuizResultsEntityToDto)
                 .toList();
+    }
+
+    public QuizDto mapQuizToQuizDto(Quiz quiz){
+        return modelMapper.map(quiz, QuizDto.class);
+    }
+
+    public Quiz mapQuizDtoToQuizEntity(QuizDto quizDto){
+        return modelMapper.map(quizDto, Quiz.class);
     }
 
 }

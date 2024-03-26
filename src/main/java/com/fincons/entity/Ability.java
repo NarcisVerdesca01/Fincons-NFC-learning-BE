@@ -36,10 +36,10 @@ public class Ability {
     private String name;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    private List<AbilityCourse> courses;
+    private List<AbilityCourse> abilityCourses;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    private List<AbilityUser> users;
+    private List<AbilityUser> abilityUsers;
 
     @Column(name  = "deleted")
     private boolean deleted;

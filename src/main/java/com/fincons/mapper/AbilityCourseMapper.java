@@ -30,12 +30,12 @@ public class AbilityCourseMapper {
     public List<AbilityCourseDto> mapAbilityCourseListToAbilityCourseDtoList(List<AbilityCourse> abilityCourseList) {
         return abilityCourseList.stream()
                 .map(this::mapAbilityCourseToAbilityCourseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<AbilityCourse> mapAbilityCourseDtoListToAbilityCourseList(List<AbilityCourseDto> abilityCourseDtoList) {
         return abilityCourseDtoList.stream()
                 .map(this::mapDtoToAbilityCourse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

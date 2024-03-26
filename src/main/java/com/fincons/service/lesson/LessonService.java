@@ -63,7 +63,7 @@ public class LessonService implements ILessonService{
 
     @Override
     public List<Lesson> findAllNotAssociatedLessonsWithCourse() {
-        return lessonRepository.findAllByCoursesIsNullAndDeletedFalse();
+        return lessonRepository.findAllByCourseLessonsIsNullAndDeletedFalse();
     }
 
     @Override

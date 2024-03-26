@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,6 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class UserDto {
 
     private long id;
@@ -24,9 +24,12 @@ public class UserDto {
     private String email;
     private String password;
     private LocalDate birthDate;
+    @JsonIgnoreProperties("users")
     private List<RoleDto> roles;
-    private List<AbilityUserDto> abilities;
-    private List<QuizResultsDto> quizzes;
+    @JsonIgnoreProperties("user")
+    private List<AbilityUserDto> abilityUsers;
+    @JsonIgnoreProperties("user")
+    private List<QuizResultsDto> quizResults;
     private boolean deleted;
     private String backgroundImage;
 }

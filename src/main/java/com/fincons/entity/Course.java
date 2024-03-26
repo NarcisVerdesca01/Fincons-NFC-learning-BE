@@ -47,10 +47,10 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
-    private List<CourseLesson> lessons;
+    private List<CourseLesson> courseLessons;
 
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
-    private List<AbilityCourse> abilities;
+    private List<AbilityCourse> abilityCourses;
 
     @Column(name = "imageResource")
     private String imageResource;

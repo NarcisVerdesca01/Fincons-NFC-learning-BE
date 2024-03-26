@@ -112,11 +112,10 @@ public class QuizResultController {
             @RequestParam("quizId") long quizId,
             @RequestBody Map<String, Object> requestBody) {
 
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
-
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<>() {
+            });
             QuizResultsDto results = quizResultMapper
                     .mapQuizResultsEntityToDto(iQuizResultService.calculateAndSave(quizId, answersMap)) ;
 
@@ -144,11 +143,10 @@ public class QuizResultController {
             @RequestParam("quizToRedo") long quizToRedo,
             @RequestBody Map<String, Object> requestBody) {
 
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
-
         try {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<Long, List<Long>> answersMap = objectMapper.convertValue(requestBody.get("answersMap"), new TypeReference<Map<Long, List<Long>>>(){});
             QuizResultsDto results = quizResultMapper
                     .mapQuizResultsEntityToDto(iQuizResultService.redoQuiz(quizToRedo, answersMap)) ;
 

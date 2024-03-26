@@ -31,11 +31,11 @@ public class QuizResults {
     @Column(name = "id")
     private long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quizId")
     private Quiz quiz;
 
@@ -48,6 +48,8 @@ public class QuizResults {
 
     @Column(name  = "deleted")
     private boolean deleted;
+
+
 
 
 }
