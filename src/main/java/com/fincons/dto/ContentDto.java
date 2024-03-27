@@ -15,10 +15,14 @@ import lombok.Setter;
 public class ContentDto {
 
     private Long id;
+
     private String typeContent;
+
     private String content;
+
     @JsonIgnoreProperties("content")
     private LessonDto lesson;
+
     private boolean deleted;
 
 }

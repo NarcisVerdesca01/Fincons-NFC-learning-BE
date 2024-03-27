@@ -122,7 +122,6 @@ public class AnswerService implements IAnswerService{
             throw new ResourceNotFoundException("Question does not exist");
         }
 
-
         if(answerToAssociateQuestion.getQuestion() != null && answerToAssociateQuestion.getQuestion().getId() == idQuestion){
             throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
         }
