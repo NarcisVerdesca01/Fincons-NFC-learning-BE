@@ -16,7 +16,7 @@ public interface IQuizService {
 
     List<Quiz> findAllQuizWithoutQuestions();
     Quiz createQuiz(QuizDto quizDto) throws DuplicateException;
-    void deleteQuiz(long id);
+    void deleteQuiz(Long id);
     Quiz updateQuiz(long id, QuizDto quizDto);
 
     Quiz associateLesson(long idQuiz, long idLesson)  throws DuplicateException;

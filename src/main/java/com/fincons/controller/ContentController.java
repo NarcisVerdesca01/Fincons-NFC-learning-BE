@@ -89,7 +89,7 @@ public class ContentController {
         }
     }
     @PutMapping("${content.delete}")
-    public ResponseEntity<ApiResponse<String>> deleteContent(@RequestParam long id) {
+    public ResponseEntity<ApiResponse<String>> deleteContent(@RequestParam(name="idContent") long id) {
         try {
             iContentService.deleteContent(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

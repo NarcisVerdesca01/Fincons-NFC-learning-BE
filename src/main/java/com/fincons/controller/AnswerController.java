@@ -95,7 +95,7 @@ public class AnswerController {
         }
     }
     @PutMapping("${answer.delete}")
-    public ResponseEntity<ApiResponse<String>> deleteAnswer(@RequestParam long id) {
+    public ResponseEntity<ApiResponse<String>> deleteAnswer(@RequestParam(name="idAnswer") long id) {
         try {
             iAnswerService.deleteAnswer(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

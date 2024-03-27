@@ -82,7 +82,7 @@ public class AnswerService implements IAnswerService{
 
     @Override
     public void deleteAnswer(long id) {
-        if (!answerRepository.existsById(id)) {
+        if (!answerRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The answer does not exist");
         }
         Answer answerToDelete = answerRepository.findByIdAndDeletedFalse(id);
@@ -99,13 +99,20 @@ public class AnswerService implements IAnswerService{
             throw new ResourceNotFoundException("Answer does not exist");
         }
 
-        if (answerDto.getText() == null || answerDto.getQuestion() == null) {
+        if (answerDto.getText() == null) {
             throw new IllegalArgumentException("Text of answer is null");
             //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
         if(answerDto.getQuestion()!= null){
             QuestionDto question = answerDto.getQuestion();
             answerToModify.setQuestion(questionMapper.mapQuestionDtoToQuestionEntity(question));
+        }
+        answerToModify.setText(answerDto.getText());
+
+        Boolean isCorrect= answerDto.isCorrect();
+
+        if(isCorrect!=null){
+        answerToModify.setCorrect(answerDto.isCorrect());
         }
         return answerRepository.save(answerToModify);
     }

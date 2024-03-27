@@ -92,10 +92,14 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
+        }catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
+                    .build());
         }
     }
     @PutMapping("${question.delete}")
-    public ResponseEntity<ApiResponse<String>> deleteQuestion(@RequestParam long id) {
+    public ResponseEntity<ApiResponse<String>> deleteQuestion(@RequestParam(name="idQuestion") Long id) {
         try {
             iQuestionService.deleteQuestion(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

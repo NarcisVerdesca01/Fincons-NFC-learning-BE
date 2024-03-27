@@ -15,6 +15,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuizService implements IQuizService{
@@ -67,8 +68,9 @@ public class QuizService implements IQuizService{
         return savedQuiz;
     }
 
+
     @Override
-    public void deleteQuiz(long id) {
+    public void deleteQuiz(Long id) {
         if (!quizRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The quiz does not exist");
         }
@@ -78,6 +80,7 @@ public class QuizService implements IQuizService{
         quizRepository.save(quizToDelete);
 
         Lesson lesson = lessonRepository.findByQuiz(quizToDelete);
+
         if (lesson != null) {
             lesson.setQuiz(null);
             lessonRepository.save(lesson);
@@ -85,7 +88,7 @@ public class QuizService implements IQuizService{
 
         List<Question> questionsToSetQuizNull = questionRepository.findAllByDeletedFalse()
                 .stream()
-                .filter(question->question.getQuiz().getId()==id)
+                .filter(question-> id.equals(Optional.of(question).map(Question::getQuiz).map(Quiz::getId).orElse(null)))
                 .toList();
 
         questionsToSetQuizNull

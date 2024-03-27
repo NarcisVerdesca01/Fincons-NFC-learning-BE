@@ -14,6 +14,6 @@ public interface IQuestionService {
     List<Question> findAllQuestionWithoutQuiz();
     List<Question> findAllQuestionWithoutAnswers();
     Question createQuestion(QuestionDto questionDto);
-    void deleteQuestion(long id);
+    void deleteQuestion(Long id);
     Question updateQuestion(long id, QuestionDto questionDto);
 }
