@@ -12,7 +12,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     boolean existsByIdAndDeletedFalse(long id);
 
     Content findByIdAndDeletedFalse(long id);
-    List<Content> findAllByDeletedFalse();
 
     List<Content> findAllByDeletedFalse();
 
