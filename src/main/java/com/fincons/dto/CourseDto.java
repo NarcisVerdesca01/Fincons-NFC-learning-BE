@@ -28,9 +28,7 @@ public class CourseDto {
     private List<AbilityCourseDto> abilityCourses;
     private String imageResource;
     private boolean deleted;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime lastModified;
     private String createdBy;
     private String lastModifiedBy;
