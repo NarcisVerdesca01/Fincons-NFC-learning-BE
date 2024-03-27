@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class QuestionService implements  IQuestionService{
     @Autowired
@@ -52,7 +54,7 @@ public class QuestionService implements  IQuestionService{
     }
 
     @Override
-    public void deleteQuestion(long id) {
+    public void deleteQuestion(Long id) {
         if (!questionRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The question does not exist");
         }
@@ -62,7 +64,7 @@ public class QuestionService implements  IQuestionService{
 
         List<Answer> answersToSetQuestionNull = answerRepository.findAllByDeletedFalse()
                 .stream()
-                .filter(answer->answer.getQuestion().getId()==id)
+                .filter(answer-> id.equals(Optional.of(answer).map(Answer::getQuestion).map(Question::getId).orElse(null)))
                 .toList();
 
         answersToSetQuestionNull

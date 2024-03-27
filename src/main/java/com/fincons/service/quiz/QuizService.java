@@ -179,10 +179,19 @@ public class QuizService implements IQuizService{
             }
         }
         if (!hasCorrectAnswer || !hasIncorrectAnswer) {
-            throw new IllegalArgumentException("Question must have at least one correct and one incorrect answer");
+            String errorMessage;
+            if (!hasCorrectAnswer && !hasIncorrectAnswer) {
+                errorMessage = "Question must have at least one correct and one incorrect answer";
+            } else if (!hasCorrectAnswer) {
+                errorMessage = "Question has only incorrect answers. Please add at least one correct answer.";
+            } else {
+                errorMessage = "Question has only correct answers. Please add at least one incorrect answer.";
+            }
+            throw new IllegalArgumentException(errorMessage);
         }
 
         questionToAssociate.setQuiz(quizToAssociate);
         return quizRepository.save(quizToAssociate);
     }
+
 }

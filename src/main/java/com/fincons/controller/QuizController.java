@@ -171,10 +171,14 @@ public class QuizController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         } catch (DuplicateException duplicateException){
-
             LOG.error("DuplicateException - associateQuizQuestion() -> QuizController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
                     .message(duplicateException.getMessage())
+                    .build());
+        }catch (IllegalArgumentException illegalArgumentException){
+            LOG.error("IllegalArgumentException - associateQuizQuestion() -> QuizController: {}. Date: {}", illegalArgumentException.getMessage(), LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
                     .build());
         }
     }
