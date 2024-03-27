@@ -158,11 +158,31 @@ public class AuthService implements IAuthService {
         if (loggedUser.isEmpty()) {
             throw new ResourceNotFoundException("User with this email doesn't exist");
         }
-
         LOG.info("User info: " + loggedUser);
-
-
         return userRepository.findByEmail(loggedUser);
+    }
+
+    @Override
+    public String updateUser(UserDto updateUserDto) throws UserDataException {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        User existingUser = userRepository.findByEmail(loggedUser);
+        existingUser.setFirstName(updateUserDto.getFirstName());
+        existingUser.setLastName(updateUserDto.getLastName());
+
+        User updatedUser = userRepository.save(existingUser);
+
+        // Controlla se l'utente è stato effettivamente aggiornato nel database
+        if (updatedUser == null) {
+            throw new UserDataException("Failed to update user!");
+        }
+
+        LOG.info("User updated: " + updatedUser.getEmail());
+        return "User updated successfully";
     }
 
 

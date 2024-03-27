@@ -1,11 +1,9 @@
 package com.fincons.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.dto.UserDto;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtAuthResponse;
-import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.service.authorization.IAuthService;
@@ -15,16 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.nio.file.AccessDeniedException;
 
 @CrossOrigin("*")
 @AllArgsConstructor
@@ -123,6 +118,20 @@ public class AuthController {
                     ApiResponse.<UserDto>builder()
                             .message(resourceNotFoundException.getMessage())
                             .build());
+        }
+    }
+
+    @PutMapping("${update.user.uri}")
+    public ResponseEntity<String> updateUser(
+            @RequestBody UserDto userDto
+    ) throws UserDataException {
+        try {
+            String response = iAuthService.updateUser(userDto);
+            LOG.info("User successfully updated: {}", userDto.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (UserDataException userDataException) {
+            LOG.error("Error while updating user: {}", userDataException.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
     }
 
