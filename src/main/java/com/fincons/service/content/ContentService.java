@@ -34,7 +34,7 @@ public class ContentService implements IContentService {
 
     @Override
     public List<Content> findAllContent() {
-        return contentRepository.findAll();
+        return contentRepository.findAllByDeletedFalse();
     }
 
     @Override

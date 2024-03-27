@@ -13,6 +13,10 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     Content findByIdAndDeletedFalse(long id);
 
+    List<Content> findAllByDeletedFalse();
+
     //metodo per contenuti non associati a nessuna lezione
     List<Content> findAllByDeletedFalseAndLessonIsNull();
+
+
 }
