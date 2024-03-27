@@ -1,8 +1,6 @@
 package com.fincons.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,14 +10,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Getter
 @Setter
 @Entity
@@ -38,8 +34,13 @@ public class AbilityCourse {
     @JoinColumn(name = "abilityId")
     private Ability ability;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
+
     public AbilityCourse(Course course, Ability ability) {
         this.course = course;
         this.ability = ability;
     }
+
+
 }

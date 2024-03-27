@@ -1,16 +1,17 @@
 package com.fincons.entity;
 
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,16 +19,16 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "quizzes")
 public class Quiz {
 
@@ -46,6 +47,12 @@ public class Quiz {
     //3. LEZIONE - QUIZ 1:1
     @OneToOne(mappedBy = "quiz")
     private Lesson lesson;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private List<QuizResults> quizResults;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
 
     //AUDITING
     @CreatedDate

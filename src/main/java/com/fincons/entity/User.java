@@ -2,8 +2,6 @@ package com.fincons.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,18 +15,17 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -54,33 +51,24 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
-    private Set<Role> roles;
-
+    private List<Role> roles;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<AbilityUser> abilities;
 
-    /*
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_courses",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
-    )
-    private List<Course> courses;
-     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<QuizResults> quizResults;
 
-    // DA SPIEGARE AI COLLEGHI
+    @Column(name  = "deleted")
+    private boolean deleted;
 
-    //PROFILO TECNICO
+    @Column(name = "background_image",length = 20971520)
+    private String backgroundImage;
 
-    //ADMIN   -->> profiloT:   se ruolo è admin --> get all courses and lesson
-    //TUTOR   --->>profiloT:    se ruolo tutor & requisiti : informaticaa --->> getall courses in base a requisiti
-    //Studente --->> profiloT
+
 }

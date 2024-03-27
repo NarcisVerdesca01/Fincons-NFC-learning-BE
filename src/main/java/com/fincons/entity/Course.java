@@ -1,22 +1,16 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +19,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -55,17 +47,17 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<CourseLesson> lessons;
+    private List<CourseLesson> courseLessons;
 
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbilityCourse> abilities;
+    private List<AbilityCourse> abilityCourses;
 
+    @Column(name = "imageResource")
+    private String imageResource;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
-
-    //AUDITING
     @CreatedDate
     @Column(
             nullable = false,
@@ -77,7 +69,6 @@ public class Course {
     @Column(insertable = false)
     private LocalDateTime lastModified;
 
-
     @CreatedBy
     @Column(
             nullable = false,
@@ -88,11 +79,6 @@ public class Course {
     @LastModifiedBy
     @Column(insertable = false)
     private String lastModifiedBy;
-
-
-
-
-
 
 
 }

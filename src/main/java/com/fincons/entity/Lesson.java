@@ -1,10 +1,6 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fincons.dto.ContentDto;
-import com.fincons.dto.CourseDto;
-import com.fincons.dto.QuizDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,12 +9,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,13 +21,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -49,24 +41,25 @@ public class Lesson {
     @Column(name = "title",nullable = false, length = 20971520)
     private String title;
 
-
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<CourseLesson> courses;
+    private List<CourseLesson> courseLessons;
 
     //3. LEZIONE - QUIZ 1:1
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_quiz", referencedColumnName = "id")
+    @OneToOne
     private Quiz quiz;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinColumn(name = "id_content", referencedColumnName = "id")
+    @OneToOne
     private Content content;
 
+    @Column(name = "backgroundImage" , length = 20971520)
+    private String backgroundImage;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
     @CreatedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(
             nullable = false,
             updatable = false
@@ -74,6 +67,7 @@ public class Lesson {
     private LocalDateTime createDate;
 
     @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(insertable = false)
     private LocalDateTime lastModified;
 
@@ -91,7 +85,7 @@ public class Lesson {
 
     public Lesson(Lesson lesson) {
         this.title= lesson.getTitle();
-        this.courses= lesson.getCourses();
+        this.courseLessons= lesson.getCourseLessons();
         this.quiz= lesson.getQuiz();
         this.content= lesson.getContent();
         this.createDate= lesson.getCreateDate();

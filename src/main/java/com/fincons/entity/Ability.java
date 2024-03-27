@@ -1,33 +1,30 @@
 package com.fincons.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-@Table(name = "ability")
 public class Ability {
 
     @Id
@@ -39,13 +36,13 @@ public class Ability {
     private String name;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbilityCourse> courses;
+    private List<AbilityCourse> abilityCourses;
 
     @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<AbilityUser> users;
+    private List<AbilityUser> abilityUsers;
 
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 
 }

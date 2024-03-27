@@ -3,8 +3,10 @@ package com.fincons.service.authorization;
 import com.fincons.dto.UserDto;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
+import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
@@ -13,16 +15,18 @@ import com.fincons.utility.EmailValidator;
 import com.fincons.utility.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
+import java.util.List;
 
 @Service
 public class AuthService implements IAuthService {
@@ -53,7 +57,7 @@ public class AuthService implements IAuthService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userAndRoleMapper = userAndRoleMapper;
     }
-    
+
     @Override
     public String registerStudent(UserDto userDto) throws UserDataException {
 
@@ -72,20 +76,19 @@ public class AuthService implements IAuthService {
         userToSave.setEmail(emailDto);
         userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userToSave.setBirthDate(userDto.getBirthDate());
-
+        userToSave.setBackgroundImage(userDto.getBackgroundImage());
 
         Role role = roleToAssign("ROLE_STUDENT");
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
 
 
-       User userSaved = userRepository.save(userToSave);
-        if(userRepository.findByEmail(userSaved.getEmail()) == null){
+        User userSaved = userRepository.save(userToSave);
+        if (userRepository.findByEmail(userSaved.getEmail()) == null) {
             throw new UserDataException(UserDataException.somethingGoesWrong());
         }
         LOG.info("Student registered: " + userSaved.getEmail());
         return "Student registered successfully";
     }
-
 
 
     @Override
@@ -108,10 +111,12 @@ public class AuthService implements IAuthService {
         userToSave.setLastName(userDto.getLastName());
         userToSave.setEmail(userDto.getEmail().toLowerCase().replace(" ", ""));
         userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userToSave.setBirthDate(userDto.getBirthDate());//Controllo dell'età ?
+        userToSave.setBirthDate(userDto.getBirthDate());
+        userToSave.setBackgroundImage(userDto.getBackgroundImage());
+
 
         Role role = roleToAssign("ROLE_TUTOR");
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
         User userSaved = userRepository.save(userToSave);
         if (!userRepository.existsByEmail(userSaved.getEmail())) {
             throw new UserDataException("Something goes wrong!");
@@ -137,7 +142,7 @@ public class AuthService implements IAuthService {
 
         Role role = roleToAssign("ROLE_ADMIN");
 
-        userToSave.setRoles(Set.of(role));
+        userToSave.setRoles(List.of(role));
 
         User userSaved = userRepository.save(userToSave);
         if (!userRepository.existsByEmail(userSaved.getEmail())) {
@@ -148,23 +153,62 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public String login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(),
-                loginDto.getPassword()
-        ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    public User getUserByEmail() {
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+        LOG.info("User info: " + loggedUser);
+        return userRepository.findByEmail(loggedUser);
+    }
 
-        return jwtTokenProvider.generateToken(authentication);
+    @Override
+    public String updateUser(UserDto updateUserDto) throws UserDataException {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        User existingUser = userRepository.findByEmail(loggedUser);
+        existingUser.setFirstName(updateUserDto.getFirstName());
+        existingUser.setLastName(updateUserDto.getLastName());
+
+        User updatedUser = userRepository.save(existingUser);
+
+        // Controlla se l'utente è stato effettivamente aggiornato nel database
+        if (updatedUser == null) {
+            throw new UserDataException("Failed to update user!");
+        }
+
+        LOG.info("User updated: " + updatedUser.getEmail());
+        return "User updated successfully";
+    }
+
+
+    public String login(LoginDto loginDto) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.getEmail(),
+                    loginDto.getPassword()
+            ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return jwtTokenProvider.generateToken(authentication);
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            if (e instanceof org.springframework.security.authentication.BadCredentialsException) {
+                throw new BadCredentialsException("Credenziali non valide", e);
+            }
+            throw new AccessDeniedException("Accesso vietato", e);
+        }
     }
 
 
 
-    public Role roleToAssign(String nomeRuolo) {
-        Role role = roleRepository.findByName(nomeRuolo);
+    public Role roleToAssign(String nameRole) {
+        Role role = roleRepository.findByName(nameRole);
         if (role == null) {
             Role newRole = new Role();
-            newRole.setName(nomeRuolo);
+            newRole.setName(nameRole);
             role = roleRepository.save(newRole);
         }
         return role;

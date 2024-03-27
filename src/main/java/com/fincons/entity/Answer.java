@@ -8,14 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -32,5 +30,12 @@ public class Answer {
     //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
     @ManyToOne
     private Question question;
+
+    @Column(name = "isCorrect")
+    private boolean isCorrect;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
+
 
 }

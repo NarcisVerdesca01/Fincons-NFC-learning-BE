@@ -1,19 +1,17 @@
 package com.fincons.controller;
 
-
-import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
-import com.fincons.dto.CourseLessonDto;
-import com.fincons.entity.AbilityUser;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
+import com.fincons.entity.Ability;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.AbilityUserMapper;
+import com.fincons.repository.AbilityRepository;
+import com.fincons.repository.UserRepository;
 import com.fincons.service.abilityuser.IAbilityUserService;
 import com.fincons.utility.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -37,8 +34,11 @@ import java.util.List;
 public class AbilityUserController {
 
     private IAbilityUserService iAbilityUserService;
-
     private AbilityUserMapper abilityUserMapper;
+    private JwtTokenProvider jwtTokenProvider;
+    private UserRepository userRepository;
+    private AbilityRepository abilityRepository;
+
 
     @GetMapping("${ability-user.list}")
     public ResponseEntity<ApiResponse<List<AbilityUserDto>>> getAllAbilityUser(){
@@ -68,15 +68,18 @@ public class AbilityUserController {
 
 
     @PostMapping("${ability-user.add}")
-    public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(@RequestBody AbilityUserDto abilityUserDto ) {
+    public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(
+            @RequestParam(name = "abilityId") long abilityIdToAssociate
+            ) {
         try {
+
             AbilityUserDto abilityUserDtoToShow = abilityUserMapper
-                    .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(abilityUserDto));
+                    .mapAbilityUserToAbilityUserDto(iAbilityUserService.addAbilityUser(abilityIdToAssociate));
             return ResponseEntity.ok().body(ApiResponse.<AbilityUserDto>builder()
                     .data(abilityUserDtoToShow)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.badRequest().body(ApiResponse.<AbilityUserDto>builder()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<AbilityUserDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){
@@ -86,7 +89,6 @@ public class AbilityUserController {
         }
     }
 
-    //TODO Delete
     @PutMapping("${ability-user.update}/{id}")
     public ResponseEntity<ApiResponse<AbilityUserDto>> updateAbilityUser(@PathVariable long id, @RequestBody AbilityUserDto abilityUserDto)  {
         try{
@@ -107,8 +109,8 @@ public class AbilityUserController {
         }
     }
 
-    @DeleteMapping("${ability-user.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAbilityUser(@PathVariable long id) {
+    @PutMapping("${ability-user.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteAbilityUser(@RequestParam long id) {
         try{
             iAbilityUserService.deleteAbilityUser(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

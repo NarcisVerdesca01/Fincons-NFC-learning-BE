@@ -1,14 +1,13 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
-
 
 @Getter
 @Setter
@@ -17,10 +16,10 @@ import java.util.List;
 public class RoleDto {
 
     private long id;
-
     private String name;
-
     @JsonIgnoreProperties("roles")
     private List<UserDto> users;
+    private boolean deleted;
+
 
 }

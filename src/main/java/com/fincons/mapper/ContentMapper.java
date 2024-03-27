@@ -1,9 +1,7 @@
 package com.fincons.mapper;
 
 import com.fincons.dto.ContentDto;
-import com.fincons.dto.CourseDto;
 import com.fincons.entity.Content;
-import com.fincons.entity.Course;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

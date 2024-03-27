@@ -1,42 +1,34 @@
 package com.fincons.mapper;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fincons.dto.CourseDto;
+import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.CourseLessonDto;
-import com.fincons.dto.LessonDto;
-import com.fincons.entity.Course;
+import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.CourseLesson;
-import com.fincons.entity.Lesson;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Component
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseLessonMapper {
 
-    private final ModelMapper modelMapperStandard = new ModelMapper();;
+    private final ModelMapper modelMapperStandard = new ModelMapper();
+
+    @Autowired
     private CourseMapper courseMapper;
+
+    @Autowired
     private LessonMapper lessonMapper;
 
-    public CourseLessonDto mapCourseLessonToCourseLessonDto(CourseLesson courseLesson){
-        return modelMapperStandard.map(courseLesson, CourseLessonDto.class);
-    }
-    public CourseLesson mapToEntity(CourseLessonDto courseLessonDto){
-        return modelMapperStandard.map(courseLessonDto, CourseLesson.class);
-    }
 
-    public List<CourseLessonDto> mapCourseLessonListToAbilityCourseDtoList(List<CourseLesson> courseLesson) {
+    public List<CourseLessonDto> mapCourseLessonListToCourseLessonDtoList(List<CourseLesson> courseLesson) {
         return courseLesson.stream()
                 .map(this::mapCourseLessonEntityToDto)
                 .collect(Collectors.toList());
     }
 
-    private CourseLessonDto mapCourseLessonEntityToDto(CourseLesson courseLesson) {
+    public CourseLessonDto mapCourseLessonEntityToDto(CourseLesson courseLesson) {
         CourseLessonDto courseLessonDto = new CourseLessonDto();
         courseLessonDto.setId(courseLesson.getId());
         courseLessonDto.setCourse(courseMapper.mapCourseToCourseDto(courseLesson.getCourse()));
@@ -50,5 +42,7 @@ public class CourseLessonMapper {
         courseLesson.setLesson(lessonMapper.mapDtoToLessonEntity(courseLessonDto.getLesson()) );
         return courseLesson;
     }
+
+
 
 }

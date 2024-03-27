@@ -1,14 +1,13 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fincons.entity.Ability;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -20,22 +19,17 @@ import java.util.Set;
 public class UserDto {
 
     private long id;
-
     private String firstName;
-
     private String lastName;
-
     private String email;
-
     private String password;
-
     private LocalDate birthDate;
-
     @JsonIgnoreProperties("users")
-    private Set<RoleDto> roles;
-
-    @JsonIgnore
-    private List<AbilityUserDto> abilities;
-
-
+    private List<RoleDto> roles;
+    @JsonIgnoreProperties("user")
+    private List<AbilityUserDto> abilityUsers;
+    @JsonIgnoreProperties("user")
+    private List<QuizResultsDto> quizResults;
+    private boolean deleted;
+    private String backgroundImage;
 }

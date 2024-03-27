@@ -1,14 +1,11 @@
 package com.fincons.security;
 
-import com.fincons.audit.ApplicationAuditAware;
 import com.fincons.jwt.JwtAuthenticationFilter;
 import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -22,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 
 @Configuration
 @EnableWebSecurity
@@ -104,73 +100,113 @@ public class SecurityConfiguration {
     @Value("${course-lesson.base.uri}")
     private String courseLessonBaseUri;
 
+    @Value("${detail.userdto}")
+    private String getUserDtoByEmail;
+
+    @Value("${quiz.base.uri}")
+    private String quizBaseUri;
+
+    @Value("${answer.base.uri}")
+    private String answerBaseUri;
+
+    @Value("${question.base.uri}")
+    private String questionBaseUri;
+
+    @Value("${quiz-result-student.base.uri}")
+    private String quizResultStudentBaseUri;
+
+    @Value("${quiz-result-student.list.singleStudent}")
+    private String quizResultStudentListSingleStudent;
+
+    @Value("${quiz-result-student.check}")
+    private String quizResultStudentCheck;
+
+    @Value("${quiz-response.base.uri}")
+    private String quizResponseBaseUri;
+
+    @Value("${quiz.get-all-quiz-response}")
+    private String quizGetAllQuizResponse;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.csrf(AbstractHttpConfigurer::disable);
 
 
-        //requests
+
         http.authorizeHttpRequests(auth  ->
-                auth.requestMatchers(applicationContext + loginUri).permitAll()
+                auth
+                        .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
-                        .requestMatchers(applicationContext + registerAdminUri).permitAll()  // TODO To remove
-                        .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
-                        .requestMatchers(applicationContext + lessonsBaseUri + "/**").authenticated()
+                        .requestMatchers(applicationContext + getUserDtoByEmail).permitAll()
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")
 
-                        /*
-                         Filtri CRUD per l'amministratore:
-                         applicationContext = /nfc-learning
-                         courseBaseUri = v1/course
-                         */
-                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, applicationContext + abilityUserBaseUri + "/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, applicationContext + abilityUserBaseUri + "/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, applicationContext + abilityUserBaseUri + "/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + abilityUserBaseUri + "/**").authenticated()
 
-                        //ADMIN CRUD on Courses and Lessons
-                        .requestMatchers(applicationContext + courseBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + lessonBaseUri + "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, applicationContext + contentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + contentBaseUri + "/**").hasAnyRole("ADMIN","TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + contentBaseUri + "/**").hasAnyRole("ADMIN","TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + contentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")
 
-                        //TUTOR RU on Lessons
-                        .requestMatchers(HttpMethod.GET, applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
-                        .requestMatchers(HttpMethod.PUT,applicationContext + lessonBaseUri + "/**").hasRole("TUTOR")
-                        .requestMatchers(applicationContext + courseLessonBaseUri + "/**").hasRole("TUTOR")
+                        .requestMatchers(HttpMethod.GET, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + courseBaseUri + "/delete").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + courseBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + courseBaseUri+ "/**").hasAnyRole("ADMIN")
 
-                        //ADMIN TUTOR CRUD ON content STUDENT can read
-                        .requestMatchers(HttpMethod.GET, applicationContext + contentBaseUri + "/**").hasRole("STUDENT")
-                        .requestMatchers(applicationContext + contentBaseUri + "/**").hasAnyRole("TUTOR","ADMIN")
+                        .requestMatchers(HttpMethod.GET, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/delete").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + lessonBaseUri + "/update").hasAnyRole("ADMIN","TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + lessonBaseUri + "/**").hasAnyRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + courseLessonBaseUri + "/**").hasAnyRole("TUTOR")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + questionBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
 
-                        //TODO -  Tutor CRUD on Quiz
-                        //TODO - Associate Quiz to Student
-                        //ADMIN creates abilities and associates with Course
-                        .requestMatchers(applicationContext + abilityBaseUri + "/**").hasRole("ADMIN")
-                        .requestMatchers(applicationContext + abilityCourseBaseUri + "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/calculate-and-save").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/quiz-redo").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentListSingleStudent ).hasAnyRole("ADMIN","TUTOR","STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentCheck ).hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN")
 
-                        //STUDENT associates him with abilities
-                        .requestMatchers(applicationContext + abilityUserBaseUri + "/**").authenticated()
-
-                        //DEDICATED COURSES Entry requirements to Course for Technical profile
-                        .requestMatchers(applicationContext + getDedicatedCourses + "/**").authenticated()
-
-                        //TODO STUDENT Read on Courses, Lessons, Quiz related to its technical profile
-                        //TODO STUDENT CRUD on associated Quiz Answers
+                        .requestMatchers(HttpMethod.GET, applicationContext + quizGetAllQuizResponse + "/**").hasAnyRole("ADMIN", "TUTOR")
 
                         .anyRequest().authenticated()
-        ).httpBasic(Customizer.withDefaults());
 
+        ).httpBasic(Customizer.withDefaults());
 
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationExeptionEntryPoint));
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
+
 
 }

@@ -1,10 +1,6 @@
 package com.fincons.controller;
 
-
 import com.fincons.dto.AbilityDto;
-import com.fincons.dto.CourseDto;
-import com.fincons.exception.AbilityException;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AbilityMapper;
@@ -21,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @CrossOrigin("*")
@@ -111,7 +107,8 @@ public class AbilityController {
         }
     }
 
-    @DeleteMapping("${ability.delete}/{id}")
+    /*
+        @DeleteMapping("${ability.delete}/{id}")
     public ResponseEntity<ApiResponse<String>> deleteAbility(@PathVariable long id) {
         try {
             iAbilityService.deleteAbility(id);
@@ -125,6 +122,21 @@ public class AbilityController {
         }
     }
 
+     */
+
+    @PutMapping("${ability.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteAbility(@RequestParam long id) {
+        try {
+            iAbilityService.deleteAbility(id);
+            return ResponseEntity.ok().body(ApiResponse.<String>builder()
+                    .data("The ability has been successfully deleted!")
+                    .build());
+        } catch (ResourceNotFoundException resourceNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        }
+    }
 
 
 }

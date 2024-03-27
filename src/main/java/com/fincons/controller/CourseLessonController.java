@@ -1,20 +1,17 @@
 package com.fincons.controller;
 
-import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.CourseLessonDto;
-import com.fincons.entity.AbilityCourse;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.CourseLessonMapper;
 import com.fincons.service.courselesson.ICourseLessonService;
-import com.fincons.service.lesson.ILessonService;
 import com.fincons.utility.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -37,29 +36,37 @@ public class CourseLessonController {
 
     private CourseLessonMapper courseLessonMapper;
 
+    private static final Logger LOG = LoggerFactory.getLogger(CourseLessonController.class);
+
+
     @GetMapping("${course-lesson.list}")
     public ResponseEntity<ApiResponse<List<CourseLessonDto>>> getAllCourseLesson(){
 
         List<CourseLessonDto> courseLessonDtos = courseLessonMapper
-                .mapCourseLessonListToAbilityCourseDtoList(iCourseLessonService.getCourseLessonList()) ;
+                .mapCourseLessonListToCourseLessonDtoList(iCourseLessonService.getCourseLessonList()) ;
         return ResponseEntity.ok().body(ApiResponse.<List<CourseLessonDto>>builder()
                 .data(courseLessonDtos)
                 .build());
     }
 
     @PostMapping("${course-lesson.add}")
-    public ResponseEntity<ApiResponse<CourseLessonDto>> addAbilityCourse(@RequestBody CourseLessonDto courseLessonDto) {
+    public ResponseEntity<ApiResponse<CourseLessonDto>> addCourseLesson(@RequestBody CourseLessonDto courseLessonDto) {
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
-                    .mapCourseLessonToCourseLessonDto(iCourseLessonService.addCourseLesson(courseLessonDto));
+                    .mapCourseLessonEntityToDto(iCourseLessonService.addCourseLesson(courseLessonDto));
+
+            LOG.info("Course lesson relationship added successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), courseLessonDtoToShow.getId(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
         }catch(ResourceNotFoundException resourceNotFoundException){
-            return ResponseEntity.badRequest().body(ApiResponse.<CourseLessonDto>builder()
+
+            LOG.error("ResourceNotFoundException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }catch (DuplicateException duplicateException){
+            LOG.error("DuplicateException - addCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(),LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
                     .message(duplicateException.getMessage())
                     .build());
@@ -67,32 +74,45 @@ public class CourseLessonController {
     }
 
     @PutMapping("${course-lesson.update}/{id}")
-    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto) throws CourseLessonException, LessonException, CourseException {
+    public ResponseEntity<ApiResponse<CourseLessonDto>> updateCourseLesson(@PathVariable long id, @RequestBody CourseLessonDto courseLessonDto){
         try{
             CourseLessonDto courseLessonDtoToShow =
-                    courseLessonMapper.mapCourseLessonToCourseLessonDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
+                    courseLessonMapper.mapCourseLessonEntityToDto(iCourseLessonService.updateCourseLesson(id,courseLessonDto));
 
+            LOG.info("Course lesson relationship updated successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), courseLessonDtoToShow.getId(), LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());
 
-        }catch(CourseLessonException | LessonException | CourseException exception ){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<CourseLessonDto>builder()
-                    .message(exception.getMessage())
+        }catch(ResourceNotFoundException resourceNotFoundException ){
+
+            LOG.error("ResourceNotFoundException - updateCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(resourceNotFoundException.getMessage())
+                    .build());
+        } catch (DuplicateException duplicateException) {
+
+            LOG.error("DuplicateException - updateCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<CourseLessonDto>builder()
+                    .message(duplicateException.getMessage())
                     .build());
         }
     }
 
-    @DeleteMapping("${course-lesson.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@PathVariable long id) throws CourseLessonException {
+    @PutMapping("${course-lesson.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteCourseLesson(@RequestParam long id) {
         try{
             iCourseLessonService.deleteCourseLesson(id);
+
+            LOG.info("Course lesson relationship deleted successfully. Author: {}. Course lesson ID: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), id, LocalDateTime.now());
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
                     .message("Deleted relationship between course and lesson chosen")
                     .build());
-        }catch(CourseLessonException courseLessonException){
+        }catch(ResourceNotFoundException resourceNotFoundException){
+
+            LOG.error("ResourceNotFoundException - deleteCourseLesson() -> CourseLessonController. Author: {}. Date: {}", SecurityContextHolder.getContext().getAuthentication().getName(), LocalDateTime.now());
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
-                    .message(courseLessonException.getMessage())
+                    .message(resourceNotFoundException.getMessage())
                     .build());
         }
     }
@@ -102,7 +122,7 @@ public class CourseLessonController {
 
         try{
             CourseLessonDto courseLessonDtoToShow = courseLessonMapper
-                    .mapCourseLessonToCourseLessonDto(iCourseLessonService.getCourseLessonById(id));
+                    .mapCourseLessonEntityToDto(iCourseLessonService.getCourseLessonById(id));
             return ResponseEntity.ok().body(ApiResponse.<CourseLessonDto>builder()
                     .data(courseLessonDtoToShow)
                     .build());

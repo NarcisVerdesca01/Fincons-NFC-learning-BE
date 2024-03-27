@@ -2,14 +2,12 @@ package com.fincons.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,8 +26,11 @@ public class Content {
     private String content;
 
     //2. LEZIONE - CONTENUTO 1:1
-    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "content")
     private Lesson lesson;
+
+    @Column(name  = "deleted")
+    private boolean deleted;
 
 
 

@@ -4,17 +4,13 @@ import com.fincons.dto.CourseLessonDto;
 import com.fincons.entity.Course;
 import com.fincons.entity.CourseLesson;
 import com.fincons.entity.Lesson;
-import com.fincons.exception.CourseException;
-import com.fincons.exception.CourseLessonException;
 import com.fincons.exception.DuplicateException;
-import com.fincons.exception.LessonException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.CourseLessonRepository;
 import com.fincons.repository.CourseRepository;
 import com.fincons.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -30,33 +26,44 @@ public class CourseLessonService implements ICourseLessonService {
 
     @Override
     public List<CourseLesson> getCourseLessonList() {
-        return courseLessonRepository.findAll();
+        return courseLessonRepository.findAllByDeletedFalse();
     }
 
     @Override
     public CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws DuplicateException {
 
-        Course existingCourse = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new ResourceNotFoundException("Course does not exist"));
-        Lesson existingLesson = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new ResourceNotFoundException("Lesson does not exist"));
+        Course existingCourse = courseRepository.findByIdAndDeletedFalse(courseLessonDto.getCourse().getId());
+        Lesson existingLesson = lessonRepository.findByIdAndDeletedFalse(courseLessonDto.getLesson().getId());
 
-        if(courseLessonRepository.existsByCourseAndLesson(existingCourse,existingLesson)){
+        if(existingCourse == null){
+            throw new ResourceNotFoundException("Course does not exist");
+        }
+        if(existingLesson == null){
+            throw new ResourceNotFoundException("Lesson does not exist");
+        }
+
+        if(courseLessonRepository.existsByCourseAndLessonAndDeletedFalse(existingCourse,existingLesson)){
             throw new DuplicateException("Course-Lesson association already exists");
         }
+
         CourseLesson courseLessonToSave = new CourseLesson(existingCourse,existingLesson);
         return courseLessonRepository.save(courseLessonToSave);
     }
 
     @Override
-    public CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws CourseLessonException, CourseException, LessonException {
+    public CourseLesson updateCourseLesson(long id, CourseLessonDto courseLessonDto) throws  DuplicateException {
 
-        CourseLesson existingCourseLesson = courseLessonRepository.findById(id)
-                .orElseThrow(()-> new CourseLessonException("Course-Lesson does not exist"));
+        CourseLesson existingCourseLesson = courseLessonRepository.findByIdAndDeletedFalse(id);
+        if(existingCourseLesson == null){
+            throw new ResourceNotFoundException("Course-Lesson association does not exist");
+        }
 
-        Course existingCourseToAssociate = courseRepository.findById(courseLessonDto.getCourse().getId()).orElseThrow(()-> new CourseException("Course does not exist"));
-        Lesson existingLessonToAddAssociate = lessonRepository.findById(courseLessonDto.getLesson().getId()).orElseThrow(()-> new LessonException("Lesson does not exist"));
 
-        if(courseLessonRepository.existsByCourseAndLesson(existingCourseToAssociate,existingLessonToAddAssociate)){
-            throw new CourseLessonException(CourseLessonException.duplicateException());
+        Course existingCourseToAssociate = courseRepository.findByIdAndDeletedFalse(courseLessonDto.getCourse().getId());
+        Lesson existingLessonToAddAssociate = lessonRepository.findByIdAndDeletedFalse(courseLessonDto.getLesson().getId());
+
+        if(courseLessonRepository.existsByCourseAndLessonAndDeletedFalse(existingCourseToAssociate,existingLessonToAddAssociate)){
+            throw new DuplicateException("Course-Lesson association already exists");
         }
 
         existingCourseLesson.setCourse(existingCourseToAssociate);
@@ -66,19 +73,23 @@ public class CourseLessonService implements ICourseLessonService {
     }
 
     @Override
-    public void deleteCourseLesson(long id) throws CourseLessonException {
+    public void deleteCourseLesson(long id)  {
 
-        if (!courseLessonRepository.existsById(id)) {
-            throw new CourseLessonException("The course-lesson does not exist") ;
+        if (!courseLessonRepository.existsByIdAndDeletedFalse(id)) {
+            throw new ResourceNotFoundException("The course-lesson does not exist") ;
         }
-
-        courseLessonRepository.deleteById(id);
+        CourseLesson courseLessonToDelete = courseLessonRepository.findByIdAndDeletedFalse(id);
+        courseLessonToDelete.setDeleted(true);
+        courseLessonRepository.save(courseLessonToDelete);
     }
 
     @Override
     public CourseLesson getCourseLessonById(long id) {
-        return courseLessonRepository
-                .findById(id).orElseThrow(()-> new ResourceNotFoundException("The Course-Lesson association does not exist"));
+        if(!courseLessonRepository.existsByIdAndDeletedFalse(id)){
+            throw new ResourceNotFoundException("The Course-Lesson association does not exist!");
+
+        }
+          return courseLessonRepository.findByIdAndDeletedFalse(id);
     }
 
 

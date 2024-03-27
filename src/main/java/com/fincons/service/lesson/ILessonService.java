@@ -2,18 +2,28 @@ package com.fincons.service.lesson;
 
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.Lesson;
-import com.fincons.exception.LessonException;
+import com.fincons.exception.DuplicateException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 public interface ILessonService {
     List<Lesson> findAllLessons();
 
+    List<Lesson> findAllNotAssociatedLessonsWithContent();
+
+    List<Lesson> findAllNotAssociatedLessonsWithQuiz();
+
+    List<Lesson> findAllNotAssociatedLessonsWithCourse();
+
+
     Lesson findLessonById(long id);
 
-    Lesson createLesson(LessonDto lessonDto) throws LessonException;
+    Lesson createLesson(LessonDto lessonDto) throws DuplicateException;
 
-    Lesson updateLesson(long id, LessonDto lessonDto) throws LessonException;
+    Lesson updateLesson(long id, LessonDto lessonDto) throws DuplicateException;
 
-    void deleteLesson(long id) throws LessonException;
+    void deleteLesson(long id);
+
+    Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException, SQLIntegrityConstraintViolationException;
 }

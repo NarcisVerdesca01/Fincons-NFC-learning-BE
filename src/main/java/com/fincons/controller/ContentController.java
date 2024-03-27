@@ -1,21 +1,14 @@
 package com.fincons.controller;
 
 import com.fincons.dto.ContentDto;
-import com.fincons.dto.CourseDto;
-import com.fincons.dto.LessonDto;
-import com.fincons.exception.CourseException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
-import com.fincons.mapper.CourseMapper;
-import com.fincons.service.content.ContentService;
 import com.fincons.service.content.IContentService;
 import com.fincons.utility.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
@@ -29,7 +22,7 @@ public class ContentController {
     private ContentMapper contentMapper;
 
     @GetMapping("${content.get-all-content}")
-    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllLessons(){
+    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContent(){
         List<ContentDto> contentDtoList= iContentService.findAllContent()
                 .stream()
                 .map(s->contentMapper.mapContentToContentDto(s))
@@ -38,6 +31,18 @@ public class ContentController {
                 .data(contentDtoList)
                 .build());
     }
+
+    @GetMapping("${content.get-all-content-noassociationlesson}")
+    public ResponseEntity<ApiResponse<List<ContentDto>>> getAllContentWithoutAssociationWithLesson(){
+        List<ContentDto> contentDtoList= iContentService.findAllNotAssociatedContentWithLesson()
+                .stream()
+                .map(s->contentMapper.mapContentToContentDto(s))
+                .toList();
+        return ResponseEntity.ok().body(ApiResponse.<List<ContentDto>>builder()
+                .data(contentDtoList)
+                .build());
+    }
+
     @GetMapping("${content.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable long id){
         try{
@@ -77,9 +82,14 @@ public class ContentController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
+        catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
+                    .build());
+        }
     }
-    @DeleteMapping("${content.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteContent(@PathVariable long id) {
+    @PutMapping("${content.delete}")
+    public ResponseEntity<ApiResponse<String>> deleteContent(@RequestParam(name="idContent") long id) {
         try {
             iContentService.deleteContent(id);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

@@ -2,40 +2,46 @@ package com.fincons.service.content;
 
 import com.fincons.dto.ContentDto;
 import com.fincons.entity.Content;
+import com.fincons.entity.Lesson;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ContentMapper;
 import com.fincons.repository.ContentRepository;
-import org.apache.commons.io.FilenameUtils;
+import com.fincons.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 @Service
 public class ContentService implements IContentService {
 
     @Autowired
     private ContentRepository contentRepository;
+
     @Autowired
-    private ContentMapper contentMapper;
+    private LessonRepository lessonRepository;
+
 
     @Override
     public Content findById(long id) {
 
-        if (!contentRepository.existsById(id)) {
+        if (!contentRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The content does not exist!");
         }
-        return contentRepository.findById(id).orElse(null);
+        return contentRepository.findByIdAndDeletedFalse(id);
     }
 
     @Override
     public List<Content> findAllContent() {
-        return contentRepository.findAll();
+        return contentRepository.findAllByDeletedFalse();
     }
+
+    @Override
+    public List<Content> findAllNotAssociatedContentWithLesson() {
+        return contentRepository.findAllByDeletedFalseAndLessonIsNull();
+    }
+
 
     @Override
     public Content createContent(ContentDto contentDto) {
@@ -54,18 +60,26 @@ public class ContentService implements IContentService {
 
     @Override
     public void deleteContent(long id) {
-        if (!contentRepository.existsById(id)) {
+        if (!contentRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The content does not exist");
         }
 
-        // Elimina il contenuto
-        contentRepository.deleteById(id);
+        Content contentToDelete = contentRepository.findByIdAndDeletedFalse(id);
+        contentToDelete.setDeleted(true);
+        contentRepository.save(contentToDelete);
+
+        Lesson lesson = lessonRepository.findByContent(contentToDelete);
+        if (lesson != null) {
+            lesson.setContent(null);
+            lessonRepository.save(lesson);
+        }
     }
+
 
     @Override
     public Content updateContent(long id, ContentDto contentDto) {
         Content contentToModify = contentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist. "));
+                .orElseThrow(() -> new ResourceNotFoundException("Content does not exist."));
 
         if (contentDto.getContent() == null && contentDto.getTypeContent()==null) {
             throw new IllegalArgumentException("Content is null");
