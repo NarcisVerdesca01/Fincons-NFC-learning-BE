@@ -88,7 +88,7 @@ public class QuizController {
                     .build());
         } catch (DuplicateException exception) {
             LOG.error("DuplicateException - createQuiz() -> QuizController. Date: {}", LocalDateTime.now());
-            return ResponseEntity.badRequest().body(ApiResponse.<QuizDto>builder()
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<QuizDto>builder()
                     .message(exception.getMessage())
                     .build());
         }

@@ -83,10 +83,15 @@ public class QuestionService implements  IQuestionService{
             throw new ResourceNotFoundException("Question does not exist");
         }
 
-        if (questionDto.getTextQuestion() == null && questionDto.getValueOfQuestion()<=0) {
+        if (questionDto.getTextQuestion() == null) {
             throw new IllegalArgumentException("Text or score of question is null");
-            //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
+
+        if(questionToModify.getValueOfQuestion() != questionDto.getValueOfQuestion() && questionDto.getValueOfQuestion()>0){
+            questionToModify.setValueOfQuestion(questionDto.getValueOfQuestion());
+        }
+        questionToModify.setTextQuestion(questionDto.getTextQuestion());
+
         return questionRepository.save(questionToModify);
     }
 }
