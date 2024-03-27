@@ -85,7 +85,7 @@ public class CourseLessonService implements ICourseLessonService {
 
     @Override
     public CourseLesson getCourseLessonById(long id) {
-        if(courseLessonRepository.existsByIdAndDeletedFalse(id)){
+        if(!courseLessonRepository.existsByIdAndDeletedFalse(id)){
             throw new ResourceNotFoundException("The Course-Lesson association does not exist!");
 
         }
