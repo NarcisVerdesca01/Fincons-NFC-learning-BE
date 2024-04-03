@@ -1,6 +1,5 @@
 package com.fincons.service.abilityuser;
 
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityUser;

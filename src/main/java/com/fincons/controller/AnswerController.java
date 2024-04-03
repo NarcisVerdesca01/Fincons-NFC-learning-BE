@@ -1,20 +1,17 @@
 package com.fincons.controller;
 
 import com.fincons.dto.AnswerDto;
-import com.fincons.dto.ContentDto;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.AnswerMapper;
-import com.fincons.mapper.ContentMapper;
 import com.fincons.service.answer.IAnswerService;
-import com.fincons.service.content.IContentService;
 import com.fincons.utility.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("${application.context}")
@@ -46,6 +43,7 @@ public class AnswerController {
                 .data(answerDtoList)
                 .build());
     }
+
     @GetMapping("${answer.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<AnswerDto>> getById(@PathVariable long id){
         try{
@@ -59,6 +57,7 @@ public class AnswerController {
                     .build());
         }
     }
+
     @PostMapping("${answer.create}")
     public ResponseEntity<ApiResponse<AnswerDto>> createAnswer(@RequestBody AnswerDto answerDto) {
         try {
@@ -94,6 +93,7 @@ public class AnswerController {
                     .build());
         }
     }
+
     @PutMapping("${answer.delete}")
     public ResponseEntity<ApiResponse<String>> deleteAnswer(@RequestParam(name="idAnswer") long id) {
         try {
@@ -107,7 +107,6 @@ public class AnswerController {
                     .build());
         }
     }
-
 
     @PutMapping("${answer.associate.question}")
     public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@RequestParam long idAnswer,@RequestParam long idQuestion) {

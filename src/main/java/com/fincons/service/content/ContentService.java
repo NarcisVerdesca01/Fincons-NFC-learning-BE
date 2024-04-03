@@ -4,7 +4,6 @@ import com.fincons.dto.ContentDto;
 import com.fincons.entity.Content;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.mapper.ContentMapper;
 import com.fincons.repository.ContentRepository;
 import com.fincons.repository.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ public class ContentService implements IContentService {
 
     @Autowired
     private LessonRepository lessonRepository;
-
 
     @Override
     public Content findById(long id) {
@@ -41,7 +39,6 @@ public class ContentService implements IContentService {
     public List<Content> findAllNotAssociatedContentWithLesson() {
         return contentRepository.findAllByDeletedFalseAndLessonIsNull();
     }
-
 
     @Override
     public Content createContent(ContentDto contentDto) {
@@ -75,7 +72,6 @@ public class ContentService implements IContentService {
         }
     }
 
-
     @Override
     public Content updateContent(long id, ContentDto contentDto) {
         Content contentToModify = contentRepository.findById(id)
@@ -83,7 +79,6 @@ public class ContentService implements IContentService {
 
         if (contentDto.getContent() == null && contentDto.getTypeContent()==null) {
             throw new IllegalArgumentException("Content is null");
-            //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
 
         defineContentType(contentDto,contentToModify);
@@ -111,10 +106,11 @@ public class ContentService implements IContentService {
         Matcher matcher = pattern.matcher(url);
 
         if (matcher.find()) {
-            videoId = matcher.group(1); // Il primo gruppo contiene l'ID del video
+            videoId = matcher.group(1);
         }
 
         return "https://www.youtube.com/embed/"+videoId;
     }
+
 
 }

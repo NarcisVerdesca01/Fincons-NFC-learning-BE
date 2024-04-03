@@ -17,24 +17,15 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
-
     private JwtTokenProvider jwtTokenProvider;
 
-
     private UserDetailsService userDetailsService;
-
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
 
-    /*
-        this filter is responsible for extracting and validating a JWT token from a request,
-        and if the token is valid, it authenticates the corresponding user and sets the
-        authentication object in the security context.
-         */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -42,9 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = getTokenFromRequest(request);
 
-
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
-
             String email = jwtTokenProvider.getEmailFromJWT(token);
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -63,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(HttpServletRequest request){
+
         String bearerToken = request.getHeader("Authorization");
 
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") ){
@@ -70,6 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return null;
-
     }
+
 }

@@ -12,7 +12,6 @@ public class AbilityUserMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
 
-
     public AbilityUserDto mapAbilityUserToAbilityUserDto(AbilityUser abilityUser){
         return modelMapper.map(abilityUser, AbilityUserDto.class);
     }
@@ -32,4 +31,6 @@ public class AbilityUserMapper {
                 .map(this::mapDtoToAbilityUser)
                 .collect(Collectors.toList());
     }
+
+
 }

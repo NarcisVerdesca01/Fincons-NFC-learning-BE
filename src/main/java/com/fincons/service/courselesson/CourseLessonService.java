@@ -18,11 +18,12 @@ public class CourseLessonService implements ICourseLessonService {
 
     @Autowired
     private CourseLessonRepository courseLessonRepository;
+
     @Autowired
     private CourseRepository courseRepository;
+
     @Autowired
     private LessonRepository lessonRepository;
-
 
     @Override
     public List<CourseLesson> getCourseLessonList() {

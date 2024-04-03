@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
 
 @Getter
@@ -24,7 +23,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "quiz_result_student")
 public class QuizResults {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +46,5 @@ public class QuizResults {
 
     @Column(name  = "deleted")
     private boolean deleted;
-
-
-
 
 }

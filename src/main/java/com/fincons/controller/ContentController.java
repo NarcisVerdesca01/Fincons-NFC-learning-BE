@@ -56,6 +56,7 @@ public class ContentController {
                     .build());
         }
     }
+
     @PostMapping("${content.create}")
     public ResponseEntity<ApiResponse<ContentDto>> createContent(@RequestBody ContentDto contentDto) {
         try {
@@ -88,6 +89,7 @@ public class ContentController {
                     .build());
         }
     }
+
     @PutMapping("${content.delete}")
     public ResponseEntity<ApiResponse<String>> deleteContent(@RequestParam(name="idContent") long id) {
         try {
@@ -101,8 +103,6 @@ public class ContentController {
                     .build());
         }
     }
-
-
 
 
 }

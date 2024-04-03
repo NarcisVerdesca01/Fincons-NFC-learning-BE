@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 @Component
 public class PasswordValidator {
-
     private static final String PASSWORD_REGEX =
             //  "^(?=.*[0-9])"
             "(?=.*[a-z])(?=.*[A-Z])"
@@ -20,4 +19,5 @@ public class PasswordValidator {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
 }

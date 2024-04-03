@@ -2,7 +2,6 @@ package com.fincons.service.lesson;
 
 import com.fincons.controller.AuthController;
 import com.fincons.dto.LessonDto;
-import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Content;
 import com.fincons.entity.CourseLesson;
 import com.fincons.entity.Lesson;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,7 +42,6 @@ public class LessonService implements ILessonService{
     private CourseLessonRepository courseLessonRepository;
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
-
 
     @Override
     public List<Lesson> findAllLessons() {
@@ -143,7 +140,6 @@ public class LessonService implements ILessonService{
 
     }
 
-
     @Override
     public Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException, SQLIntegrityConstraintViolationException {
 
@@ -193,5 +189,6 @@ public class LessonService implements ILessonService{
             throw new IllegalArgumentException("Title required");
         }
     }
+
 
 }

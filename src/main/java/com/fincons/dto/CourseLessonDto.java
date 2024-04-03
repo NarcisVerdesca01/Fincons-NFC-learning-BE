@@ -19,6 +19,7 @@ public class CourseLessonDto {
 
     @JsonIgnoreProperties("courseLessons")
     private LessonDto lesson;
+
     private boolean deleted;
 
 }

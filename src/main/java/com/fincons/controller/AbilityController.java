@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -106,23 +105,6 @@ public class AbilityController {
                     .build());
         }
     }
-
-    /*
-        @DeleteMapping("${ability.delete}/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteAbility(@PathVariable long id) {
-        try {
-            iAbilityService.deleteAbility(id);
-            return ResponseEntity.ok().body(ApiResponse.<String>builder()
-                    .data("The ability has been successfully deleted!")
-                    .build());
-        } catch (ResourceNotFoundException resourceNotFoundException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
-                    .message(resourceNotFoundException.getMessage())
-                    .build());
-        }
-    }
-
-     */
 
     @PutMapping("${ability.delete}")
     public ResponseEntity<ApiResponse<String>> deleteAbility(@RequestParam long id) {

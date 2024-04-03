@@ -1,8 +1,6 @@
 package com.fincons.mapper;
 
-import com.fincons.dto.AbilityCourseDto;
 import com.fincons.dto.CourseLessonDto;
-import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.CourseLesson;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ public class CourseLessonMapper {
     @Autowired
     private LessonMapper lessonMapper;
 
-
     public List<CourseLessonDto> mapCourseLessonListToCourseLessonDtoList(List<CourseLesson> courseLesson) {
         return courseLesson.stream()
                 .map(this::mapCourseLessonEntityToDto)
@@ -35,6 +32,7 @@ public class CourseLessonMapper {
         courseLessonDto.setLesson(lessonMapper.mapLessonToLessonDto(courseLesson.getLesson()));
         return courseLessonDto;
     }
+
     public CourseLesson mapCourseLessonDtoToEntity(CourseLessonDto courseLessonDto) {
         CourseLesson courseLesson = new CourseLesson();
         courseLesson.setId(courseLessonDto.getId());
@@ -42,7 +40,6 @@ public class CourseLessonMapper {
         courseLesson.setLesson(lessonMapper.mapDtoToLessonEntity(courseLessonDto.getLesson()) );
         return courseLesson;
     }
-
 
 
 }

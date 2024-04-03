@@ -15,7 +15,6 @@ import com.fincons.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +71,7 @@ public class QuizResultService implements IQuizResultService{
         return quizResultRepository.findByIdAndDeletedFalse(id);
 
     }
+
     @Override
     public boolean checkIfAlreadyDone(long quizId){
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -115,7 +115,6 @@ public class QuizResultService implements IQuizResultService{
         return quizResultRepository.save(quizResult);
     }
 
-
     @Override
     public QuizResults redoQuiz(long quizIdToModify, Map<Long, List<Long>> userAnswers) {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -144,7 +143,6 @@ public class QuizResultService implements IQuizResultService{
 
         return quizResultRepository.save(quizResultsToModify);
     }
-
 
     private float calculateScoreAndSaveQuizResponces(Map<Long, List<Long>> userAnswers) {
 

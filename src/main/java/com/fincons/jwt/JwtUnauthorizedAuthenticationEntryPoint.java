@@ -43,4 +43,5 @@ public class JwtUnauthorizedAuthenticationEntryPoint implements AuthenticationEn
         response.getOutputStream()
                 .println(objectMapper.writeValueAsString(data));
     }
+
 }

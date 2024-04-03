@@ -2,7 +2,6 @@ package com.fincons.service.answer;
 
 import com.fincons.dto.AnswerDto;
 import com.fincons.dto.QuestionDto;
-import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Answer;
 import com.fincons.entity.Question;
 import com.fincons.exception.DuplicateException;
@@ -14,9 +13,7 @@ import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AnswerService implements IAnswerService{
@@ -36,7 +33,6 @@ public class AnswerService implements IAnswerService{
             throw new ResourceNotFoundException("The answer does not exist!");
         }
         return answerRepository.findByIdAndDeletedFalse(id);
-
     }
 
     @Override
@@ -81,7 +77,6 @@ public class AnswerService implements IAnswerService{
         }
     }
 
-
     @Override
     public void deleteAnswer(long id) {
         if (!answerRepository.existsByIdAndDeletedFalse(id)) {
@@ -90,27 +85,6 @@ public class AnswerService implements IAnswerService{
         Answer answerToDelete = answerRepository.findByIdAndDeletedFalse(id);
         answerToDelete.setDeleted(true);
         answerRepository.save(answerToDelete);
-
-//        if (!questionRepository.existsByIdAndDeletedFalse(id)) {
-//            throw new ResourceNotFoundException("The question does not exist");
-//        }
-//        Question questionToDelete = questionRepository.findByIdAndDeletedFalse(id);
-//        questionToDelete.setDeleted(true);
-//        questionRepository.save(questionToDelete);
-//
-//        List<Answer> answersToSetQuestionNull = answerRepository.findAllByDeletedFalse()
-//                .stream()
-//                .filter(answer-> id.equals(Optional.of(answer).map(Answer::getQuestion).map(Question::getId).orElse(null)))
-//                .toList();
-//
-//        answersToSetQuestionNull
-//                .forEach(answer->answer.setQuestion(null));
-//
-//        answersToSetQuestionNull
-//                .forEach(answer -> answerRepository.save(answer));
-//
-
-
     }
 
     @Override
@@ -123,7 +97,6 @@ public class AnswerService implements IAnswerService{
 
         if (answerDto.getText() == null) {
             throw new IllegalArgumentException("Text of answer is null");
-            //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
         if(answerDto.getQuestion()!= null){
             QuestionDto question = answerDto.getQuestion();
@@ -155,9 +128,10 @@ public class AnswerService implements IAnswerService{
             throw new DuplicateException("The answer has already been associated with the question '"+ questionToAssociate.getTextQuestion()+ "'.");
         }
 
-
         answerToAssociateQuestion.setQuestion(questionToAssociate);
 
         return answerRepository.save(answerToAssociateQuestion);
     }
+
+
 }

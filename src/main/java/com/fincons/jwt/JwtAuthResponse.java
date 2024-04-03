@@ -14,7 +14,9 @@ import lombok.Setter;
 public class JwtAuthResponse {
 
     private String accessToken;
+
     private String tokenType = "Bearer";
+
     private String error;
 
     public JwtAuthResponse(String message) {
@@ -25,4 +27,6 @@ public class JwtAuthResponse {
         this.accessToken = accessToken;
         this.tokenType = tokenType;
     }
+
 }
+

@@ -18,4 +18,6 @@ public interface IAbilityService {
     void deleteAbility(long id);
 
     Ability findAbilityById(long id);
+
+
 }

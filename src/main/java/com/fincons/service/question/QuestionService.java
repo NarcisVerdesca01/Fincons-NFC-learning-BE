@@ -2,24 +2,23 @@ package com.fincons.service.question;
 
 import com.fincons.dto.QuestionDto;
 import com.fincons.entity.Answer;
-import com.fincons.entity.Content;
 import com.fincons.entity.Question;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class QuestionService implements  IQuestionService{
+
     @Autowired
     private QuestionRepository questionRepository;
+
     @Autowired
     private AnswerRepository answerRepository;
-
 
     @Override
     public Question findById(long id) {
@@ -94,4 +93,6 @@ public class QuestionService implements  IQuestionService{
 
         return questionRepository.save(questionToModify);
     }
+
+
 }

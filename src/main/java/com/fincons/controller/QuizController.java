@@ -14,10 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @CrossOrigin("*")
 @AllArgsConstructor
 @RestController
@@ -29,7 +28,6 @@ public class QuizController {
     @Autowired
     private QuizMapper quizMapper;
     private static final Logger LOG = LoggerFactory.getLogger(QuizController.class);
-
 
     @GetMapping("${quiz.get-all-quiz}")
     public ResponseEntity<ApiResponse<List<QuizDto>>> getAllQuiz(){
@@ -77,6 +75,7 @@ public class QuizController {
                     .build());
         }
     }
+
     @PostMapping("${quiz.create}")
     public ResponseEntity<ApiResponse<QuizDto>> createQuiz(@RequestBody QuizDto quizDto) {
         try {
@@ -111,6 +110,7 @@ public class QuizController {
                     .build());
         }
     }
+
     @PutMapping("${quiz.delete}")
     public ResponseEntity<ApiResponse<String>> deleteQuiz(@RequestParam(name = "idQuiz") long id) {
         try {
@@ -128,7 +128,6 @@ public class QuizController {
                     .build());
         }
     }
-
 
     @PutMapping("${quiz.associate.lesson}")
     public ResponseEntity<ApiResponse<String>> associateQuizLesson(@RequestParam long idQuiz,@RequestParam long idLesson) {
@@ -153,7 +152,6 @@ public class QuizController {
                     .build());
         }
     }
-
 
     @PutMapping("${quiz.associate.question}")
     public ResponseEntity<ApiResponse<String>> associateQuizQuestion(@RequestParam long idQuiz,@RequestParam long idQuestion) {
@@ -182,9 +180,6 @@ public class QuizController {
                     .build());
         }
     }
-
-
-
 
 
 }
