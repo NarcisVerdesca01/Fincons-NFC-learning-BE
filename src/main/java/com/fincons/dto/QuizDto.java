@@ -24,9 +24,7 @@ public class QuizDto {
     private LessonDto lesson;
     private List<QuizResultsDto> users;
     private boolean deleted;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime lastModified;
     private String createdBy;
     private String lastModifiedBy;

@@ -102,6 +102,9 @@ public class ContentService implements IContentService {
         } else if(content.contains(".txt")){
             newContent.setTypeContent("txt");
             newContent.setContent(content);
+        } else {
+            newContent.setTypeContent("unknown");
+            newContent.setContent(content);
         }
     }
     private String buildYoutubeLink(String url){

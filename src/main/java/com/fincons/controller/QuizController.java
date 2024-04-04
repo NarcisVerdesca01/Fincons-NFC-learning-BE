@@ -94,8 +94,8 @@ public class QuizController {
         }
     }
 
-    @PutMapping("${quiz.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateQuiz(@PathVariable long id,@RequestBody QuizDto quizDto) {
+    @PutMapping("${quiz.update}")
+    public ResponseEntity<ApiResponse<String>> updateQuiz(@RequestParam(name="idQuiz") long id,@RequestBody QuizDto quizDto) {
         try {
             iQuizService.updateQuiz(id,quizDto);
 

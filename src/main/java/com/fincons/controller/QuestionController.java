@@ -54,8 +54,8 @@ public class QuestionController {
                 .data(questionDtoList)
                 .build());
     }
-    @GetMapping("${question.get-by-id}/{id}")
-    public ResponseEntity<ApiResponse<QuestionDto>> getById(@PathVariable long id){
+    @GetMapping("${question.get-by-id}")
+    public ResponseEntity<ApiResponse<QuestionDto>> getById(@RequestParam(name="idQuestion") long id){
         try{
             QuestionDto questionDto= questionMapper.mapQuestionToQuestionDto(iQuestionService.findById(id));
             return ResponseEntity.ok().body(ApiResponse.<QuestionDto>builder()
@@ -81,8 +81,8 @@ public class QuestionController {
         }
     }
 
-    @PutMapping("${question.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateQuestion(@PathVariable long id,@RequestBody QuestionDto questionDto) {
+    @PutMapping("${question.update}")
+    public ResponseEntity<ApiResponse<String>> updateQuestion(@RequestParam(name="idQuestion") long id,@RequestBody QuestionDto questionDto) {
         try {
             iQuestionService.updateQuestion(id,questionDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -91,10 +91,6 @@ public class QuestionController {
         } catch (ResourceNotFoundException resourceNotFoundException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
-                    .build());
-        }catch (IllegalArgumentException illegalArgumentException) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
-                    .message(illegalArgumentException.getMessage())
                     .build());
         }
     }

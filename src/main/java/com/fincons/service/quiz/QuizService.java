@@ -107,7 +107,6 @@ public class QuizService implements IQuizService{
         }
         if (quizDto.getTitle() == null) {
             throw new IllegalArgumentException("Title of quiz is null");
-            //TODO-IMPLEMENTARE L'AGGIORNAMENTO DEL TYPE
         }
         quizToModify.setTitle(quizDto.getTitle());
         return quizRepository.save(quizToModify);

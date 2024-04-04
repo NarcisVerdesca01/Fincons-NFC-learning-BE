@@ -177,6 +177,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
 
+                        .requestMatchers(HttpMethod.GET, applicationContext + answerBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
+                        .requestMatchers(HttpMethod.POST, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
+                        .requestMatchers(HttpMethod.DELETE, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
+
                         .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
