@@ -11,13 +11,11 @@ import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.AbilityUserRepository;
 import com.fincons.utility.TitleOrDescriptionValidator;
 import io.micrometer.common.util.StringUtils;
-
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class AbilityService implements IAbilityService{
-
 
     private AbilityRepository abilityRepository;
 
@@ -57,11 +55,8 @@ public class AbilityService implements IAbilityService{
         return abilityRepository.save(ability);
     }
 
-
-
     @Override
     public Ability updateAbility(long id, AbilityDto abilityDto) throws DuplicateException {
-
 
         Ability abilityToModify = abilityRepository.findByIdAndDeletedFalse(id);
         if(abilityToModify == null){
@@ -99,7 +94,6 @@ public class AbilityService implements IAbilityService{
                 .stream()
                 .filter(ac-> ac.getAbility().getId()==id)
                 .toList();
-
 
 
         Ability abilityToDelete = abilityRepository.findByIdAndDeletedFalse(id);
@@ -149,5 +143,6 @@ public class AbilityService implements IAbilityService{
             throw new DuplicateException("The name of ability already exists");
         }
     }
+
 
 }

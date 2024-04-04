@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class AbilityCourseMapper {
@@ -30,12 +29,14 @@ public class AbilityCourseMapper {
     public List<AbilityCourseDto> mapAbilityCourseListToAbilityCourseDtoList(List<AbilityCourse> abilityCourseList) {
         return abilityCourseList.stream()
                 .map(this::mapAbilityCourseToAbilityCourseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<AbilityCourse> mapAbilityCourseDtoListToAbilityCourseList(List<AbilityCourseDto> abilityCourseDtoList) {
         return abilityCourseDtoList.stream()
                 .map(this::mapDtoToAbilityCourse)
-                .collect(Collectors.toList());
+                .toList();
     }
+
+
 }

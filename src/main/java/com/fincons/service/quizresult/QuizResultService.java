@@ -3,7 +3,6 @@ package com.fincons.service.quizresult;
 import com.fincons.entity.Answer;
 import com.fincons.entity.Question;
 import com.fincons.entity.Quiz;
-import com.fincons.entity.QuizResponse;
 import com.fincons.entity.QuizResults;
 import com.fincons.entity.User;
 import com.fincons.exception.DuplicateException;
@@ -11,13 +10,11 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.QuestionRepository;
 import com.fincons.repository.QuizRepository;
-import com.fincons.repository.QuizResponseRepository;
 import com.fincons.repository.QuizResultRepository;
 import com.fincons.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +36,6 @@ public class QuizResultService implements IQuizResultService{
 
     @Autowired
     private AnswerRepository answerRepository;
-
-    @Autowired
-    private QuizResponseRepository quizResponseRepository;
 
 
     @Override
@@ -77,6 +71,7 @@ public class QuizResultService implements IQuizResultService{
         return quizResultRepository.findByIdAndDeletedFalse(id);
 
     }
+
     @Override
     public boolean checkIfAlreadyDone(long quizId){
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -103,7 +98,7 @@ public class QuizResultService implements IQuizResultService{
         validateExistenceQuiz(quiz);
         validateUserQuizAssociation(user, quiz);
 
-        float score = calculateScoreAndSaveQuizResponses(user, quiz, userAnswers);
+        float score = calculateScoreAndSaveQuizResponces(userAnswers);
 
         float total = quiz.getQuestions()
                 .stream()
@@ -116,9 +111,9 @@ public class QuizResultService implements IQuizResultService{
         quizResult.setQuiz(quiz);
         quizResult.setWhenDone(LocalDate.now());
         quizResult.setTotalScore( percentageScore);
+        quizResult.setDeleted(false);
         return quizResultRepository.save(quizResult);
     }
-
 
     @Override
     public QuizResults redoQuiz(long quizIdToModify, Map<Long, List<Long>> userAnswers) {
@@ -131,7 +126,7 @@ public class QuizResultService implements IQuizResultService{
         validateExistenceQuiz(quiz);
         validateByUserQuizAssociation(user, quiz);
 
-        float score = calculateScoreAndSaveQuizResponses(user, quiz, userAnswers);
+        float score = calculateScoreAndSaveQuizResponces(userAnswers);
 
         float total = quiz.getQuestions()
                 .stream()
@@ -149,8 +144,7 @@ public class QuizResultService implements IQuizResultService{
         return quizResultRepository.save(quizResultsToModify);
     }
 
-
-    private float calculateScoreAndSaveQuizResponses(User user, Quiz quiz, Map<Long, List<Long>> userAnswers) {
+    private float calculateScoreAndSaveQuizResponces(Map<Long, List<Long>> userAnswers) {
 
         float score = 0;
 
@@ -176,17 +170,6 @@ public class QuizResultService implements IQuizResultService{
             double partialScore = ((double) correctUserAnswersCount / (double) correctAnswersOfQuestion.size()) *  question.getValueOfQuestion();
 
             score +=  partialScore;
-
-            QuizResponse quizResponse = new QuizResponse();
-            quizResponse.setUser(user);
-            quizResponse.setQuiz(quiz);
-            quizResponse.setQuestion(question);
-            quizResponse.setChosenAnswers(userAnswerIndices
-                    .stream()
-                    .map(a -> answerRepository.findByIdAndDeletedFalse(a).getText())
-                    .toList());
-            quizResponse.setScoreOfStudentForQuestion(score);
-            quizResponseRepository.save(quizResponse);
         }
         return score;
     }

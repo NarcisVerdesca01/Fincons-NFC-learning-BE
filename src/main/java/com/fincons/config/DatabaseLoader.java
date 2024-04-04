@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component
@@ -38,7 +37,6 @@ public class DatabaseLoader implements CommandLineRunner {
         populateTutor();
         populateAbility();
     }
-
 
     private void populateAdmin() {
 
@@ -79,7 +77,6 @@ public class DatabaseLoader implements CommandLineRunner {
     }
 
     private void populateTutor() {
-
         if (
                 userRepository.findByEmail("tutor@gmail.com") == null
                         &&
@@ -95,12 +92,5 @@ public class DatabaseLoader implements CommandLineRunner {
             User tutorSaved = userRepository.save(tutor);
         }
     }
-
-
-
-
-
-
-
 
 }

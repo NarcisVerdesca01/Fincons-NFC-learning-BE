@@ -1,9 +1,7 @@
 package com.fincons.repository;
 
 import com.fincons.entity.Course;
-import com.fincons.entity.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course,Long> {
@@ -11,7 +9,6 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     boolean existsByName(String name);
 
     Course findByName(String name);
-
 
     boolean existsByNameAndIdNot(String name, long id);
 
@@ -25,5 +22,7 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
 
     Course findByNameAndDeletedFalse(String name);
 
-    List<Course> findAllByDeletedFalseAndLessonsIsNull();
+    List<Course> findAllByDeletedFalseAndCourseLessonsIsNull();
+
+
 }

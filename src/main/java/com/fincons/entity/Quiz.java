@@ -7,7 +7,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -40,21 +39,18 @@ public class Quiz {
     @Column(name = "title", length = 20971520)
     private String title;
 
-    //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @OneToMany(mappedBy="quiz")
     private List<Question> questions;
 
-    //3. LEZIONE - QUIZ 1:1
     @OneToOne(mappedBy = "quiz")
     private Lesson lesson;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
-    private List<QuizResults> users;
+    private List<QuizResults> quizResults;
 
     @Column(name  = "deleted")
     private boolean deleted;
 
-    //AUDITING
     @CreatedDate
     @Column(
             nullable = false,
@@ -77,4 +73,5 @@ public class Quiz {
     @LastModifiedBy
     @Column(insertable = false)
     private String lastModifiedBy;
+
 }

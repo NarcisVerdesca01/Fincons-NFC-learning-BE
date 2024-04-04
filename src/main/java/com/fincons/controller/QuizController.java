@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @CrossOrigin("*")
 @AllArgsConstructor
 @RestController
@@ -111,6 +114,7 @@ public class QuizController {
                     .build());
         }
     }
+
     @PutMapping("${quiz.delete}")
     public ResponseEntity<ApiResponse<String>> deleteQuiz(@RequestParam(name = "idQuiz") long id) {
         try {
@@ -175,6 +179,11 @@ public class QuizController {
             LOG.error("DuplicateException - associateQuizQuestion() -> QuizController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
                     .message(duplicateException.getMessage())
+                    .build());
+        }catch (IllegalArgumentException illegalArgumentException){
+            LOG.error("IllegalArgumentException - associateQuizQuestion() -> QuizController: {}. Date: {}", illegalArgumentException.getMessage(), LocalDateTime.now());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
                     .build());
         }
     }

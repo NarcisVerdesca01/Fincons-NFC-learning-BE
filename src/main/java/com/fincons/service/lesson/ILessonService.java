@@ -3,11 +3,11 @@ package com.fincons.service.lesson;
 import com.fincons.dto.LessonDto;
 import com.fincons.entity.Lesson;
 import com.fincons.exception.DuplicateException;
-
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 public interface ILessonService {
+
     List<Lesson> findAllLessons();
 
     List<Lesson> findAllNotAssociatedLessonsWithContent();
@@ -15,7 +15,6 @@ public interface ILessonService {
     List<Lesson> findAllNotAssociatedLessonsWithQuiz();
 
     List<Lesson> findAllNotAssociatedLessonsWithCourse();
-
 
     Lesson findLessonById(long id);
 
@@ -26,4 +25,7 @@ public interface ILessonService {
     void deleteLesson(long id);
 
     Lesson associateContentToLesson(long lessonId, long contentId) throws DuplicateException, SQLIntegrityConstraintViolationException;
+
+
 }
+

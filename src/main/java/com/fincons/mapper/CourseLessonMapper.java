@@ -19,7 +19,6 @@ public class CourseLessonMapper {
     @Autowired
     private LessonMapper lessonMapper;
 
-
     public List<CourseLessonDto> mapCourseLessonListToCourseLessonDtoList(List<CourseLesson> courseLesson) {
         return courseLesson.stream()
                 .map(this::mapCourseLessonEntityToDto)
@@ -33,6 +32,7 @@ public class CourseLessonMapper {
         courseLessonDto.setLesson(lessonMapper.mapLessonToLessonDto(courseLesson.getLesson()));
         return courseLessonDto;
     }
+
     public CourseLesson mapCourseLessonDtoToEntity(CourseLessonDto courseLessonDto) {
         CourseLesson courseLesson = new CourseLesson();
         courseLesson.setId(courseLessonDto.getId());
@@ -40,5 +40,6 @@ public class CourseLessonMapper {
         courseLesson.setLesson(lessonMapper.mapDtoToLessonEntity(courseLessonDto.getLesson()) );
         return courseLesson;
     }
+
 
 }

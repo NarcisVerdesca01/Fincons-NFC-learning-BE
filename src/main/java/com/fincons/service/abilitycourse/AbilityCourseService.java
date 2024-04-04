@@ -84,15 +84,10 @@ public class AbilityCourseService implements IAbilityCourseService{
     @Override
     public AbilityCourse getAbilityCourseById(long id) {
         if (!abilityCourseRepository.existsByIdAndDeletedFalse(id)) {
-            throw new ResourceNotFoundException("The ability-course associaiton does not exist!");
+            throw new ResourceNotFoundException("The ability-course association does not exist!");
         }
         return abilityCourseRepository.findByIdAndDeletedFalse(id);
     }
-
-
-
-
-
 
 
 }

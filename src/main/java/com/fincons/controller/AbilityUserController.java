@@ -1,8 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.dto.AbilityDto;
 import com.fincons.dto.AbilityUserDto;
-import com.fincons.entity.Ability;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
@@ -11,12 +9,10 @@ import com.fincons.repository.AbilityRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.service.abilityuser.IAbilityUserService;
 import com.fincons.utility.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,10 +35,8 @@ public class AbilityUserController {
     private UserRepository userRepository;
     private AbilityRepository abilityRepository;
 
-
     @GetMapping("${ability-user.list}")
     public ResponseEntity<ApiResponse<List<AbilityUserDto>>> getAllAbilityUser(){
-
         List<AbilityUserDto> abilityUserDtos = abilityUserMapper
                 .mapAbilityUserListToAbilityUserDtoList(iAbilityUserService.getAllAbilityUser());
         return ResponseEntity.ok().body(ApiResponse.<List<AbilityUserDto>>builder()
@@ -63,9 +57,7 @@ public class AbilityUserController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         }
-
     }
-
 
     @PostMapping("${ability-user.add}")
     public ResponseEntity<ApiResponse<AbilityUserDto>> addAbilityUser(

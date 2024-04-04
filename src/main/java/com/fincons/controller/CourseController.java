@@ -8,7 +8,6 @@ import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.CourseMapper;
 import com.fincons.service.course.ICourseService;
 import com.fincons.utility.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,9 +42,7 @@ public class CourseController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-
     private static final Logger LOG = LoggerFactory.getLogger(CourseController.class);
-
 
     @GetMapping("${course.get-all-courses}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getAllCourses(){
@@ -139,9 +134,7 @@ public class CourseController {
 
     @GetMapping ("${course.getDedicatedCourses}")
     public ResponseEntity<ApiResponse<List<CourseDto>>> getDedicatedCourses() throws UserDataException {
-
         try{
-
             List<CourseDto> coursesDtoList= iCourseService.findDedicatedCourses()
                     .stream()
                     .map(c->courseMapper.mapCourseToCourseDto(c))
@@ -157,7 +150,6 @@ public class CourseController {
                     .build());
         }
     }
-
 
      @PutMapping("${course.update}/{id}")
     public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable long id, @RequestBody CourseDto courseDto) {

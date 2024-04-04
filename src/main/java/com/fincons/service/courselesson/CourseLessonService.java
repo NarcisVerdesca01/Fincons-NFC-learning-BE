@@ -18,11 +18,12 @@ public class CourseLessonService implements ICourseLessonService {
 
     @Autowired
     private CourseLessonRepository courseLessonRepository;
+
     @Autowired
     private CourseRepository courseRepository;
+
     @Autowired
     private LessonRepository lessonRepository;
-
 
     @Override
     public List<CourseLesson> getCourseLessonList() {
@@ -85,7 +86,7 @@ public class CourseLessonService implements ICourseLessonService {
 
     @Override
     public CourseLesson getCourseLessonById(long id) {
-        if(courseLessonRepository.existsByIdAndDeletedFalse(id)){
+        if(!courseLessonRepository.existsByIdAndDeletedFalse(id)){
             throw new ResourceNotFoundException("The Course-Lesson association does not exist!");
 
         }

@@ -1,8 +1,6 @@
 package com.fincons.service.course;
 
-import com.fincons.controller.AuthController;
 import com.fincons.dto.CourseDto;
-import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityCourse;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.Course;
@@ -24,15 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class CourseService implements ICourseService {
-
-
 
     private static final Logger LOG = LoggerFactory.getLogger(CourseService.class);
 
@@ -64,7 +58,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public List<Course> findAllCoursesWithoutLesson() {
-        return courseRepository.findAllByDeletedFalseAndLessonsIsNull();
+        return courseRepository.findAllByDeletedFalseAndCourseLessonsIsNull();
     }
 
     @Override
@@ -110,7 +104,6 @@ public class CourseService implements ICourseService {
             throw new IllegalArgumentException("Name, description or background image not present");
         }
     }
-
 
     @Override
     public Course findCourseById(long id) {
@@ -200,7 +193,6 @@ public class CourseService implements ICourseService {
                 .toList();
     }
 
-
     @Override
     public Course updateCourse(long id, CourseDto courseDto) throws DuplicateException {
 
@@ -241,7 +233,6 @@ public class CourseService implements ICourseService {
         }
         return course;
     }
-
 
 
 }

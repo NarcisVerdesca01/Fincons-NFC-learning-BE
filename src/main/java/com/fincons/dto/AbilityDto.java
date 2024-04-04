@@ -1,7 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,14 +11,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class AbilityDto {
 
     private long id;
-    private String name;
-    private List<AbilityCourseDto> courses;
-    private List<AbilityUserDto> users;
-    private boolean deleted;
 
+    private String name;
+
+    @JsonIgnoreProperties("ability")
+    private List<AbilityCourseDto> abilityCourses;
+
+    @JsonIgnoreProperties("ability")
+    private List<AbilityUserDto> abilityUsers;
+
+    private boolean deleted;
 
 }

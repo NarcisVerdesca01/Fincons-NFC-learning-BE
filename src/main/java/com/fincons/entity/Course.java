@@ -1,6 +1,5 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,10 +46,10 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
-    private List<CourseLesson> lessons;
+    private List<CourseLesson> courseLessons;
 
     @OneToMany( mappedBy = "course",cascade = CascadeType.ALL)
-    private List<AbilityCourse> abilities;
+    private List<AbilityCourse> abilityCourses;
 
     @Column(name = "imageResource")
     private String imageResource;
@@ -79,6 +78,5 @@ public class Course {
     @LastModifiedBy
     @Column(insertable = false)
     private String lastModifiedBy;
-
 
 }

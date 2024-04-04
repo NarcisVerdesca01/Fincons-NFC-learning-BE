@@ -1,6 +1,5 @@
 package com.fincons.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,7 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,13 +60,12 @@ public class User {
     private List<AbilityUser> abilities;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<QuizResults> quizzes;
+    private List<QuizResults> quizResults;
 
     @Column(name  = "deleted")
     private boolean deleted;
 
     @Column(name = "background_image",length = 20971520)
     private String backgroundImage;
-
 
 }

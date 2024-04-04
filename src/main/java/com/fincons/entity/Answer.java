@@ -19,6 +19,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "answers")
 public class Answer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -27,7 +28,6 @@ public class Answer {
     @Column(name = "text", length = 20971520)
     private String text;
 
-    //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più risposte
     @ManyToOne
     private Question question;
 
@@ -36,6 +36,5 @@ public class Answer {
 
     @Column(name  = "deleted")
     private boolean deleted;
-
 
 }

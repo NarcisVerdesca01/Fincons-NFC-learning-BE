@@ -4,11 +4,9 @@ import com.fincons.entity.Ability;
 import com.fincons.entity.AbilityUser;
 import com.fincons.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
 public interface AbilityUserRepository extends JpaRepository<AbilityUser,Long> {
-
 
     boolean existsByAbilityAndUser(Ability existingAbilityToAssociate, User existingUserToAddAssociate);
 
@@ -19,4 +17,5 @@ public interface AbilityUserRepository extends JpaRepository<AbilityUser,Long> {
     boolean existsByIdAndDeletedFalse(long id);
 
     AbilityUser findByIdAndDeletedFalse(long id);
+
 }

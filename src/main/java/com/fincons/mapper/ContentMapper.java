@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ContentMapper {
+
     private static final ModelMapper modelMapper = new ModelMapper();
 
     public ContentDto mapContentToContentDto(Content content){
@@ -16,5 +17,6 @@ public class ContentMapper {
     public Content mapContentDtoToContentEntity(ContentDto contentDto){
         return modelMapper.map(contentDto, Content.class);
     }
+
 
 }

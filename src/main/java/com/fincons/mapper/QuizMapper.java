@@ -16,4 +16,5 @@ public class QuizMapper {
     public Quiz mapQuizDtoToQuizEntity(QuizDto quizDto){
         return modelMapper.map(quizDto, Quiz.class);
     }
+
 }

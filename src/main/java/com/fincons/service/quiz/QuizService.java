@@ -1,13 +1,13 @@
 package com.fincons.service.quiz;
 
-
 import com.fincons.dto.QuizDto;
-import com.fincons.entity.Ability;
+import com.fincons.entity.Answer;
 import com.fincons.entity.Lesson;
 import com.fincons.entity.Question;
 import com.fincons.entity.Quiz;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.repository.AnswerRepository;
 import com.fincons.repository.LessonRepository;
 import com.fincons.repository.QuestionRepository;
 import com.fincons.repository.QuizRepository;
@@ -22,10 +22,15 @@ public class QuizService implements IQuizService{
 
       @Autowired
       private QuizRepository quizRepository;
+
       @Autowired
       private LessonRepository lessonRepository;
+
       @Autowired
       private QuestionRepository questionRepository;
+
+     @Autowired
+     private AnswerRepository answerRepository;
 
     @Override
     public Quiz findById(long id) {
@@ -142,29 +147,52 @@ public class QuizService implements IQuizService{
     }
 
     @Override
-    public Quiz associateQuestion(long idQuiz, long idQuestion) throws DuplicateException {
+    public Quiz associateQuestion(long idQuiz, long idQuestion) throws DuplicateException, ResourceNotFoundException {
         Quiz quizToAssociate = quizRepository.findByIdAndDeletedFalse(idQuiz);
-
         Question questionToAssociate = questionRepository.findByIdAndDeletedFalse(idQuestion);
 
-        if(quizToAssociate == null){
+        if (quizToAssociate == null) {
             throw new ResourceNotFoundException("Quiz does not exist");
         }
-        if(questionToAssociate == null){
+        if (questionToAssociate == null) {
             throw new ResourceNotFoundException("Question does not exist");
         }
 
-        if(questionToAssociate.getQuiz()!= null){
+        if (questionToAssociate.getQuiz() != null) {
             throw new DuplicateException("The question is already associated with a quiz");
         }
 
-        if(questionToAssociate.getQuiz()!= null && questionToAssociate.getQuiz().getId()== quizToAssociate.getId()){
-            throw new DuplicateException("The question is already associated with the quiz");
+        List<Answer> answers = answerRepository.findByQuestionAndDeletedFalse(questionToAssociate);
+        if (answers.isEmpty()) {
+            throw new IllegalArgumentException("Question must have at least one associated answer");
         }
 
+        boolean hasCorrectAnswer = false;
+        boolean hasIncorrectAnswer = false;
+        for (Answer answer : answers) {
+            if (answer.isCorrect()) {
+                hasCorrectAnswer = true;
+            } else {
+                hasIncorrectAnswer = true;
+            }
+            if (hasCorrectAnswer && hasIncorrectAnswer) {
+                break;
+            }
+        }
+        if (!hasCorrectAnswer || !hasIncorrectAnswer) {
+            String errorMessage;
+            if (!hasCorrectAnswer && !hasIncorrectAnswer) {
+                errorMessage = "Question must have at least one correct and one incorrect answer";
+            } else if (!hasCorrectAnswer) {
+                errorMessage = "Question has only incorrect answers. Please add at least one correct answer.";
+            } else {
+                errorMessage = "Question has only correct answers. Please add at least one incorrect answer.";
+            }
+            throw new IllegalArgumentException(errorMessage);
+        }
 
         questionToAssociate.setQuiz(quizToAssociate);
-
         return quizRepository.save(quizToAssociate);
     }
+
 }

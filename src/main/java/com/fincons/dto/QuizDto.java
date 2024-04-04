@@ -1,9 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fincons.entity.QuizResults;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,17 +12,29 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class QuizDto {
 
     private long id;
+
     private String title;
+
+    @JsonIgnoreProperties("quiz")
     private List<QuestionDto> questions;
+
+    @JsonIgnoreProperties("quiz")
     private LessonDto lesson;
-    private List<QuizResultsDto> users;
+
+    @JsonIgnoreProperties("quiz")
+    private List<QuizResultsDto> quizResults;
+
     private boolean deleted;
+
     private LocalDateTime createDate;
+
     private LocalDateTime lastModified;
+
     private String createdBy;
+
     private String lastModifiedBy;
+
 }

@@ -1,6 +1,5 @@
 package com.fincons.controller;
 
-
 import com.fincons.dto.QuestionDto;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.QuestionMapper;
@@ -10,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("${application.context}")
@@ -92,8 +91,13 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
                     .message(resourceNotFoundException.getMessage())
                     .build());
+        }catch (IllegalArgumentException illegalArgumentException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.<String>builder()
+                    .message(illegalArgumentException.getMessage())
+                    .build());
         }
     }
+
     @PutMapping("${question.delete}")
     public ResponseEntity<ApiResponse<String>> deleteQuestion(@RequestParam(name="idQuestion") Long id) {
         try {

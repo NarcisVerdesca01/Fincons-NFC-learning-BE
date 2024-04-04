@@ -8,7 +8,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -42,13 +41,11 @@ public class Lesson {
     private String title;
 
     @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
-    private List<CourseLesson> courses;
+    private List<CourseLesson> courseLessons;
 
-    //3. LEZIONE - QUIZ 1:1
     @OneToOne
     private Quiz quiz;
 
-    //2. LEZIONE - CONTENUTO 1:1
     @OneToOne
     private Content content;
 
@@ -85,11 +82,12 @@ public class Lesson {
 
     public Lesson(Lesson lesson) {
         this.title= lesson.getTitle();
-        this.courses= lesson.getCourses();
+        this.courseLessons= lesson.getCourseLessons();
         this.quiz= lesson.getQuiz();
         this.content= lesson.getContent();
         this.createDate= lesson.getCreateDate();
         this.lastModified=lesson.getLastModified();
         this.lastModifiedBy= lesson.getLastModifiedBy();
     }
+
 }

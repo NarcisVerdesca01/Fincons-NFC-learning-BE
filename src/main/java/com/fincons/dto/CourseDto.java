@@ -1,9 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,23 +12,32 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class CourseDto {
 
     private long id;
-    private String name;
-    private String backgroundImage;
-    private String description;
-    private List<CourseLessonDto> lessons;
-    private List<AbilityCourseDto> abilities;
-    private String imageResource;
-    private boolean deleted;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime createDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime lastModified;
-    private String createdBy;
-    private String lastModifiedBy;
 
+    private String name;
+
+    private String backgroundImage;
+
+    private String description;
+
+    @JsonIgnoreProperties("course")
+    private List<CourseLessonDto> courseLessons;
+
+    @JsonIgnoreProperties("course")
+    private List<AbilityCourseDto> abilityCourses;
+
+    private String imageResource;
+
+    private boolean deleted;
+
+    private LocalDateTime createDate;
+
+    private LocalDateTime lastModified;
+
+    private String createdBy;
+
+    private String lastModifiedBy;
 
 }

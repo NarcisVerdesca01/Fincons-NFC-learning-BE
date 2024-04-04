@@ -24,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -131,9 +130,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.csrf(AbstractHttpConfigurer::disable);
-
         http.authorizeHttpRequests(auth  ->
+
                 auth
                         .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
@@ -177,20 +177,15 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + questionBaseUri + "/**").hasAnyRole("TUTOR")
 
-                        .requestMatchers(HttpMethod.GET, applicationContext + answerBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.PUT, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
-                        .requestMatchers(HttpMethod.DELETE, applicationContext + answerBaseUri + "/**").hasAnyRole("TUTOR")
-
                         .requestMatchers(HttpMethod.GET, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.PUT, applicationContext + quizBaseUri + "/**").hasAnyRole("TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizBaseUri + "/**").hasAnyRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/calculate-and-save").hasAnyRole("STUDENT")
+                        .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/quiz-redo").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentListSingleStudent ).hasAnyRole("ADMIN","TUTOR","STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentCheck ).hasAnyRole("STUDENT")
-                        .requestMatchers(HttpMethod.POST, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
-                        .requestMatchers(HttpMethod.PUT, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR")
                         .requestMatchers(HttpMethod.DELETE, applicationContext + quizResultStudentBaseUri + "/**").hasAnyRole("ADMIN")
 
@@ -199,12 +194,9 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
 
         ).httpBasic(Customizer.withDefaults());
-
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationExeptionEntryPoint));
-
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
