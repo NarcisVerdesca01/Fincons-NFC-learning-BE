@@ -14,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +32,7 @@ public class QuizController {
     @Autowired
     private QuizMapper quizMapper;
     private static final Logger LOG = LoggerFactory.getLogger(QuizController.class);
+
 
     @GetMapping("${quiz.get-all-quiz}")
     public ResponseEntity<ApiResponse<List<QuizDto>>> getAllQuiz(){
@@ -75,7 +80,6 @@ public class QuizController {
                     .build());
         }
     }
-
     @PostMapping("${quiz.create}")
     public ResponseEntity<ApiResponse<QuizDto>> createQuiz(@RequestBody QuizDto quizDto) {
         try {
@@ -93,8 +97,8 @@ public class QuizController {
         }
     }
 
-    @PutMapping("${quiz.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateQuiz(@PathVariable long id,@RequestBody QuizDto quizDto) {
+    @PutMapping("${quiz.update}")
+    public ResponseEntity<ApiResponse<String>> updateQuiz(@RequestParam(name="idQuiz") long id,@RequestBody QuizDto quizDto) {
         try {
             iQuizService.updateQuiz(id,quizDto);
 
@@ -129,6 +133,7 @@ public class QuizController {
         }
     }
 
+
     @PutMapping("${quiz.associate.lesson}")
     public ResponseEntity<ApiResponse<String>> associateQuizLesson(@RequestParam long idQuiz,@RequestParam long idLesson) {
         try {
@@ -153,6 +158,7 @@ public class QuizController {
         }
     }
 
+
     @PutMapping("${quiz.associate.question}")
     public ResponseEntity<ApiResponse<String>> associateQuizQuestion(@RequestParam long idQuiz,@RequestParam long idQuestion) {
         try {
@@ -169,6 +175,7 @@ public class QuizController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         } catch (DuplicateException duplicateException){
+
             LOG.error("DuplicateException - associateQuizQuestion() -> QuizController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
                     .message(duplicateException.getMessage())
@@ -180,6 +187,9 @@ public class QuizController {
                     .build());
         }
     }
+
+
+
 
 
 }

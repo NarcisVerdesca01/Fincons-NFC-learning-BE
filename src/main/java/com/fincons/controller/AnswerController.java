@@ -43,9 +43,8 @@ public class AnswerController {
                 .data(answerDtoList)
                 .build());
     }
-
-    @GetMapping("${answer.get-by-id}/{id}")
-    public ResponseEntity<ApiResponse<AnswerDto>> getById(@PathVariable long id){
+    @GetMapping("${answer.get-by-id}")
+    public ResponseEntity<ApiResponse<AnswerDto>> getById(@RequestParam(name="idAnswer") long id){
         try{
             AnswerDto answerDto= answerMapper.mapAnswerToAnswerDto(iAnswerService.findById(id));
             return ResponseEntity.ok().body(ApiResponse.<AnswerDto>builder()
@@ -76,8 +75,8 @@ public class AnswerController {
         }
     }
 
-    @PutMapping("${answer.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateAnswer(@PathVariable long id,@RequestBody AnswerDto answerDto) {
+    @PutMapping("${answer.update}")
+    public ResponseEntity<ApiResponse<String>> updateAnswer(@RequestParam(name="idAnswer") long id,@RequestBody AnswerDto answerDto) {
         try {
             iAnswerService.updateAnswer(id,answerDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
@@ -108,8 +107,9 @@ public class AnswerController {
         }
     }
 
+
     @PutMapping("${answer.associate.question}")
-    public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@RequestParam long idAnswer,@RequestParam long idQuestion) {
+    public ResponseEntity<ApiResponse<String>> associateQuestionToAnswer(@RequestParam(name="idAnswer")long idAnswer,@RequestParam long idQuestion) {
         try {
             iAnswerService.associateQuestionToAnswer(idAnswer,idQuestion);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()

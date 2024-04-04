@@ -43,8 +43,8 @@ public class ContentController {
                 .build());
     }
 
-    @GetMapping("${content.get-by-id}/{id}")
-    public ResponseEntity<ApiResponse<ContentDto>> getById(@PathVariable long id){
+    @GetMapping("${content.get-by-id}")
+    public ResponseEntity<ApiResponse<ContentDto>> getById(@RequestParam(name="idContent") long id){
         try{
             ContentDto contentDto= contentMapper.mapContentToContentDto(iContentService.findById(id));
             return ResponseEntity.ok().body(ApiResponse.<ContentDto>builder()
@@ -71,8 +71,8 @@ public class ContentController {
         }
     }
 
-    @PutMapping("${content.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateContent(@PathVariable long id,@RequestBody ContentDto contentDto) {
+    @PutMapping("${content.update}")
+    public ResponseEntity<ApiResponse<String>> updateContent(@RequestParam(name="idContent") long id,@RequestBody ContentDto contentDto) {
         try {
             iContentService.updateContent(id,contentDto);
             return ResponseEntity.ok().body(ApiResponse.<String>builder()
