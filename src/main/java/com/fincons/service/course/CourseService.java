@@ -26,8 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CourseService implements ICourseService {
@@ -158,21 +157,30 @@ public class CourseService implements ICourseService {
             throw new ResourceNotFoundException("The course does not exist");
         }
     }
-
     @Override
-    public List<Course> findDedicatedCourses(){
+
+    public List<Course> findDedicatedCourses() {
 
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
         if (loggedUser.isEmpty()) {
+
             throw new ResourceNotFoundException("User with this email doesn't exist");
+
         }
 
         if (!userRepository.existsByEmail(loggedUser)) {
+
             throw new ResourceNotFoundException("User does not exist");
+
         }
+
         User user = userRepository.findByEmail(loggedUser);
+
         boolean isUserAdmin = user.getRoles()
+
                 .stream()
+
                 .anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
 
         List<AbilityCourse> abilityCourses = abilityCourseRepository.findAllByDeletedFalse();
@@ -180,25 +188,37 @@ public class CourseService implements ICourseService {
         List<AbilityUser> abilityUsers = abilityUserRepository.findAllByDeletedFalse();
 
         List<AbilityUser> abilitiesOfInterestedUser = abilityUsers
+
                 .stream()
-                .filter( abilityUser -> abilityUser.getUser().getEmail().equals(loggedUser))
+
+                .filter(abilityUser -> abilityUser.getUser().getEmail().equals(loggedUser))
+
                 .toList();
 
         List<String> abilityNameOfInterestedUser = abilitiesOfInterestedUser
+
                 .stream()
+
                 .map(a -> a.getAbility().getName())
+
                 .toList();
 
-        List<AbilityCourse> dedicatedAbilityCourses = abilityCourses
-                .stream()
-                .filter(abilityCourse -> abilityNameOfInterestedUser.contains(abilityCourse.getAbility().getName()))
-                .toList();
+        Set<Course> uniqueCourses = new HashSet<>();
 
-        return dedicatedAbilityCourses
-                .stream()
-                .map(AbilityCourse::getCourse)
-                .toList();
+        for (AbilityCourse abilityCourse : abilityCourses) {
+
+            if (abilityNameOfInterestedUser.contains(abilityCourse.getAbility().getName())) {
+
+                uniqueCourses.add(abilityCourse.getCourse());
+
+            }
+
+        }
+
+        return new ArrayList<>(uniqueCourses);
+
     }
+
 
 
     @Override
