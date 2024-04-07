@@ -56,7 +56,6 @@ public class Lesson {
     private boolean deleted;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(
             nullable = false,
             updatable = false
@@ -64,7 +63,6 @@ public class Lesson {
     private LocalDateTime createDate;
 
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(insertable = false)
     private LocalDateTime lastModified;
 
