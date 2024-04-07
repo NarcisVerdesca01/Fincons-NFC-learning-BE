@@ -2,8 +2,6 @@ package com.fincons.service.quizresult;
 
 import com.fincons.entity.QuizResults;
 import com.fincons.exception.DuplicateException;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -22,5 +20,4 @@ public interface IQuizResultService {
      boolean checkIfAlreadyDone(long quizId);
 
 
-    //QuizResults calculateAndSave(long quizId, String userEmail, List<Integer> listAnswers);
 }

@@ -2,7 +2,6 @@ package com.fincons.repository;
 
 import com.fincons.entity.Ability;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
 public interface AbilityRepository extends JpaRepository<Ability, Long> {
@@ -26,4 +25,6 @@ public interface AbilityRepository extends JpaRepository<Ability, Long> {
     boolean existsByNameAndDeletedFalse(String name);
 
     boolean existsByNameAndIdNot(String name, long id);
+
+
 }

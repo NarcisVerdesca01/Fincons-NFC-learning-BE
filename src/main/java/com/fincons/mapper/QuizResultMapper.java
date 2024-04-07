@@ -12,11 +12,11 @@ import java.util.List;
 @Component
 public class QuizResultMapper {
 
-
     private static final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     private QuizMapper quizMapper;
+
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
 
@@ -30,6 +30,7 @@ public class QuizResultMapper {
         quizResultsDto.setDeleted(quizResults.isDeleted());
         return quizResultsDto;
     }
+
     public QuizResults mapQuizResultsDtoToEntity(QuizResultsDto quizResultsDto) {
         QuizResults quizResults = new QuizResults();
         quizResults.setId(quizResultsDto.getId());
@@ -56,5 +57,6 @@ public class QuizResultMapper {
     public Quiz mapQuizDtoToQuizEntity(QuizDto quizDto){
         return modelMapper.map(quizDto, Quiz.class);
     }
+
 
 }

@@ -22,7 +22,6 @@ import lombok.Setter;
 @Table(name = "course_lesson")
 public class CourseLesson {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -38,9 +37,9 @@ public class CourseLesson {
     @Column(name  = "deleted")
     private boolean deleted;
 
-
     public CourseLesson(Course course, Lesson lesson) {
         this.course = course;
         this.lesson = lesson;
     }
+
 }

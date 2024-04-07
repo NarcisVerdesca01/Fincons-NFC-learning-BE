@@ -2,7 +2,6 @@ package com.fincons.controller.ability;
 
 import com.fincons.controller.AbilityController;
 import com.fincons.dto.AbilityDto;
-import com.fincons.dto.AnswerDto;
 import com.fincons.entity.Ability;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;

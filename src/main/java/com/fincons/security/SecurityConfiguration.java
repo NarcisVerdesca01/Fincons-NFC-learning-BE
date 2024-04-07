@@ -24,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -132,12 +131,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         http.csrf(AbstractHttpConfigurer::disable);
-
-
-
         http.authorizeHttpRequests(auth  ->
+
                 auth
                         .requestMatchers(applicationContext + loginUri).permitAll()
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
@@ -198,12 +194,9 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
 
         ).httpBasic(Customizer.withDefaults());
-
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationExeptionEntryPoint));
-
-
 
         return http.build();
     }

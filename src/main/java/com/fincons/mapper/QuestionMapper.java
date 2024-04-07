@@ -1,6 +1,5 @@
 package com.fincons.mapper;
 
-
 import com.fincons.dto.QuestionDto;
 import com.fincons.entity.Question;
 import org.modelmapper.ModelMapper;
@@ -18,4 +17,5 @@ public class QuestionMapper {
     public Question mapQuestionDtoToQuestionEntity(QuestionDto questionDto){
         return modelMapper.map(questionDto, Question.class);
     }
+
 }

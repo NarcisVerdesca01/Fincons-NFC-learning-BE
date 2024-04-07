@@ -6,6 +6,7 @@ import com.fincons.exception.DuplicateException;
 import java.util.List;
 
 public interface ICourseLessonService {
+
     List<CourseLesson> getCourseLessonList();
 
     CourseLesson addCourseLesson(CourseLessonDto courseLessonDto) throws DuplicateException;
@@ -15,4 +16,6 @@ public interface ICourseLessonService {
     void deleteCourseLesson(long id);
 
     CourseLesson getCourseLessonById(long id);
+
+
 }

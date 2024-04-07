@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("${application.context}")
 public class AuthController {
 
-
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     private IAuthService iAuthService;
@@ -84,8 +83,6 @@ public class AuthController {
 
     }
 
-
-
     @PostMapping("${login.uri}")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
         try {
@@ -102,8 +99,6 @@ public class AuthController {
                     .body(new JwtAuthResponse("Access denied!"));
         }
     }
-
-
 
     @GetMapping("${detail.userdto}")
     public ResponseEntity<ApiResponse<UserDto>> getUserByEmail() {
@@ -134,13 +129,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userDataException.getMessage());
         }
     }
-
-
-
-
-
-
-
 
 
 }

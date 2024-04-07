@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Getter
@@ -25,7 +24,6 @@ import java.util.List;
 @Table(name = "questions")
 public class Question {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -34,11 +32,9 @@ public class Question {
     @Column(name = "text", length = 20971520)
     private String textQuestion;
 
-    //5. DOMANDA - RISPOSTE (Question.class - Answer.class) 1:N   la domanda a più rispostesbagliate
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL) //
     private List<Answer> answers;
 
-    //4. QUIZ - DOMANDE(question.class) 1:N Un quiz a molte domande
     @ManyToOne(fetch = FetchType.LAZY)
     private Quiz quiz;
 

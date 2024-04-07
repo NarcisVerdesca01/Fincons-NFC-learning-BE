@@ -6,6 +6,7 @@ import com.fincons.exception.DuplicateException;
 import java.util.List;
 
 public interface IAbilityCourseService {
+
     List<AbilityCourse> getAllAbilityCourse();
 
     AbilityCourse addAbilityCourse(AbilityCourseDto abilityCourseDto) throws DuplicateException;
@@ -15,4 +16,6 @@ public interface IAbilityCourseService {
     void deleteAbilityCourse(long id);
 
     AbilityCourse getAbilityCourseById(long id);
+
+
 }

@@ -6,7 +6,6 @@ import com.fincons.entity.User;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.JwtTokenProvider;
-import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
@@ -17,15 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -33,21 +29,17 @@ public class AuthService implements IAuthService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
-
     private UserRepository userRepository;
 
     private RoleRepository roleRepository;
 
     private PasswordEncoder passwordEncoder;
 
-
     private AuthenticationManager authenticationManager;
 
     private JwtTokenProvider jwtTokenProvider;
 
-
     private UserAndRoleMapper userAndRoleMapper;
-
 
     public AuthService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserAndRoleMapper userAndRoleMapper) {
         this.userRepository = userRepository;
@@ -69,7 +61,6 @@ public class AuthService implements IAuthService {
             throw new UserDataException(UserDataException.passwordDoesNotRespectRegexException());
         }
 
-
         User userToSave = userAndRoleMapper.dtoToUser(userDto);
         userToSave.setFirstName(userDto.getFirstName());
         userToSave.setLastName(userDto.getLastName());
@@ -89,7 +80,6 @@ public class AuthService implements IAuthService {
         LOG.info("Student registered: " + userSaved.getEmail());
         return "Student registered successfully";
     }
-
 
     @Override
     public String registerTutor(UserDto userDto) throws UserDataException {
@@ -113,7 +103,6 @@ public class AuthService implements IAuthService {
         userToSave.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userToSave.setBirthDate(userDto.getBirthDate());
         userToSave.setBackgroundImage(userDto.getBackgroundImage());
-
 
         Role role = roleToAssign("ROLE_TUTOR");
         userToSave.setRoles(List.of(role));
@@ -151,14 +140,13 @@ public class AuthService implements IAuthService {
         return "Admin registered successfully";
     }
 
-
     @Override
     public User getUserByEmail() {
         String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
         if (loggedUser.isEmpty()) {
             throw new ResourceNotFoundException("User with this email doesn't exist");
         }
-        LOG.info("User info: " + loggedUser);
+        LOG.info("User info:  " + loggedUser);
         return userRepository.findByEmail(loggedUser);
     }
 
@@ -185,7 +173,6 @@ public class AuthService implements IAuthService {
         return "User updated successfully";
     }
 
-
     public String login(LoginDto loginDto) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -202,8 +189,6 @@ public class AuthService implements IAuthService {
         }
     }
 
-
-
     public Role roleToAssign(String nameRole) {
         Role role = roleRepository.findByName(nameRole);
         if (role == null) {
@@ -213,7 +198,6 @@ public class AuthService implements IAuthService {
         }
         return role;
     }
-
 
 
 }

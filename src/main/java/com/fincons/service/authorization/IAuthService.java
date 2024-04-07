@@ -4,7 +4,6 @@ import com.fincons.dto.UserDto;
 import com.fincons.entity.User;
 import com.fincons.exception.UserDataException;
 import com.fincons.jwt.LoginDto;
-import org.springframework.security.core.AuthenticationException;
 
 public interface IAuthService {
 
@@ -19,4 +18,5 @@ public interface IAuthService {
     User getUserByEmail();
 
     String updateUser(UserDto userDto) throws UserDataException;
+
 }

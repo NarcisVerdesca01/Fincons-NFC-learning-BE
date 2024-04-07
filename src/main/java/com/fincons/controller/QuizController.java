@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @CrossOrigin("*")
 @AllArgsConstructor
 @RestController
@@ -94,8 +97,8 @@ public class QuizController {
         }
     }
 
-    @PutMapping("${quiz.update}/{id}")
-    public ResponseEntity<ApiResponse<String>> updateQuiz(@PathVariable long id,@RequestBody QuizDto quizDto) {
+    @PutMapping("${quiz.update}")
+    public ResponseEntity<ApiResponse<String>> updateQuiz(@RequestParam(name="idQuiz") long id,@RequestBody QuizDto quizDto) {
         try {
             iQuizService.updateQuiz(id,quizDto);
 
@@ -111,6 +114,7 @@ public class QuizController {
                     .build());
         }
     }
+
     @PutMapping("${quiz.delete}")
     public ResponseEntity<ApiResponse<String>> deleteQuiz(@RequestParam(name = "idQuiz") long id) {
         try {
@@ -171,6 +175,7 @@ public class QuizController {
                     .message(resourceNotFoundException.getMessage())
                     .build());
         } catch (DuplicateException duplicateException){
+
             LOG.error("DuplicateException - associateQuizQuestion() -> QuizController: {}. Date: {}", duplicateException.getMessage(), LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.<String>builder()
                     .message(duplicateException.getMessage())

@@ -25,13 +25,10 @@ public class Content {
     @Column(name = "content", length = 20971520)
     private String content;
 
-    //2. LEZIONE - CONTENUTO 1:1
     @OneToOne(mappedBy = "content")
     private Lesson lesson;
 
     @Column(name  = "deleted")
     private boolean deleted;
-
-
 
 }

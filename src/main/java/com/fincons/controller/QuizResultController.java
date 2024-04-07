@@ -5,19 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.dto.QuizResultsDto;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.mapper.QuizResultMapper;
 import com.fincons.service.quizresult.IQuizResultService;
 import com.fincons.utility.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,9 +38,7 @@ public class QuizResultController {
 
     private QuizResultMapper quizResultMapper;
 
-
     private static final Logger LOG = LoggerFactory.getLogger(QuizResultController.class);
-
 
     @GetMapping("${quiz-result-student.list}")
     public ResponseEntity<ApiResponse<List<QuizResultsDto>>> getAllQuizResults(){
@@ -70,7 +62,6 @@ public class QuizResultController {
                 .build());
 
     }
-
 
         @GetMapping("${quiz-result-student.find-by-id}/{id}")
     public ResponseEntity<ApiResponse<QuizResultsDto>> getQuizResultsStudentDtoById(@PathVariable long id){
@@ -142,7 +133,6 @@ public class QuizResultController {
     public ResponseEntity<ApiResponse<QuizResultsDto>> reDoQuiz(
             @RequestParam("quizToRedo") long quizToRedo,
             @RequestBody Map<String, Object> requestBody) {
-
         try {
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -162,10 +152,6 @@ public class QuizResultController {
                     .build());
         }
     }
-
-
-
-
 
 
 }
