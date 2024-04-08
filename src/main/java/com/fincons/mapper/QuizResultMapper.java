@@ -21,27 +21,13 @@ public class QuizResultMapper {
     private UserAndRoleMapper userAndRoleMapper;
 
     public QuizResultsDto mapQuizResultsEntityToDto(QuizResults quizResults) {
-        QuizResultsDto quizResultsDto = new QuizResultsDto();
-        quizResultsDto.setId(quizResults.getId());
-        quizResultsDto.setQuiz(quizMapper.mapQuizToQuizDto(quizResults.getQuiz()));
-        quizResultsDto.setUser(userAndRoleMapper.userToUserDto(quizResults.getUser()));
-        quizResultsDto.setTotalScore(quizResults.getTotalScore());
-        quizResultsDto.setWhenDone(quizResults.getWhenDone());
-        quizResultsDto.setDeleted(quizResults.isDeleted());
-        return quizResultsDto;
+       return modelMapper.map(quizResults, QuizResultsDto.class);
     }
 
     public QuizResults mapQuizResultsDtoToEntity(QuizResultsDto quizResultsDto) {
-        QuizResults quizResults = new QuizResults();
-        quizResults.setId(quizResultsDto.getId());
-        quizResults.setQuiz(quizMapper.mapQuizDtoToQuizEntity(quizResultsDto.getQuiz()));
-        quizResults.setUser(userAndRoleMapper.dtoToUser(quizResultsDto.getUser()));
-        quizResults.setTotalScore(quizResultsDto.getTotalScore());
-        quizResults.setWhenDone(quizResultsDto.getWhenDone());
-        quizResults.setDeleted(quizResultsDto.isDeleted());
-
-        return quizResults;
+        return modelMapper.map(quizResultsDto, QuizResults.class);
     }
+
 
     public List<QuizResultsDto> mapQREntityToQRDTOSList(List<QuizResults> quizResultsList){
         return quizResultsList
