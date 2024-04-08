@@ -44,6 +44,15 @@ public class AbilityUserController {
                 .build());
     }
 
+    @GetMapping("${ability-user.singleUser}")
+    public ResponseEntity<ApiResponse<List<AbilityUserDto>>> getAllAbilityUserOfSingleStudent(){
+        List<AbilityUserDto> abilityUserDtos = abilityUserMapper
+                .mapAbilityUserListToAbilityUserDtoList(iAbilityUserService.getAllAbilityUserOfOneUser());
+        return ResponseEntity.ok().body(ApiResponse.<List<AbilityUserDto>>builder()
+                .data(abilityUserDtos)
+                .build());
+    }
+
     @GetMapping("${ability-user.get-by-id}/{id}")
     public ResponseEntity<ApiResponse<AbilityUserDto>> getAbilityUserById(@PathVariable long id){
         try{

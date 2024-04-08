@@ -3,6 +3,7 @@ package com.fincons.mapper;
 import com.fincons.dto.AbilityUserDto;
 import com.fincons.entity.AbilityUser;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class AbilityUserMapper {
 
     private static final ModelMapper modelMapper = new ModelMapper();
+
 
     public AbilityUserDto mapAbilityUserToAbilityUserDto(AbilityUser abilityUser){
         return modelMapper.map(abilityUser, AbilityUserDto.class);

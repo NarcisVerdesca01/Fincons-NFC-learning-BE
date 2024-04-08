@@ -17,6 +17,7 @@ public class UserAndRoleMapper {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public User dtoToUser(UserDto userDTO) {
         User userToSave = modelMapper.map(userDTO, User.class);
         userToSave.setPassword(passwordEncoder.encode(userDTO.getPassword()));

@@ -18,4 +18,5 @@ public interface IAbilityUserService {
     AbilityUser addAbilityUser(long abilityDtoToAssociate) throws DuplicateException;
 
 
+    List<AbilityUser> getAllAbilityUserOfOneUser();
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AbilityUserService implements IAbilityUserService{
@@ -61,12 +62,37 @@ public class AbilityUserService implements IAbilityUserService{
     }
 
     @Override
+    public List<AbilityUser> getAllAbilityUserOfOneUser() {
+
+        String loggedUser = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (loggedUser.isEmpty()) {
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
+
+        if (!userRepository.existsByEmail(loggedUser)) {
+            throw new ResourceNotFoundException("User does not exist");
+        }
+
+        List<AbilityUser> allAbilityUsersList = abilityUserRepository.findAllByDeletedFalse();
+
+        List<AbilityUser> listOfAbilityOfSingleUser = allAbilityUsersList
+                .stream()
+                .filter(abilityUser -> abilityUser.getUser().getEmail().equals(loggedUser))
+                .toList();
+
+        return listOfAbilityOfSingleUser;
+    }
+
+    @Override
     public AbilityUser getAbilityUserById(long id) {
         if (!abilityUserRepository.existsByIdAndDeletedFalse(id)) {
             throw new ResourceNotFoundException("The ability-user associaiton does not exist!");
         }
         return abilityUserRepository.findByIdAndDeletedFalse(id);
     }
+
+
 
     @Override
     public AbilityUser updateAbilityUser(long id, AbilityUserDto abilityUserDto) throws DuplicateException {
