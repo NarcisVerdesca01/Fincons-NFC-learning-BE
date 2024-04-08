@@ -33,8 +33,8 @@ public class UserDto {
     @JsonIgnoreProperties("user")
     private List<AbilityUserDto> abilityUsers;
 
-    //@JsonIgnoreProperties("user")
-    @JsonManagedReference
+    @JsonIgnoreProperties("user")
+    //@JsonManagedReference
     private List<QuizResultsDto> quizResults;
 
     private boolean deleted;
