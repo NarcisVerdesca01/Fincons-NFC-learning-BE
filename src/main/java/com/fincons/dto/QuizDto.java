@@ -1,6 +1,7 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class QuizDto {
     private LessonDto lesson;
 
     @JsonIgnoreProperties("quiz")
+    //@JsonManagedReference
     private List<QuizResultsDto> quizResults;
 
     private boolean deleted;
