@@ -127,6 +127,11 @@ public class SecurityConfiguration {
     private String quizGetAllQuizResponse;
 
 
+
+    @Value("${audit-combinated.base.uri}")
+    private String auditCombinatedBaseUri;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -139,6 +144,7 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerTutorUri).hasRole("ADMIN")
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
                         .requestMatchers(applicationContext + getUserDtoByEmail).permitAll()
+                        .requestMatchers(applicationContext + auditCombinatedBaseUri).hasAnyRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")
