@@ -30,6 +30,24 @@ public class AuditCombinatedController {
     }
 
 
+    @GetMapping("${audit-combinated.auditcourse}")
+    public ResponseEntity<ApiResponse<Long[]>> getAllAuditCombinatedCourseInformation(){
+        Long[] auditCourse = iAuditCombinatedService.findAllAuditCombinatedCourseInformation();
+        return ResponseEntity.ok().body(ApiResponse.<Long[]>builder()
+                .data(auditCourse)
+                .build());
+    }
+
+    @GetMapping("${audit-combinated.auditquiz}")
+    public ResponseEntity<ApiResponse<Long[]>> getAllAuditCombinatedQuizInformation(){
+        Long[] auditCourse = iAuditCombinatedService.findAllAuditCombinatedQuizInformation();
+        return ResponseEntity.ok().body(ApiResponse.<Long[]>builder()
+                .data(auditCourse)
+                .build());
+    }
+
+
+
 
 
 

@@ -132,6 +132,14 @@ public class SecurityConfiguration {
     private String auditCombinatedBaseUri;
 
 
+
+    @Value("${audit-combinated.auditcourse}")
+    private String auditCombinatedAuditCourse;
+
+    @Value("${audit-combinated.auditquiz}")
+    private String auditCombinatedAuditQuiz;
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
