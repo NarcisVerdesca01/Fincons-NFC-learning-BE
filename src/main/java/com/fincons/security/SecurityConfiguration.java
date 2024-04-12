@@ -153,6 +153,9 @@ public class SecurityConfiguration {
                         .requestMatchers(applicationContext + registerStudentUri).permitAll()
                         .requestMatchers(applicationContext + getUserDtoByEmail).permitAll()
                         .requestMatchers(applicationContext + auditCombinatedBaseUri).hasAnyRole("ADMIN")
+                        .requestMatchers(applicationContext + auditCombinatedAuditCourse).hasAnyRole("ADMIN")
+                        .requestMatchers(applicationContext + auditCombinatedAuditQuiz).hasAnyRole("ADMIN")
+
 
                         .requestMatchers(HttpMethod.GET, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN", "TUTOR", "STUDENT")
                         .requestMatchers(HttpMethod.POST, applicationContext + abilityBaseUri + "/**").hasAnyRole("ADMIN")

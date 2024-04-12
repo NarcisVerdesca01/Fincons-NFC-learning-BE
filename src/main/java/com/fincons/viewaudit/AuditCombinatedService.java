@@ -2,7 +2,6 @@ package com.fincons.viewaudit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +29,11 @@ public class AuditCombinatedService implements IAuditCombinatedService{
                 .filter(a -> a.getLastModified() != null && Objects.equals(a.getType(), "course"))
                 .count();
 
-        Long[] dataForAuditCourse = {auditForCourseCreateCount, auditForCourseModifiedCount};
+
+        Long[] dataForAuditCourse = new Long[2];
+        dataForAuditCourse[0] = auditForCourseCreateCount;
+        dataForAuditCourse[1] = auditForCourseModifiedCount;
+
 
         return dataForAuditCourse;
     }
@@ -48,7 +51,9 @@ public class AuditCombinatedService implements IAuditCombinatedService{
                 .count();
 
 
-        Long[] dataForAuditQuiz = {auditForQuizCreateCount, auditForQuizModifiedCount};
+        Long[] dataForAuditQuiz = new Long[2];
+        dataForAuditQuiz[0] = auditForQuizCreateCount;
+        dataForAuditQuiz[1] = auditForQuizModifiedCount;
 
         return dataForAuditQuiz;
     }
